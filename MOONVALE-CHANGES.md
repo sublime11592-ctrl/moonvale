@@ -108,3 +108,15 @@ localStorage keys as before (`moonvale.adventure.v2`, `moonvale-hud`), so existi
     - Staff basic attacks: the projectile is held back through the wind-up and spawned on the impact frame.
     - Spells: the wind-up frames span cinematic.pending, and the release frame shows when releaseSpell fires.
   - Projectiles, the charge glow and a release flare all come from the emit point, mirrored with facing. Heroes face the target and use the side sheets even when attacking up or down.
+
+## Joystick fix + painted-hero creator (Oct 18)
+- **Joystick (moonvale-input.js, new):** the movement stick now uses native touch events (tracked by touch identifier, `preventDefault` on `touchstart`) on touch devices and pointer events for mouse/pen, with move/end listened on `window`. It releases only for the tracked contact, uses an analog throw scaled to the stick size with a 10% dead zone, and has a 16px larger invisible hit ring. The old game.js handler was pointer-only (`setPointerCapture`) and released on *any* `pointercancel`/`lostpointercapture` without checking the pointer. Nothing disabled the browser's own touch gestures on the stick (no `touchstart` preventDefault, no `user-select:none`/`-webkit-touch-callout:none`, zoomable page). On a phone any system gesture would cancel the pointer and zero the stick.
+- CSS (moonvale-hud.css): stick children are `pointer-events:none`; there is no selection/callout on the HUD controls; `touch-action:manipulation` is set on skill, potion, auto and nav buttons.
+- **Creator (moonvale-creator.js/.css, new):** a single painted-hero screen inside #classDialog.
+  - It shows a live preview from art/anim (idle → walk → attack/cast loop; tap the hero or use the Idle/Walk/Attack/Cast buttons; swipe or arrows to change hero), with a staff-tip flare on the key frame.
+  - Heroes: Warden (Druid), Sentinel (Warrior), Embermage and Frostcaller (Spellweaver). Ranger is shown as "Coming soon" (no painted art).
+  - The screen shows the class, role, description, and the 5 signature spells with their icons (tap to read).
+  - Options kept: Name, Aura (a glow drawn around the real sprite in game, via the same draw call), Heritage (racial ability, labelled as not changing the look). The old appearance presets are gone (the painted hero always overrode them).
+  - The old creator stays hidden in the DOM; the screen calls the existing `enter()` chain so saves are unchanged. `customHero.paint` and `customHero.accent` persist through save/load.
+- **Bug fixed:** Frostcaller was unreachable for real players. heroFor() checked `race==='dwarf'`, but the selectable race id is `mountaindwarves`. Spellweavers now pick Embermage/Frostcaller explicitly; old saves fall back to any *dwarf* race → Frostcaller.
+- Tests: tools/joy_verify.py (real CDP touch, 8 directions, analog, decorations, rim, long press, mouse, two fingers, touch taps on skills/attack), tools/creator_test.py (touch end-to-end, persistence, camp re-open). check_round.py now also checks the creator.

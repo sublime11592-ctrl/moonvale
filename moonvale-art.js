@@ -10,7 +10,11 @@
  const frame=(img,extra={})=>({img,sx:0,sy:0,sw:img.naturalWidth||img.width,sh:img.naturalHeight||img.height,...extra});
  // class -> painted hero. Spellweavers: dwarves get the Frostcaller, everyone else the Embermage.
  // Rangers have no painted sheet yet and keep their original sprite.
- const heroFor=cls=>cls==='druid'?'warden':cls==='warrior'?'warrior':cls==='mage'?((typeof customHero!=='undefined'&&customHero?.race==='dwarf')?'frostcaller':'embermage'):null;
+ // The creator stores the painted choice in customHero.paint; older saves fall back to dwarves → Frostcaller
+ // (the selectable race id is 'mountaindwarves', so match any *dwarf* id).
+ const heroFor=cls=>{if(cls==='druid')return 'warden';if(cls==='warrior')return 'warrior';if(cls!=='mage')return null;
+  const h=typeof customHero!=='undefined'?customHero:null;if(h&&(h.paint==='frostcaller'||h.paint==='embermage'))return h.paint;
+  return /dwarf/.test(h?.race||'')?'frostcaller':'embermage';};
  // staff-bearers are drawn a little taller so the body (not the staff tip) matches the other heroes
  const heroScale={warden:1.1,embermage:1.1,frostcaller:1.0,warrior:1.0};
  // NPC id -> painted NPC (scale relative to the 77px NPC height the game uses)

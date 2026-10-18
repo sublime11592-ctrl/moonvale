@@ -236,6 +236,7 @@ const MoonMotion=(()=>{
   const src={img:m.img,sx:i*m.cellW,sy:0,sw:m.cellW,sh:m.cellH};
   g.translate(w/2-ax,h-ay);blit(src,w,h,flash);g.restore();
  }
+ const PP_GHOST=a=>a<1;
  function framedDraw(o,s,ss,ghostAlpha,dt){
   const H=anim.hero,moving=(H.speed||0)>25?clamp(Math.max(s.moving||0,.6),0,1):0;
   const sel=pick(ss.set,s,H,moving),m=sel.m;
@@ -255,6 +256,7 @@ const MoonMotion=(()=>{
   g.save();g.globalAlpha=ghostAlpha*heroAlpha();
   g.translate(o.x,o.y+7);const race=typeof customHero!=='undefined'?customHero?.race:null;if(race==='ashbound')g.translate(0,-2-Math.sin(time*2)*1.2);
   {const T=g.getTransform();H.info.dev=[T.a,T.e,T.f];}
+  {const ac=MoonMotion.accent&&MoonMotion.accent();if(ac&&!PP_GHOST(ghostAlpha)){g.shadowColor=ac;g.shadowBlur=11*(cinematic.dpr||1);}}   // creator aura: a glow around the real sprite
   body(P);g.restore();
   return bodyTarget/(ss.stat?.bodyFrac||.92);
  }
