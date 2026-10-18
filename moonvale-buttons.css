@@ -127,3 +127,6 @@ html body dialog:is(#menuDialog,#saveDialog,#mvSettings,#mvTalk,#mvHero,#guideDi
 :is(.mv-btn-gold,#classDialog.mv-c2 #mvCreator .mvc-begin,#mvIntroGo):not(#mv_){font-size:18px!important}
 
 html body dialog :is(.journal-close,button[aria-label^=Close]):not(#mv_){width:38px!important;height:38px!important;min-width:38px!important;min-height:0!important;aspect-ratio:1/1;padding:0!important;display:grid!important;place-items:center;font-size:20px!important;line-height:1!important}
+
+/* pinned dialog close (stays in reach while the sheet scrolls) */
+dialog > button.mv-pinx{position:sticky!important;top:0;float:right;z-index:6;margin:0 0 -38px auto!important}

@@ -80,4 +80,9 @@ try{const oi=openInventory;openInventory=function(){const r=oi.apply(this,argume
   for(const h of d.querySelectorAll('.set-overview h2,.set-overview h3,.set-overview header'))if(/identity/i.test(h.textContent))h.textContent='Armor sets';const p0=d.querySelector('.set-overview p');if(p0)p0.textContent='Equip loot to raise your power, armor and health. Common pieces are plain; uncommon, rare and epic loot hit harder, and matching sets grant extra combat bonuses.';}
 }catch{}return r;};}catch{}
 try{const oj2=openJournal;openJournal=function(){const r=oj2.apply(this,arguments);try{const c=$$('contractButton');if(c)c.hidden=c.disabled;}catch{}return r;};}catch{}
+
+// pin each dialog's own close button to the top of its scroll area (Bag put it below the fold on phones)
+try{const pin=d=>{try{const x=[...d.children].find(c=>c.matches&&c.matches('button.journal-close,button.close,button[aria-label^=Close]'));if(!x)return;x.classList.add('mv-pinx');if(d.firstElementChild!==x)d.insertBefore(x,d.firstElementChild);}catch{}};
+ document.querySelectorAll('dialog').forEach(d=>{if(d.open)pin(d)});
+ new MutationObserver(ms=>{for(const m of ms)if(m.target.tagName==='DIALOG'&&m.target.open)pin(m.target);}).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});}catch{}
 })();

@@ -41,7 +41,7 @@ globalThis.MOONVALE_ART={
  "enemies": {
   "wraith": "art/enemy-wraith.png",
   "wisp": "art/enemy-wisp.png",
-  "slime": "art/enemy-slime.png",
+  "slime": "art/enemy-jelly.png",
   "boar": "art/enemy-boar.png",
   "boss": "art/enemy-boss.png"
  },
