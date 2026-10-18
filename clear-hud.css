@@ -1,0 +1,48 @@
+/* Keep the world visible. These rules do not resize the map or action deck. */
+#targetFrame{display:none!important}
+#playerFrame{width:208px;padding:8px 10px;background:linear-gradient(120deg,#10252bd9,#111d30b8)}
+.status-toggle{display:flex;align-items:center;gap:7px;width:100%;padding:0 0 5px;border:0;background:none;text-align:left;min-height:25px;color:#f0e3c4;box-shadow:none}
+.status-toggle b{flex:1;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.status-toggle #level{font-size:12px;white-space:nowrap;color:#b9c7bc}
+.hud-chevron{transition:transform .18s;color:#d6c79d;font-size:16px}
+[aria-expanded=true]>.hud-chevron{transform:rotate(180deg)}
+#playerFrame .meter{height:16px;margin-top:3px;border:0}
+#playerFrame .meter span{line-height:16px;font-size:12px}
+#playerFrame .class-resource{margin-top:6px;padding-top:0;border:0}
+#playerFrame .class-resource>div:first-child{font-size:12px;gap:5px}
+#playerFrame .class-resource>div:first-child b{font-weight:500}
+#playerFrame .class-resource small{font-size:12px}
+#playerFrame .identity-track{margin:4px 0 1px;height:3px}
+#playerFrame.is-compact .buffs,#playerFrame.is-compact .class-resource small{display:none}
+#playerFrame.is-compact .mana{height:5px}
+#playerFrame.is-compact .mana span{display:none}
+#playerFrame.is-compact .class-resource{margin-top:6px}
+#playerFrame.health-low{border-color:#e99486;box-shadow:0 0 12px #b53d3538}
+#questTracker{top:148px;right:18px;width:232px;padding:0;border:1px solid #a6b9a74d;cursor:default;max-width:calc(100% - 36px)}
+#questTracker.is-collapsed{width:156px;background:#11232bcc}
+.quest-toggle{display:flex;align-items:center;gap:8px;width:100%;min-height:36px;padding:7px 11px;border:0;border-radius:8px;background:transparent;color:#ecdbb1;font-size:14px;text-align:left}
+#questTracker .quest-toggle span{display:inline;margin:0;line-height:1;font-size:14px}
+#questBadge{margin-left:auto!important;color:#c7d5c5}
+#questTracker.has-ready{border-color:#8bd6ae88}
+#questTracker.has-ready #questBadge{color:#9cedbb}
+#questDetails{padding:6px 12px 12px;max-height:210px;overflow:auto}
+#questDetails[hidden]{display:none}
+#questDetails #questHeading{font-size:12px;letter-spacing:1px}
+#questDetails #questText{font-size:14px;line-height:1.4;margin:8px 0}
+#questDetails #questReward{display:block;font-size:12px;line-height:1.5}
+#trackerJournal{font-size:12px;margin-top:10px;padding:6px 9px;color:#eed8a7;border-color:#637b6e;background:#17333b}
+.status-toggle:focus-visible,.quest-toggle:focus-visible,#trackerJournal:focus-visible{outline:2px solid #f1d6a1;outline-offset:3px}
+.combat-log{transition:opacity .5s;max-width:40%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.combat-log>div:not(:last-child){display:none}
+.combat-log>div:last-child{opacity:.85}
+@media(max-width:680px){
+ #playerFrame{width:164px;padding:6px 8px}
+ .status-toggle{min-height:27px;gap:4px}
+ .status-toggle b{font-size:13px}
+ #playerFrame .class-resource>div:first-child{font-size:12px}
+ #questTracker{top:105px;right:10px;max-width:calc(100% - 20px)}
+ #questTracker.is-collapsed{width:113px}
+ .quest-toggle{gap:5px;padding:7px 8px;font-size:12px}
+ #questTracker .quest-toggle span{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.hud-chevron,.combat-log{transition:none}}

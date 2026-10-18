@@ -1,0 +1,310 @@
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-Medium.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-SemiBold.woff2) format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-Bold.woff2) format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-ExtraBold.woff2) format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-Black.woff2) format("woff2");font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:"MV Fira";src:url(fonts/FiraSans-ExtraBoldItalic.woff2) format("woff2");font-weight:700 900;font-style:italic;font-display:swap}
+@font-face{font-family:"MV Cinzel";src:url(fonts/Cinzel-VariableFont_wght.woff2) format("woff2");font-weight:400 900;font-style:normal;font-display:swap}
+/* Moonvale HUD v2 — clean portrait-first layout after the reference mockups. */
+:root{--g:#d8b16a;--g-hi:#f7dc9a;--g-lo:#6e5026;--ink:#07080d;--panel:rgba(10,10,18,.62);
+ --f:"MV Fira","Fira Sans","Trebuchet MS",system-ui,sans-serif;--serif:"MV Cinzel","Cinzel",Georgia,serif;--nav:54px}
+body.mv-ui2{background:#05060b}
+body.mv-ui2 .shell{max-width:none;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#05060b}
+body.mv-ui2 .shell>header{display:none}
+body.mv-ui2 .field{flex:1 1 auto;height:auto!important;min-height:0!important;max-height:none!important;position:relative;overflow:hidden}
+body.mv-ui2 #game{width:100%!important;height:100%!important;display:block}
+body.mv-ui2 footer{flex:0 0 auto;padding:0!important;height:auto;background:none;border:0}
+/* the old widgets stay in the DOM for game logic, but are not shown */
+body.mv-ui2 footer>.progress,body.mv-ui2 footer .action-deck,body.mv-ui2 footer .spell-help,body.mv-ui2 #playerFrame,body.mv-ui2 .map-wrap,
+body.mv-ui2 #questTracker,body.mv-ui2 .field-actions,body.mv-ui2 .travel-tools,body.mv-ui2 #interactBtn,body.mv-ui2 .field>.zone,body.mv-ui2 #targetFrame,body.mv-ui2 .signature-button{display:none!important}
+body.mv-ui2 button{font-family:var(--f)}
+/* ---------- player frame ---------- */
+.mv-player{position:absolute;left:8px;top:8px;width:184px;height:66px;z-index:5;color:#f1e8d4;font-family:var(--f);pointer-events:none}
+.mv-player .mv-portrait{position:absolute;left:0;top:0;width:62px;height:62px;border-radius:50%;overflow:hidden;pointer-events:auto;cursor:pointer;
+ background:radial-gradient(circle at 50% 35%,#3a3046,#110e18 72%);border:2px solid var(--g);box-shadow:0 0 0 2px #1d1408,0 0 0 3px rgba(216,177,106,.35),0 4px 12px #000b,inset 0 0 10px #000}
+.mv-player .mv-portrait canvas{width:100%;height:100%;display:block}
+.mv-player .mv-lvl{position:absolute;left:-3px;top:44px;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3a2a12,#100a04);border:2px solid var(--g);color:var(--g-hi);font:800 11px/20px var(--f);text-align:center;box-shadow:0 2px 4px #000}
+.mv-player .mv-id{position:absolute;left:70px;top:0;right:0;line-height:1.05}
+.mv-player .mv-id b{display:block;font:700 14px var(--serif);color:#fbf1d8;text-shadow:0 1px 2px #000,0 0 4px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-player .mv-id small{display:block;font:700 11px var(--f);text-shadow:0 1px 2px #000;margin-top:1px}
+.mv-bar{position:absolute;left:70px;right:0;height:11px;border-radius:2px;background:rgba(14,6,8,.85);border:1px solid #000;box-shadow:0 0 0 1px rgba(216,177,106,.55);overflow:hidden}
+.mv-bar.hp{top:33px}.mv-bar.mp{top:48px;height:9px}
+.mv-bar i{position:absolute;left:0;top:0;bottom:0;transition:width .25s ease-out}
+.mv-bar.hp i{background:linear-gradient(180deg,#ff7a6a,#c4261f 55%,#7d1311)}
+.mv-bar.mp i{background:linear-gradient(180deg,#78c2ff,#2a6ad2 55%,#173f8c)}
+.mv-bar span{position:absolute;inset:0;font:700 9px/11px var(--f);color:#fff;text-align:center;text-shadow:0 1px 1px #000,0 0 2px #000}
+.mv-bar.mp span{line-height:9px;font-size:8px}
+.mv-player.low .mv-bar.hp{animation:mvLow 1s ease-in-out infinite}
+@keyframes mvLow{50%{box-shadow:0 0 0 1px #ff5a4a,0 0 8px #ff3a2a}}
+.mv-res{position:absolute;left:70px;top:59px;font:600 9px var(--f);color:#d9c9a4;text-shadow:0 1px 2px #000;white-space:nowrap}
+.mv-buffs{position:absolute;left:2px;top:72px;display:flex;gap:4px}
+.mv-buffs span{display:flex;flex-direction:column;align-items:center;width:24px}
+.mv-buffs i{width:22px;height:22px;border-radius:50%;border:1px solid var(--g);background:var(--mv-icons,#2a2440) var(--mvpos)/500% 400% no-repeat;box-shadow:0 1px 3px #000}
+.mv-buffs small{font:700 9px var(--f);color:#f3e8cc;text-shadow:0 1px 2px #000;margin-top:1px;min-height:9px}
+/* currency */
+.mv-currency{position:absolute;left:198px;top:9px;display:flex;flex-direction:column;gap:4px;z-index:5;pointer-events:none}
+.mv-pill{display:flex;align-items:center;gap:4px;padding:2px 8px 2px 3px;border-radius:999px;background:rgba(8,8,14,.7);border:1px solid rgba(216,177,106,.5);font:700 10.5px var(--f);color:#f3e9d0;min-width:44px}
+.mv-pill i{width:13px;height:13px;border-radius:50%;display:block;flex:none}
+.mv-pill.gold i{background:radial-gradient(circle at 35% 30%,#fff3b0,#e2a933 50%,#8a5a12)}
+.mv-pill.gem i{border-radius:2px;transform:rotate(45deg) scale(.75);background:linear-gradient(135deg,#d8c4ff,#7b4cff 55%,#3b1d9a)}
+/* ---------- zone banner ---------- */
+.mv-zonebar{position:absolute;left:50%;top:86px;transform:translateX(-50%);z-index:4;text-align:center;pointer-events:none;padding:0 22px;white-space:nowrap}
+.mv-zonebar::before,.mv-zonebar::after{content:"";position:absolute;top:9px;width:16px;height:1px;background:linear-gradient(90deg,transparent,var(--g))}
+.mv-zonebar::before{left:2px}.mv-zonebar::after{right:2px;transform:scaleX(-1)}
+.mv-zonebar b{display:block;font:700 14px var(--serif);color:#f3e2b8;letter-spacing:.5px;text-shadow:0 1px 2px #000,0 0 8px #000}
+.mv-zonebar small{display:block;font:600 11px var(--f);color:#e2d6ba;text-shadow:0 1px 2px #000}
+/* ---------- minimap ---------- */
+.mv-map{position:absolute;right:10px;top:12px;width:106px;height:106px;z-index:5;cursor:pointer}
+.mv-map canvas{width:100%;height:100%;border-radius:50%;display:block}
+.mv-map .mv-rim{position:absolute;inset:-5px;border-radius:50%;pointer-events:none;
+ background:radial-gradient(circle,transparent 55px,#1a1206 55.5px,var(--g) 57px,#fbe3a2 58px,#8a6430 59.5px,#2a1c0a 61px,transparent 61.5px);
+ box-shadow:0 4px 14px #000c,inset 0 0 14px #000}
+.mv-map .mv-rim::before{content:"";position:absolute;inset:0;border-radius:50%;background:
+ radial-gradient(circle at 50% 3%,var(--g-hi) 2px,transparent 3px),radial-gradient(circle at 97% 50%,var(--g) 2px,transparent 3px),
+ radial-gradient(circle at 50% 97%,var(--g) 2px,transparent 3px),radial-gradient(circle at 3% 50%,var(--g) 2px,transparent 3px)}
+.mv-map .mv-n{position:absolute;top:-11px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:#140e06;border:1.5px solid var(--g);color:var(--g-hi);font:700 10px/15px var(--serif);font-style:normal;text-align:center;z-index:2}
+/* ---------- quest tracker ---------- */
+.mv-quest{position:absolute;right:8px;top:134px;width:172px;z-index:4;cursor:pointer;padding:6px 8px 7px;border-radius:6px;
+ background:linear-gradient(180deg,rgba(14,12,22,.72),rgba(10,10,16,.5));border:1px solid rgba(216,177,106,.32);box-shadow:0 4px 12px rgba(0,0,0,.35);font-family:var(--f);color:#ece2c8}
+.mv-quest .mv-qh{font:700 10px var(--serif);letter-spacing:1.5px;text-transform:uppercase;color:var(--g);display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.mv-quest .mv-qh i{width:8px;height:8px;transform:rotate(45deg);background:var(--g);display:block}
+.mv-quest .mv-qh .ready{margin-left:auto;font:700 9px var(--f);letter-spacing:0;color:#9ff0a8;text-transform:none}
+.mv-quest h4{text-transform:none;letter-spacing:0;margin:4px 0 1px;font:700 11.5px var(--serif);color:#f6cf74;text-shadow:0 1px 2px #000;line-height:1.15}
+.mv-quest ul{list-style:none;margin:0;padding:0}
+.mv-quest li{display:flex;align-items:flex-start;gap:5px;font:600 10.5px/1.25 var(--f);color:#e9e0ca;text-shadow:0 1px 2px #000;margin-top:2px}
+.mv-quest li i{flex:none;width:9px;height:9px;margin-top:2px;border:1px solid #cdb784;border-radius:2px;background:rgba(0,0,0,.4)}
+.mv-quest li.done i{background:#7ed08a;border-color:#bff0c5}
+.mv-quest li span{flex:1;min-width:0}
+.mv-quest li em{font-style:normal;font-weight:700;color:#f3e3b8;margin-left:4px;white-space:nowrap}
+.mv-quest .mv-qf{margin-top:4px;font:600 9.5px var(--f);color:#b8a983}
+/* ---------- loot feed ---------- */
+.mv-feed{position:absolute;left:10px;top:46%;z-index:4;display:flex;flex-direction:column;gap:5px;pointer-events:none}
+.mv-feed-item{display:flex;align-items:center;gap:6px;font:700 12px var(--f);color:#f4ead2;text-shadow:0 1px 2px #000,0 0 4px #000;animation:mvFeedIn .25s ease-out;transition:opacity .7s,transform .7s}
+.mv-feed-item.out{opacity:0;transform:translateX(-12px)}
+.mv-feed-item i{width:16px;height:16px;border-radius:50%;flex:none}
+.mv-feed-item.gold i{background:radial-gradient(circle at 35% 30%,#fff3b0,#e2a933 50%,#8a5a12);box-shadow:0 0 6px #e8b44a99}
+.mv-feed-item.potion i{background:var(--mv-icons,#a33) 75% 100%/500% 400%}
+.mv-feed-item.item i{background:var(--mv-icons,#58c) 100% 100%/500% 400%}
+.mv-feed-item.gold span{color:#ffe08a}
+@keyframes mvFeedIn{from{opacity:0;transform:translateX(-14px)}}
+/* ---------- joystick ---------- */
+body.mv-ui2 .touch-stick{left:30px!important;bottom:30px!important;width:124px!important;height:124px!important;border-radius:50%!important;z-index:4;
+ background:radial-gradient(circle,rgba(16,14,22,.25) 0 40%,rgba(10,9,16,.55) 41% 100%)!important;border:1.5px solid rgba(216,177,106,.65)!important;box-shadow:0 0 0 3px rgba(16,11,4,.55),0 0 0 4px rgba(216,177,106,.25),inset 0 0 18px #000!important}
+body.mv-ui2 .touch-stick::before{content:"";position:absolute;inset:14px;border-radius:50%;border:1px solid rgba(216,177,106,.28)}
+.mv-arrow{position:absolute;width:9px;height:9px;background:var(--g);transform:rotate(45deg);opacity:.8;box-shadow:0 0 4px #000}
+.mv-arrow.n{left:calc(50% - 4.5px);top:4px}.mv-arrow.s{left:calc(50% - 4.5px);bottom:4px}.mv-arrow.e{right:4px;top:calc(50% - 4.5px)}.mv-arrow.w{left:4px;top:calc(50% - 4.5px)}
+body.mv-ui2 #knob{width:50px!important;height:50px!important;border-radius:50%!important;background:radial-gradient(circle at 40% 35%,#5a4a36,#241a10 70%)!important;border:2px solid var(--g)!important;box-shadow:0 0 0 2px #120c04,0 4px 10px #000b!important;display:flex;align-items:center;justify-content:center}
+.mv-emblem{width:24px;height:24px;display:block;background:var(--g);-webkit-mask:var(--emb) center/contain no-repeat;mask:var(--emb) center/contain no-repeat;opacity:.9;
+ --emb:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.2 6.2L20 10l-5.8 1.8L12 22l-2.2-10.2L4 10l5.8-1.8z'/%3E%3C/svg%3E")}
+/* potion + chat */
+.mv-potion{position:absolute;left:162px;bottom:12px;width:46px;height:46px;border-radius:50%;z-index:4;padding:0;cursor:pointer;
+ background:radial-gradient(circle at 50% 40%,#2a1a24,#0c0810 72%);border:2px solid var(--g);box-shadow:0 0 0 2px #1a1206,0 3px 8px #000b}
+.mv-potion i{position:absolute;inset:4px;border-radius:50%;background:var(--mv-icons,#a33) 75% 100%/500% 400% no-repeat}
+.mv-potion b{position:absolute;right:-4px;bottom:-4px;min-width:18px;height:18px;border-radius:9px;background:#140e06;border:1px solid var(--g);font:800 10px/16px var(--f);color:#fff;text-align:center;padding:0 3px;box-sizing:border-box}
+.mv-potion.empty{filter:grayscale(.9) brightness(.6)}
+.mv-chatbtn{position:absolute;left:6px;bottom:20px;width:30px;height:26px;border-radius:7px;z-index:4;padding:0;cursor:pointer;background:rgba(10,10,16,.75);border:1px solid rgba(216,177,106,.55)}
+.mv-chatbtn i{display:block;width:16px;height:14px;margin:auto;background:#e8dcc0;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;
+ --ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 6.5a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01z'/%3E%3C/svg%3E")}
+body.mv-ui2 .mv-chat{position:absolute!important;left:44px!important;bottom:4px!important;top:auto!important;right:auto!important;transform:none!important;width:min(300px,60vw)!important;max-height:56px;overflow:hidden;z-index:6;padding:4px 9px!important;display:none!important;
+ background:rgba(8,8,14,.8)!important;border:1px solid rgba(216,177,106,.35)!important;border-radius:8px!important;font:600 11px/1.35 var(--f)!important;color:#e8dcc0!important;pointer-events:none;opacity:1!important}
+body.mv-ui2.mv-chat-open .mv-chat{display:block!important}
+body.mv-ui2.mv-chat-open .mv-chatbtn{border-color:var(--g-hi);box-shadow:0 0 8px rgba(247,220,154,.5)}
+/* ---------- skill arc ---------- */
+.mv-arc{position:absolute;right:6px;bottom:4px;width:236px;height:270px;z-index:4;pointer-events:none;transform-origin:right bottom}
+.mv-arc #hotbar{position:absolute;inset:0;display:block!important;margin:0!important;padding:0!important;gap:0!important;background:none!important;border:0!important;box-shadow:none!important}
+.mv-arc .skill{position:absolute!important;width:54px!important;height:54px!important;min-width:0!important;padding:0!important;margin:0!important;border-radius:50%!important;pointer-events:auto;transform:translate(50%,50%);
+ background:radial-gradient(circle at 50% 40%,#2a2440,#0c0a14 72%)!important;border:2px solid var(--g)!important;box-shadow:0 0 0 2px #1a1206,0 0 0 3px rgba(216,177,106,.3),0 4px 10px #000c!important;overflow:visible!important;color:#fff}
+.mv-arc .skill b,.mv-arc .skill small{display:none!important}
+.mv-arc .skill .glyph{position:absolute!important;inset:3px!important;width:auto!important;height:auto!important;margin:0!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;font-size:22px}
+.mv-arc .skill .key{position:absolute!important;top:-5px;left:-3px;right:auto;bottom:auto;width:17px;height:17px;border-radius:50%;background:#120c05;border:1px solid var(--g);font:800 9.5px/15px var(--f)!important;color:#f6ecd2!important;text-align:center;z-index:2;transform:none}
+.mv-arc .skill .mv-label{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);width:76px;text-align:center;font:600 9.5px/1.1 var(--serif);font-style:normal;color:#f1e6cb;text-shadow:0 1px 2px #000,0 0 3px #000;pointer-events:none}
+.mv-arc .skill .cooldown{position:absolute!important;inset:3px!important;border-radius:50%!important;display:flex!important;align-items:center;justify-content:center;font:800 15px var(--f)!important;color:#fff!important;text-shadow:0 1px 2px #000;pointer-events:none}
+.mv-arc .skill .cooldown:empty{display:none!important}
+.mv-arc .skill .cooldown:not(:empty){background:rgba(0,0,0,.55)}
+.mv-arc .skill.starved .glyph{filter:saturate(.4) brightness(.7)}
+.mv-arc .skill:active{transform:translate(50%,50%) scale(.92)}
+/* locked skill: the real icon, dimmed, with a small level badge in the corner (no placeholder) */
+.mv-arc .skill.skill-locked,.mv-arc .skill:disabled{opacity:1!important;border-color:rgba(216,177,106,.45)!important;cursor:default}
+.mv-arc .skill.skill-locked .glyph{filter:grayscale(.85) brightness(.55)}
+.mv-arc .skill.skill-locked .key{display:none}
+.mv-arc .skill.skill-locked .cooldown{inset:auto!important;right:-6px!important;bottom:-2px!important;left:auto!important;top:auto!important;background:#120c05!important;border:1px solid rgba(216,177,106,.7);border-radius:7px!important;padding:0 4px;height:14px;font:700 8px/14px var(--f)!important;color:#e7d6ae!important;white-space:nowrap}
+
+.mv-arc .skill.skill-locked .mv-label{color:#a89c84}
+/* arc positions (centre offsets from the bottom-right corner), 5th is the big signature slot */
+.mv-arc .skill:nth-child(1){right:40px!important;bottom:214px!important}
+.mv-arc .skill:nth-child(2){right:112px!important;bottom:168px!important}
+.mv-arc .skill:nth-child(3){right:34px!important;bottom:136px!important}
+.mv-arc .skill:nth-child(4){right:156px!important;bottom:92px!important}
+.mv-arc .skill:nth-child(5){right:70px!important;bottom:50px!important;width:70px!important;height:70px!important}
+.mv-arc .skill:nth-child(5) .glyph{inset:4px!important}
+/* auto attack: small diamond in the middle of the arc */
+body.mv-ui2 .mv-arc #autoBtn{position:absolute!important;right:100px;bottom:100px;width:32px!important;height:32px!important;min-width:0!important;padding:0!important;margin:0!important;transform:translate(50%,50%) rotate(45deg);border-radius:6px!important;pointer-events:auto;
+ background:linear-gradient(135deg,#3a2a18,#120c06)!important;border:1.5px solid var(--g-hi)!important;box-shadow:0 0 0 2px #120c04,0 3px 8px #000b,0 0 10px rgba(255,190,110,.25)!important;color:transparent!important;font-size:0!important;display:block!important;overflow:hidden}
+body.mv-ui2 .mv-arc #autoBtn::after{content:"⚔";position:absolute;inset:0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;color:var(--g-hi);font-size:14px}
+body.mv-ui2 .mv-arc #autoBtn[aria-pressed="false"]{filter:saturate(.2) brightness(.7)}
+body.mv-ui2 .mv-arc #autoBtn>*{display:none!important}
+.mv-mini{position:absolute;width:34px;height:34px;border-radius:50%;padding:0;pointer-events:auto;cursor:pointer;transform:translate(50%,50%);
+ background:radial-gradient(circle at 50% 40%,#242030,#0a0910 72%);border:1.5px solid rgba(216,177,106,.8);box-shadow:0 0 0 2px #120c04,0 3px 8px #000b}
+.mv-mini i{position:absolute;inset:7px;background:var(--g-hi);-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+.mv-mini.target{right:128px;bottom:234px}
+.mv-mini.target i{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='7'/%3E%3Cpath d='M12 1v6M12 17v6M1 12h6M17 12h6'/%3E%3C/svg%3E")}
+.mv-mini.dodge{right:190px;bottom:150px}
+.mv-mini.dodge i{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12h11l-4-4 1.5-1.5L19 13l-6.5 6.5L11 18l4-4H4z'/%3E%3C/svg%3E")}
+.mv-mini small{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 10px var(--f);color:#fff;text-shadow:0 1px 2px #000}
+.mv-mini.cooling i{opacity:.3}
+/* ---------- contextual prompt ---------- */
+.mv-prompt{position:absolute;left:0;top:0;z-index:5;display:none;align-items:center;gap:5px;padding:3px 9px 3px 3px;border-radius:999px;cursor:pointer;white-space:nowrap;
+ background:rgba(10,8,6,.82);border:1px solid rgba(216,177,106,.75);color:#f6e7c2;font:700 11px var(--f);box-shadow:0 2px 8px #000a}
+.mv-prompt.on{display:flex}
+.mv-prompt kbd{width:17px;height:17px;border-radius:50%;background:var(--g);color:#1a1004;font:800 10px/17px var(--f);text-align:center}
+/* ---------- bottom bar ---------- */
+.mv-nav{position:relative;height:var(--nav);display:flex;align-items:stretch;background:linear-gradient(180deg,#1a1510,#0b0907);border-top:1px solid var(--g-lo);box-shadow:0 -1px 0 rgba(247,220,154,.22),0 -8px 18px #0009;padding-bottom:env(safe-area-inset-bottom)}
+.mv-badge{flex:none;width:52px;position:relative}
+.mv-badge b{position:absolute;left:6px;top:-14px;width:42px;height:48px;display:flex;align-items:center;justify-content:center;font:800 15px var(--serif);color:var(--g-hi);text-shadow:0 1px 2px #000;
+ background:linear-gradient(180deg,#5a3d1a,#24170a);clip-path:polygon(50% 0,100% 16%,100% 62%,50% 100%,0 62%,0 16%);filter:drop-shadow(0 2px 3px #000)}
+.mv-badge b::before{content:"";position:absolute;inset:2px;z-index:-1;background:linear-gradient(180deg,#2a1d0c,#120b04);clip-path:polygon(50% 0,100% 16%,100% 62%,50% 100%,0 62%,0 16%)}
+.mv-xp{flex:1 1 auto;min-width:70px;display:flex;flex-direction:column;justify-content:center;padding:0 8px 0 2px}
+.mv-xp small{font:700 11px var(--serif);color:#f0dcae;margin-bottom:3px}
+.mv-xpbar{position:relative;height:9px;border-radius:5px;background:#0e0a14;border:1px solid #000;box-shadow:0 0 0 1px rgba(216,177,106,.45);overflow:hidden}
+.mv-xpbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#9ff0c8,#2aa37a 55%,#16654a);transition:width .3s}
+.mv-xpbar span{position:absolute;inset:0;font:700 7.5px/9px var(--f);color:#eafff4;text-align:center;text-shadow:0 1px 1px #000}
+.mv-navbtns{flex:none;display:flex}
+.mv-navbtns button span{display:block!important;white-space:nowrap}
+.mv-navbtns button{width:46px;background:none;border:0;color:#e6d3a6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 8.5px var(--serif);letter-spacing:.2px;text-transform:uppercase;cursor:pointer;padding:0}
+.mv-navbtns button:hover,.mv-navbtns button:focus-visible{color:var(--g-hi);background:radial-gradient(ellipse at 50% 100%,rgba(216,177,106,.16),transparent 70%)}
+.mv-navbtns i{width:24px;height:24px;display:block;background:linear-gradient(180deg,#f7dc9a,#b98a44);-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;filter:drop-shadow(0 1px 1px #000)}
+.mv-nav-hero i{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C7 2 4 6 4 11v6l3 3h3v-6H7v-3c0-3 2-6 5-6s5 3 5 6v3h-3v6h3l3-3v-6c0-5-3-9-8-9z'/%3E%3C/svg%3E")}
+.mv-nav-bag i{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3h6l1 3h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l1-3zm1.5 2-.5 1h4l-.5-1h-3zM8 11v2h8v-2H8z'/%3E%3C/svg%3E")}
+.mv-nav-skills i{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 3h11a3 3 0 0 1 3 3v15H7a2 2 0 0 1-2-2V3zm7 4-1.2 2.8L8 10l2.2 1.8L9.6 15 12 13.3l2.4 1.7-.6-3.2L16 10l-2.8-.2L12 7z'/%3E%3C/svg%3E")}
+.mv-nav-quests i{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3h11a3 3 0 0 1 0 6v10a2 2 0 0 1-2 2H5a3 3 0 0 1 0-6V5a2 2 0 0 1 1-2zm3 6v2h6V9H9zm0 4v2h6v-2H9z'/%3E%3C/svg%3E")}
+.mv-nav-more i{--icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 6h16v2.5H4zm0 5h16v2.5H4zm0 5h16v2.5H4z'/%3E%3C/svg%3E")}
+/* "More" sheet */
+.mv-more{position:absolute;right:6px;bottom:6px;z-index:8;display:none;flex-direction:column;min-width:168px;padding:6px;border-radius:10px;background:linear-gradient(180deg,rgba(26,20,14,.97),rgba(12,10,8,.97));border:1px solid var(--g-lo);box-shadow:0 8px 24px #000c}
+body.mv-more-open .mv-more{display:flex}
+.mv-more button{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 10px;background:none;border:0;border-bottom:1px solid rgba(110,80,38,.35);color:#f0e2bf;font:700 12px var(--serif);text-align:left;cursor:pointer}
+.mv-more button:last-child{border-bottom:0}
+.mv-more button:hover{background:rgba(216,177,106,.12)}
+.mv-more kbd{font:700 10px var(--f);color:#b8a37a;border:1px solid rgba(216,177,106,.4);border-radius:4px;padding:1px 5px}
+/* ---------- zone change banner + toast ---------- */
+#zoneBanner{position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:0;z-index:6;min-width:260px}
+#zoneBanner i{display:block;height:2px;width:70%;margin:0 auto 8px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+#zoneBanner b{display:block;font:700 clamp(22px,5.4vw,38px) var(--serif);letter-spacing:4px;color:#fbe9bd;text-transform:uppercase;text-shadow:0 2px 0 #3a250c,0 0 22px rgba(255,190,110,.55),0 4px 18px #000}
+#zoneBanner small{display:block;margin-top:6px;font:600 11px var(--f);letter-spacing:3px;color:#d8c79d;text-shadow:0 1px 3px #000}
+#zoneBanner.show{animation:mvBanner 4.2s ease-out forwards}
+@keyframes mvBanner{0%{opacity:0;transform:translate(-50%,-40%) scale(.96)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%)}}
+body.mv-ui2 #toast{font-family:var(--f);font-size:12px!important;text-shadow:0 1px 3px #000;top:31%!important;max-width:240px}
+body.mv-ui2 .epic-arrival{display:none!important}
+/* painted skill icons (art/icons.png) */
+body.mv-ui2.mv-art-icons .skill .glyph.mv-icon{background-image:var(--mv-icons)!important;background-size:500% 400%!important;background-position:var(--mvpos)!important;background-repeat:no-repeat!important;color:transparent!important;font-size:0!important;text-shadow:none!important;filter:none}
+body.mv-ui2.mv-art-icons .skill.skill-locked .glyph.mv-icon{filter:grayscale(.85) brightness(.55)!important}
+body.mv-ui2.mv-art-icons .skill .glyph.mv-icon::before,body.mv-ui2.mv-art-icons .skill .glyph.mv-icon::after{display:none!important}
+/* ---------- small phones ---------- */
+@media (max-width:360px){.mv-arc{transform:scale(.88)}.mv-quest{width:150px}.mv-navbtns button{width:40px}}
+/* ---------- desktop: same language, more room ---------- */
+@media (min-width:900px){
+ .mv-player{transform:scale(1.4);transform-origin:left top;left:16px;top:14px}
+ .mv-currency{left:290px;top:18px;flex-direction:row;transform:scale(1.2);transform-origin:left top}
+ .mv-zonebar{top:16px}.mv-zonebar b{font-size:19px}.mv-zonebar small{font-size:13px}
+ .mv-map{width:150px;height:150px;right:22px;top:22px}
+ .mv-map .mv-rim{background:radial-gradient(circle,transparent 77px,#1a1206 77.5px,var(--g) 79px,#fbe3a2 80px,#8a6430 81.5px,#2a1c0a 83px,transparent 83.5px)}
+ .mv-quest{top:190px;right:16px;width:236px;transform:scale(1.12);transform-origin:right top}
+ .mv-arc{transform:scale(1.32);right:22px;bottom:10px}
+ body.mv-ui2 .touch-stick{display:none!important}
+ .mv-potion{left:22px;bottom:20px;transform:scale(1.2)}
+ .mv-chatbtn{left:74px;bottom:24px}
+ body.mv-ui2 .mv-chat{left:112px!important;bottom:18px!important;display:block!important}
+ .mv-feed{top:42%;left:20px;transform:scale(1.2);transform-origin:left top}
+ .mv-nav{max-width:720px;margin:0 auto;width:100%;border:1px solid var(--g-lo);border-bottom:0;border-radius:10px 10px 0 0}
+ body.mv-ui2 footer{background:#05060b}
+ .mv-navbtns button{width:64px;font-size:9.5px}
+}
+.mv-more kbd:empty{display:none}
+
+/* ---------- v2b: tighter phone layout (joystick + skill arc hug the corners, smaller tip toast) ---------- */
+@media (max-width:899px){
+ body.mv-ui2 .touch-stick{left:16px!important;bottom:22px!important;width:108px!important;height:108px!important}
+ body.mv-ui2 .touch-stick::before{inset:12px}
+ body.mv-ui2 #knob{width:44px!important;height:44px!important}
+ .mv-potion{left:130px;bottom:8px;width:42px;height:42px}
+ .mv-chatbtn{left:4px;bottom:4px;width:28px;height:24px}
+ .mv-arc{right:6px;bottom:4px;width:240px;height:262px}
+ .mv-arc .skill{width:50px!important;height:50px!important}
+ .mv-arc .skill .glyph{font-size:20px}
+ .mv-arc .skill .mv-label{width:66px;font-size:8.5px;top:calc(100% + 1px)}
+ .mv-arc .skill:nth-child(1){right:42px!important;bottom:178px!important;z-index:5}
+ .mv-arc .skill:nth-child(2){right:109px!important;bottom:160px!important;z-index:4}
+ .mv-arc .skill:nth-child(3){right:158px!important;bottom:111px!important;z-index:3}
+ .mv-arc .skill:nth-child(4){right:176px!important;bottom:44px!important;z-index:2}
+ .mv-arc .skill:nth-child(5){right:42px!important;bottom:44px!important;width:64px!important;height:64px!important}
+ body.mv-ui2 .mv-arc #autoBtn{right:96px;bottom:90px;width:30px!important;height:30px!important}
+ .mv-mini{width:32px;height:32px}
+ .mv-mini.target{right:34px;bottom:236px}
+ .mv-mini.dodge{right:214px;bottom:100px}
+ /* old centre-screen tips become a small toast under the zone banner */
+ body.mv-ui2 #toast{top:124px!important;bottom:auto!important;transform:none!important;left:8px!important;right:auto!important;font-size:10.5px!important;line-height:1.25!important;
+  max-width:min(196px,calc(100vw - 196px))!important;padding:3px 9px!important;border-radius:10px!important;background:rgba(10,8,14,.72)!important;border:1px solid rgba(216,177,106,.45)!important;
+  color:#f1e6cb!important;text-align:left!important;white-space:normal;pointer-events:none;box-shadow:0 2px 8px #0008}
+ body.mv-ui2 #toast:empty{display:none!important}
+}
+
+/* ================= polish pass (ship) ================= */
+/* 1) perfect circles. Cause of the ovals: styles.css gives every .skill min-height:72px (69px under 680px) and flex:1;
+      min-height beats our height:54px, so buttons rendered 50x69 and the inset glyph 40x59. */
+body.mv-ui2 .mv-arc .skill{min-height:0!important;max-height:none!important;aspect-ratio:1/1!important;flex:none!important;box-sizing:border-box!important;overflow:visible!important}
+body.mv-ui2 .mv-arc .skill .glyph{inset:1px!important;aspect-ratio:1/1;border-radius:50%!important;overflow:hidden}
+body.mv-ui2.mv-art-icons .mv-arc .skill .glyph.mv-icon{background-size:500% 400%!important;background-origin:border-box!important;background-clip:border-box!important}
+body.mv-ui2 .mv-arc .skill .cooldown{inset:1px!important}
+.mv-potion,.mv-mini,.mv-player .mv-portrait,.mv-player .mv-lvl,.mv-buffs i,body.mv-ui2 .touch-stick,body.mv-ui2 #knob,.mv-arc .skill .key,.mv-map canvas{aspect-ratio:1/1;flex:none!important;box-sizing:border-box}
+/* 2) locked skills: dimmed icon + one small round lock glyph; no "LV n" pill */
+body.mv-ui2 .mv-arc .skill.skill-locked .cooldown{inset:auto!important;right:-2px!important;bottom:-2px!important;left:auto!important;top:auto!important;width:16px!important;height:16px!important;padding:0!important;
+ border-radius:50%!important;border:1px solid rgba(216,177,106,.8)!important;background:#120c05!important;font-size:0!important;color:transparent!important;display:block!important}
+body.mv-ui2 .mv-arc .skill.skill-locked .cooldown::before{content:"";position:absolute;inset:3px;background:#e8d6a8;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1.5A1.5 1.5 0 0 1 20 11.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20.5v-9A1.5 1.5 0 0 1 5.5 10zm2.5 0h5V7a2.5 2.5 0 0 0-5 0z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10V7a5 5 0 0 1 10 0v3h1.5A1.5 1.5 0 0 1 20 11.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20.5v-9A1.5 1.5 0 0 1 5.5 10zm2.5 0h5V7a2.5 2.5 0 0 0-5 0z'/%3E%3C/svg%3E") center/contain no-repeat}
+body.mv-ui2 .mv-arc .skill.skill-locked{border-color:rgba(160,130,80,.55)!important;box-shadow:0 0 0 2px #1a1206,0 4px 10px #000c!important}
+body.mv-ui2 .mv-arc .skill.skill-locked .glyph{filter:grayscale(.9) brightness(.42)!important}
+body.mv-ui2 .mv-arc .skill.skill-locked .mv-label{color:rgba(200,186,156,.7)}
+/* labels: one size, one font, no wrapping */
+body.mv-ui2 .mv-arc .skill .mv-label{font:700 8.5px/1 var(--serif)!important;letter-spacing:.2px;white-space:nowrap;width:auto!important;top:calc(100% + 2px)!important;text-shadow:0 1px 2px #000,0 0 3px #000,0 0 6px #000}
+body.mv-ui2 .mv-arc .skill .key{top:-4px!important;left:-4px!important}
+/* 3) player frame: bars clear of the class line, numbers vertically centred, mana numbers no longer clipped */
+.mv-player{height:74px}
+.mv-bar.hp{top:35px;height:12px}.mv-bar.mp{top:50px;height:11px}
+.mv-bar span{font:700 8.5px/10px var(--f)!important;letter-spacing:.2px}
+.mv-bar.mp span{font:700 8px/9px var(--f)!important}
+.mv-res{top:63px;font-size:9px}
+.mv-buffs{top:80px}
+/* 4) toast on desktop too: small pill under the zone banner, never over the action */
+@media (min-width:900px){body.mv-ui2 #toast{top:62px!important;left:50%!important;transform:translateX(-50%)!important;font-size:12px!important;padding:4px 12px!important;border-radius:12px!important;
+ background:rgba(10,8,14,.72)!important;border:1px solid rgba(216,177,106,.45)!important;max-width:420px!important;color:#f1e6cb!important}}
+/* 5) phone sizing nudged toward the mockups (they draw the HUD ~half our size, which would be unreadable on a real phone;
+      we go as small as stays legible: text >= 8px, touch targets >= 44px) */
+@media (max-width:899px){
+ .mv-player{width:178px}
+ .mv-player .mv-portrait{width:56px;height:56px}
+ .mv-player .mv-lvl{top:39px;left:-3px;width:22px;height:22px;font-size:10px;line-height:18px}
+ .mv-player .mv-id,.mv-bar,.mv-res{left:64px}
+ .mv-currency{left:190px}
+ .mv-map{width:96px;height:96px}
+ .mv-map .mv-rim{background:radial-gradient(circle,transparent 50px,#1a1206 50.5px,var(--g) 52px,#fbe3a2 53px,#8a6430 54.5px,#2a1c0a 56px,transparent 56.5px)}
+ body.mv-ui2 .touch-stick{width:98px!important;height:98px!important;left:16px!important;bottom:20px!important}
+ body.mv-ui2 #knob{width:40px!important;height:40px!important}
+ .mv-potion{left:122px}
+ body.mv-ui2 .mv-arc .skill{width:46px!important;height:46px!important}
+ body.mv-ui2 .mv-arc .skill:nth-child(5){width:58px!important;height:58px!important}
+}
+/* 6) dialogs share the HUD's warm dark + gold language and fonts (they were the old slate-blue theme) */
+body.mv-ui2 dialog,body.mv-ui2 .world-map,body.mv-ui2 .journal,body.mv-ui2 #storyDialog,body.mv-ui2 #mapDialog{
+ background:radial-gradient(ellipse at 30% 0,#2a2016,#120e0a 72%)!important;border:1px solid rgba(216,177,106,.55)!important;
+ box-shadow:0 0 0 1px #000,0 0 0 4px rgba(216,177,106,.12),0 25px 90px #000d!important;color:#efe4c8!important;font-family:var(--f)!important}
+body.mv-ui2 dialog::backdrop{background:#07050399!important;backdrop-filter:blur(6px)}
+body.mv-ui2 dialog :is(h1,h2,h3){font-family:var(--serif)!important;color:#f7dc9a!important;letter-spacing:.3px}
+body.mv-ui2 dialog :is(p,li,small,span,label){font-family:var(--f)}
+body.mv-ui2 dialog button:not(:has(img,canvas,picture)){background:linear-gradient(180deg,#2b2117,#18120c)!important;border:1px solid rgba(216,177,106,.42)!important;color:#efe4c8!important;font-family:var(--f)!important}
+body.mv-ui2 dialog button:not(:has(img,canvas,picture)):hover{border-color:var(--g-hi)!important}
+body.mv-ui2 dialog button.primary,body.mv-ui2 dialog button[class*=primary],body.mv-ui2 dialog .journal-close,body.mv-ui2 dialog .close{color:#f7dc9a!important}
+body.mv-ui2 dialog :is(article,section,.card,[class*=card],[class*=option],[class*=entry],[class*=panel]):not(:has(img,canvas,picture)){background:rgba(30,22,15,.78)!important;border-color:rgba(216,177,106,.28)!important}
+body.mv-ui2 dialog button.primary:not(:has(img,canvas,picture)),body.mv-ui2 dialog button[class~=primary]:not(:has(img,canvas,picture)){background:linear-gradient(180deg,#f2d38c,#c4954a 60%,#9c6f2e)!important;color:#1d1206!important;border-color:#fbe3a2!important;font-weight:700}
+body.mv-ui2 .title-identity{background:radial-gradient(ellipse at 50% 0,#2a2016e6,#120e0ad0 70%,#120e0a99)!important}
+body.mv-ui2 :is(.set-overview,.world-route),body.mv-ui2 dialog [class*=hero-card],body.mv-ui2 dialog [class*=summary]{background:linear-gradient(135deg,#2a2016,#16110b)!important;border-color:rgba(216,177,106,.4)!important}
+body.mv-ui2 dialog [data-region]{background-color:#1a140d!important;border-color:rgba(216,177,106,.4)!important}
+body.mv-ui2 .epic-wardrobe-preview{background:radial-gradient(ellipse at 50% 70%,#3a2a18,#16110b 70%)!important;border-color:rgba(216,177,106,.45)!important}
+body.mv-ui2 .epic-wardrobe-preview img{object-fit:contain}

@@ -1,0 +1,350 @@
+{
+ "chars": {
+  "embermage": {
+   "idle": {
+    "char": "embermage",
+    "anim": "idle",
+    "src": "art/anim/embermage-idle.png?v=701fbfa4",
+    "frames": 4,
+    "cellW": 172,
+    "cellH": 284,
+    "anchorX": 86,
+    "baseY": 278,
+    "bodyH": 260,
+    "fps": 4,
+    "view": "front",
+    "faces": "front",
+    "legChange": 0.278,
+    "spreadRange": 0.054,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "bob": [
+     -0.929,
+     -0.0,
+     -1.0,
+     -0.143
+    ],
+    "scale": 0.5328,
+    "bg": [
+     236,
+     0,
+     146
+    ]
+   },
+   "walk": {
+    "char": "embermage",
+    "anim": "walk",
+    "src": "art/anim/embermage-walk.png?v=c8e494ff",
+    "frames": 8,
+    "cellW": 214,
+    "cellH": 290,
+    "anchorX": 107,
+    "baseY": 284,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "side",
+    "faces": "right",
+    "legChange": 0.33,
+    "spreadRange": 0.458,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "bob": [
+     -0.118,
+     -0.462,
+     -0.639,
+     -0.95,
+     -0.067,
+     -0.0,
+     -1.0,
+     -0.807
+    ],
+    "scale": 1.1087,
+    "bg": [
+     217,
+     0,
+     174
+    ]
+   }
+  },
+  "frostcaller": {
+   "idle": {
+    "char": "frostcaller",
+    "anim": "idle",
+    "src": "art/anim/frostcaller-idle.png?v=840fd489",
+    "frames": 4,
+    "cellW": 230,
+    "cellH": 319,
+    "anchorX": 115,
+    "baseY": 313,
+    "bodyH": 260,
+    "fps": 4,
+    "view": "front",
+    "faces": "front",
+    "legChange": 0.066,
+    "spreadRange": 0.019,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "bob": [
+     -0.4,
+     -1.0,
+     -0.0,
+     -0.6
+    ],
+    "scale": 0.6125,
+    "bg": [
+     229,
+     0,
+     126
+    ]
+   },
+   "walk": {
+    "char": "frostcaller",
+    "anim": "walk",
+    "src": "art/anim/frostcaller-walk.png?v=0e059422",
+    "frames": 8,
+    "cellW": 234,
+    "cellH": 326,
+    "anchorX": 117,
+    "baseY": 320,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "side",
+    "faces": "right",
+    "legChange": 0.272,
+    "spreadRange": 0.254,
+    "weak": true,
+    "order": [
+     0,
+     4,
+     6,
+     2,
+     7,
+     5,
+     3,
+     1
+    ],
+    "bob": [
+     -0.0,
+     -0.409,
+     -0.288,
+     -1.0,
+     -0.136,
+     -0.394,
+     -0.606,
+     -0.121
+    ],
+    "scale": 1.1712,
+    "bg": [
+     234,
+     0,
+     135
+    ]
+   }
+  },
+  "warden": {
+   "idle": {
+    "char": "warden",
+    "anim": "idle",
+    "src": "art/anim/warden-idle.png?v=b2536b22",
+    "frames": 4,
+    "cellW": 186,
+    "cellH": 275,
+    "anchorX": 93,
+    "baseY": 269,
+    "bodyH": 260,
+    "fps": 4,
+    "view": "front",
+    "faces": "front",
+    "legChange": 0.065,
+    "spreadRange": 0.015,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "bob": [
+     -0.25,
+     -0.0,
+     -0.0,
+     -1.0
+    ],
+    "scale": 0.5333,
+    "bg": [
+     238,
+     0,
+     158
+    ]
+   },
+   "walk": {
+    "char": "warden",
+    "anim": "walk",
+    "src": "art/anim/warden-walk.png?v=fa565f08",
+    "frames": 8,
+    "cellW": 202,
+    "cellH": 274,
+    "anchorX": 101,
+    "baseY": 268,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "side",
+    "faces": "right",
+    "legChange": 0.194,
+    "spreadRange": 0.173,
+    "weak": true,
+    "order": [
+     4,
+     7,
+     2,
+     5,
+     0,
+     6,
+     3,
+     1
+    ],
+    "bob": [
+     -0.067,
+     -0.333,
+     -0.444,
+     -1.0,
+     -0.0,
+     -0.222,
+     -0.244,
+     -0.178
+    ],
+    "scale": 1.0058,
+    "bg": [
+     223,
+     1,
+     155
+    ]
+   }
+  },
+  "warrior": {
+   "idle": {
+    "char": "warrior",
+    "anim": "idle",
+    "src": "art/anim/warrior-idle.png?v=05efb4d8",
+    "frames": 4,
+    "cellW": 254,
+    "cellH": 273,
+    "anchorX": 127,
+    "baseY": 267,
+    "bodyH": 260,
+    "fps": 4,
+    "view": "front",
+    "faces": "front",
+    "legChange": 0.092,
+    "spreadRange": 0.012,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "bob": [
+     -1.0,
+     -0.333,
+     -0.333,
+     -0.0
+    ],
+    "scale": 0.6235,
+    "bg": [
+     231,
+     2,
+     135
+    ]
+   },
+   "walk": {
+    "char": "warrior",
+    "anim": "walk",
+    "src": "art/anim/warrior-walk.png?v=6cf84e1f",
+    "frames": 8,
+    "cellW": 154,
+    "cellH": 273,
+    "anchorX": 77,
+    "baseY": 267,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "side",
+    "faces": "right",
+    "legChange": 0.317,
+    "spreadRange": 0.288,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "bob": [
+     -0.027,
+     -0.213,
+     -0.307,
+     -0.92,
+     -0.0,
+     -0.68,
+     -1.0,
+     -0.147
+    ],
+    "scale": 0.8874,
+    "bg": [
+     220,
+     0,
+     131
+    ]
+   }
+  }
+ },
+ "static": {
+  "embermage": {
+   "kind": "hero",
+   "bodyFrac": 0.9237,
+   "baseFrac": 0.0053,
+   "cxFrac": 0.5172
+  },
+  "frostcaller": {
+   "kind": "hero",
+   "bodyFrac": 0.8395,
+   "baseFrac": 0.0079,
+   "cxFrac": 0.5577
+  },
+  "warden": {
+   "kind": "hero",
+   "bodyFrac": 0.9632,
+   "baseFrac": 0.0053,
+   "cxFrac": 0.5245
+  },
+  "warrior": {
+   "kind": "hero",
+   "bodyFrac": 0.9789,
+   "baseFrac": 0.0053,
+   "cxFrac": 0.6324
+  }
+ }
+}
