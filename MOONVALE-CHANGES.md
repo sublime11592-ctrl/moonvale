@@ -90,3 +90,21 @@ localStorage keys as before (`moonvale.adventure.v2`, `moonvale-hud`), so existi
   - Size: on-screen body = the static painted hero's body, so walk, idle and static art share one height.
   - Fallback: enemies, NPCs, the ranger, classic art and `MoonMotion.disableFrames=true` keep the rigid motion.
 - Checks: `tools/anim_ingame.py` (in-game capture), `tools/anim_gifs.py` (GIFs in shots/anim/).
+
+## Solid heroes, 4-direction walking, attack/cast sheets (Oct 18, afternoon)
+- Keying is now region-based. The backdrop is the pink connected to the sheet border, plus enclosed backdrop pockets. Every figure pixel is opaque (alpha 255). Only a 1px anti-aliased edge remains, and its colour comes from interior neighbours, so there is no pink fringe. Pinholes are filled, and magenta spill on painted glows is un-mixed. Report: `tools/alpha_report.py`, with interior partial alpha at 0 on all 24 sheets.
+- Hero opacity: always 1. The only exceptions are the dodge-roll afterimages and a flicker of at most 0.6s at the start of an evade window; the old constant 0.72 during evade is gone. Evade-buff "ghosts" from cinematic.js now only draw during a real roll. Audit: `tools/alpha_audit.py`.
+- Directions:
+  - Sheets: walkfront for down, walkback for up, side walk for everything else (mirrored for the west half). The direction is an 8-way choice from smoothed velocity with about 11° of hysteresis, so diagonals don't flicker.
+  - Frames advance by distance travelled.
+  - Standing after moving up shows walkback frame 1 with a slight breathing motion.
+  - Frame order for walkfront and walkback is the shortest closed tour of leg-pose change; the painted order is kept when it is within 10%.
+- Attack and cast sheets:
+  - Effects are grouped with their figure by frame slot, not by connectivity. Figures are the solid bodies left after a morphological opening.
+  - Scale uses the upright frames.
+  - The impact or release key frame and a per-frame emit point (staff crystal, flame, palm) are detected and stored in anim.json; `EMIT_OVERRIDE` allows hand fixes.
+  - Timing:
+    - Warrior melee: impact at 48% of weaponAttack, where the damage resolves.
+    - Staff basic attacks: the projectile is held back through the wind-up and spawned on the impact frame.
+    - Spells: the wind-up frames span cinematic.pending, and the release frame shows when releaseSpell fires.
+  - Projectiles, the charge glow and a release flare all come from the emit point, mirrored with facing. Heroes face the target and use the side sheets even when attacking up or down.
