@@ -77,3 +77,16 @@ localStorage keys as before (`moonvale.adventure.v2`, `moonvale-hud`), so existi
 - Minimap window clamped inside the world (no empty band), player arrow moves within it; drawMini guarded.
 - Phone HUD nudged toward mockup sizes (portrait 56, minimap 96, joystick 98, skills 46/58).
 - Dialogs, title card and inventory re-skinned to the warm dark + gold HUD language; inventory hero preview now shows the painted hero (was blank).
+
+## Frame-by-frame hero animation (Oct 18)
+- `tools/process_anim.py` turns `art-src/anim/<char>-<anim>.jpg` (pink-keyed sheets) into `art/anim/<char>-<anim>.png` + `art/anim/anim.js`:
+  hue-range key, connected-component split per figure, small-hole fill, feet on a shared baseline, torso centred, one uniform scale per sheet (never stretched),
+  body height (head top to feet, staffs and capes ignored) normalised to 260 px. It also measures leg motion and flags weak walks. Re-running it updates the cache-busted script tag in index.html.
+- `moonvale-motion.js` frame animator (heroes with sheets):
+  - Left/right: side walk sheet, mirrored for left, frame from distance travelled (118 px per cycle).
+  - Standing: front idle (4 fps), mirrored toward the last side faced.
+  - Up/down: idle frames with a step bob and sway until `walkback` sheets exist.
+  - attack/cast/hurt sheets are picked up automatically when present. Until then the existing lunge, cast lift, knockback and flash, and roll transforms play over the current frame.
+  - Size: on-screen body = the static painted hero's body, so walk, idle and static art share one height.
+  - Fallback: enemies, NPCs, the ranger, classic art and `MoonMotion.disableFrames=true` keep the rigid motion.
+- Checks: `tools/anim_ingame.py` (in-game capture), `tools/anim_gifs.py` (GIFs in shots/anim/).

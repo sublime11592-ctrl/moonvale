@@ -197,7 +197,7 @@ const MoonMotion=(()=>{
  // ---- Public actor renderer -------------------------------------------------------------
  function actorDraw(o,hero=false,ghostAlpha=1){
   const s=stateFor(hero?p:o,hero),frame=frameFor(o,hero,s.face);if(!frame)return;
-  const ss=sheetSet(o,hero);
+  const ss=sheetSet(o,hero);if(hero&&!ss)anim.hero.info=null;
   if(ss){const h=framedDraw(o,s,ss,ghostAlpha);if(ghostAlpha<1)return;
    if(p.shield>0){g.save();g.strokeStyle='#bcd9ff88';g.lineWidth=2;g.beginPath();g.ellipse(o.x,o.y-38,32,49,0,0,Math.PI*2);g.stroke();g.restore();glow(o.x,o.y-36,47,'#a5c9ff',.18);}
    if(p.guard>0)ring(o.x,o.y,28,'#dec99066',2);if(p.regen>0)glow(o.x,o.y-18,42,'#a0ecba',.15);
