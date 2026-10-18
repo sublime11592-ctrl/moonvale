@@ -150,12 +150,24 @@
  // ability callout: any skill whose cooldown just started was cast (works for keys, taps and auto-cast)
  const prevCd=[];setInterval(()=>{try{if(!started||!p.cd)return;const sk=CLASSES[p.cls].skills;p.cd.forEach((v,i)=>{if(v>.3&&!(prevCd[i]>.05)&&sk[i]){callouts.push({s:sk[i][0]+'!',t:0,color:CLASSES[p.cls].color});if(callouts.length>2)callouts.shift();}prevCd[i]=v;});}catch(e){}},50);
  const roleColor={journal:'#ffd36b',shop:'#a9e6a1',world:'#8fd6ff'};
+ // camp quest board for zones away from Lantern Rest: post, notice board, hanging lantern with a soft glow
+ function drawBoard(x,y){const t=time;g.save();
+  g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.ellipse(x,y+5,22,6,0,0,7);g.fill();
+  const gl=g.createRadialGradient(x+15,y-46,0,x+15,y-46,46);gl.addColorStop(0,'rgba(255,196,96,'+(.42+.06*Math.sin(t*3))+')');gl.addColorStop(1,'rgba(255,170,60,0)');g.fillStyle=gl;g.beginPath();g.arc(x+15,y-46,46,0,7);g.fill();
+  g.fillStyle='#3b2615';g.fillRect(x-3,y-60,6,64);g.fillStyle='#5a3a1e';g.fillRect(x-19,y-50,38,26);g.strokeStyle='#22140a';g.lineWidth=2;g.strokeRect(x-19,y-50,38,26);
+  g.fillStyle='#e9dcb8';g.fillRect(x-14,y-46,12,15);g.fillStyle='#d8c79d';g.fillRect(x+1,y-44,13,11);g.fillStyle='#b0402e';g.beginPath();g.arc(x-8,y-45,1.6,0,7);g.arc(x+7,y-43,1.6,0,7);g.fill();
+  g.strokeStyle='#22140a';g.lineWidth=1.5;g.beginPath();g.moveTo(x+3,y-58);g.lineTo(x+15,y-58);g.lineTo(x+15,y-53);g.stroke();
+  g.fillStyle='#2a1c0e';g.fillRect(x+10,y-53,10,3);g.fillStyle='#ffd27a';g.fillRect(x+11,y-50,8,9);g.fillStyle='#2a1c0e';g.fillRect(x+10,y-41,10,2);
+  g.restore();}
  {const before=draw;draw=function(){before();if(!started)return;const d=cinematic.dpr;g.save();g.setTransform(d,0,0,d,-camera.x*d,-camera.y*d);g.textAlign='center';g.lineJoin='round';
    let pts=[];try{pts=objectivePoints().filter(o=>o.resident);}catch(e){}
    const folkByName={};try{for(const n of [...residents,...(typeof campTownsfolk==='function'?campTownsfolk():[])])folkByName[n.name.split(' · ')[0]]=n;}catch(e){}
    for(let o of pts){const name=o.label.split(' · ')[0],quest=o.glyph==='!'||/quest/i.test(o.label);let sh=96;
-    try{const n=folkByName[name];const f=n&&typeof npcFrame==='function'?npcFrame(n,'front'):null;if(f)sh=77*(f.scale||1);}catch(e){}
-    const y=o.y-sh-12;
+    let fy=o.y;try{const n=folkByName[name];const f=n&&typeof npcFrame==='function'?npcFrame(n,'front'):null;if(f)sh=77*(f.scale||1);
+     // anchor on the NPC's own feet: residents are moved to new spots, the objective point can be far above them
+     if(n&&n.x>-9000){o={...o,x:n.x};fy=n.y+6;}}catch(e){}
+    if(o.board||name==='Lantern board'){sh=62;fy=o.y+6;drawBoard(o.x,o.y);}
+    const y=fy-sh-9;
     g.font='700 11px "MV Fira","Trebuchet MS",system-ui,sans-serif';if(y-24-camera.y<(globalThis.MV_TOPBAND||0))continue;{const w=g.measureText(name).width;o={...o,x:clamp(o.x,camera.x+8+w/2,camera.x+view.w-8-w/2)};}
     g.lineWidth=3;g.strokeStyle='rgba(6,8,12,.9)';g.strokeText(name,o.x,y);g.fillStyle=roleColor[o.resident]||'#e8e0c8';g.fillText(name,o.x,y);
     if(quest){const by=y-20+Math.sin(time*2.4)*1.5;g.fillStyle='#f6ecd2';g.strokeStyle='#2a2112';g.lineWidth=1.5;g.beginPath();g.roundRect?g.roundRect(o.x-9,by-7,18,13,4):g.rect(o.x-9,by-7,18,13);g.fill();g.stroke();g.beginPath();g.moveTo(o.x-3,by+6);g.lineTo(o.x-6,by+10);g.lineTo(o.x+1,by+6);g.fill();
@@ -184,9 +196,11 @@
  if(typeof campTownsfolk==='function'){const base=campTownsfolk;campTownsfolk=function(){if(!home())return [];const k=CAMP.x+','+CAMP.y;
    if(k!==ck||!cache){ck=k;cache=base();for(const n of cache){const o=folk[n.id];if(o){n.x=CAMP.x+o[0];n.y=CAMP.y+o[1];}}}return cache;};}
  // Vale's quest-giver marker follows her new spot by the fire (only the plain camp giver, not realm/frontier givers)
- if(typeof questGiver==='function'){const qg=questGiver;questGiver=function(q){const r=qg(q);if(r&&/^Vale/.test(r.label||'')&&r.x===CAMP.x+90&&r.y===CAMP.y-65){r.x=CAMP.x+spot.chronicler[0];r.y=CAMP.y+spot.chronicler[1];}return r;};}
+ if(typeof questGiver==='function'){const qg=questGiver;questGiver=function(q){const r=qg(q);if(r&&/^Vale/.test(r.label||'')&&r.x===CAMP.x+90&&r.y===CAMP.y-65){
+   // Vale lives at Lantern Rest. Away from home the same camp quest point is a lantern board, not a Vale who follows you around.
+   if(home()){r.x=CAMP.x+spot.chronicler[0];r.y=CAMP.y+spot.chronicler[1];}else{r.label='Lantern board · Quests';r.board=true;}}return r;};}
  const before=update;update=function(dt){before(dt);try{const h=home();for(const n of residents){const o=spot[n.id];if(!o)continue;
-   if(!h){const q=n.id==='chronicler'&&typeof questGiver==='function'?questGiver():null;if(q&&/^Vale/.test(q.label||'')){n.x=q.x;n.y=q.y;}else{n.x=-9999;n.y=-9999;}continue;}
+   if(!h){n.x=-9999;n.y=-9999;continue;}
    if(n.id==='wayfarer'){const ox=n.x,oy=n.y;n.x=CAMP.x+o[0]+Math.sin(time*.09)*22;n.y=CAMP.y+o[1]+Math.sin(time*.13)*8;const s=stateFor(n);if(ox>-9000)s.face=facingFrom(n.x-ox,n.y-oy,s.face);}
    else{n.x=CAMP.x+o[0];n.y=CAMP.y+o[1];}}}catch(e){}};
 })();
