@@ -1,0 +1,82 @@
+/* Oozevale (phase 1): slime logo, title art framing, creator slime pickers + companion card, pet stash.
+   Same language as the rest of the UI: dark iron panels, bronze/gold trim, Cinzel titles, moonlit teal selection. */
+:root{--oz-teal:#3fe0c8;--oz-teal-hi:#bff8ee;--oz-violet:#9a6bff;--oz-gold:#d8b16a}
+
+/* ---------- logo ---------- */
+#mvBoot h1{background:linear-gradient(180deg,#e9fffb 0%,#7ff0dc 38%,#38cdb6 60%,#8e63f2 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:drop-shadow(0 2px 0 #04060c) drop-shadow(0 0 16px rgba(63,224,200,.45))!important}
+#mvBoot .mvb-moon{background:radial-gradient(circle at 36% 32%,#f4fffc,#9ff3e3 38%,#38c9b2 66%,#2a6f86)!important;box-shadow:0 0 30px #3fe0c866,0 0 90px #9a6bff44!important}
+#mvBoot .mvb-bar i{background:linear-gradient(90deg,#2aa995,#7ff0dc,#a98cff)!important}
+.mvt-logo h1.oz-logo-text{position:relative;font:800 clamp(46px,13.5vw,92px)/1 "MV Cinzel",Georgia,serif!important;letter-spacing:.06em;text-transform:uppercase;
+ background:linear-gradient(180deg,#f2fffc 0%,#9ff6e6 26%,#3fe0c8 52%,#2fb3c2 64%,#8f63f5 86%,#6b3fd6 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+ -webkit-text-stroke:1px rgba(222,186,110,.85);filter:drop-shadow(0 3px 0 #05040a) drop-shadow(0 0 18px rgba(63,224,200,.5)) drop-shadow(0 0 40px rgba(154,107,255,.35))!important;padding-bottom:.18em}
+.mvt-logo h1.oz-logo-text::after{content:"";position:absolute;left:6%;right:6%;top:78%;height:.32em;pointer-events:none;
+ background:
+  radial-gradient(.06em .16em at 8% 0,#8f63f5 98%,transparent) ,radial-gradient(.05em .11em at 8% 80%,#a985ff 96%,transparent),
+  radial-gradient(.05em .22em at 27% 0,#6f8af2 98%,transparent),radial-gradient(.045em .07em at 27% 95%,#9fb3ff 96%,transparent),
+  radial-gradient(.06em .12em at 49% 0,#7a6cf4 98%,transparent),
+  radial-gradient(.05em .25em at 66% 0,#8f63f5 98%,transparent),radial-gradient(.05em .08em at 66% 100%,#b092ff 96%,transparent),
+  radial-gradient(.055em .14em at 88% 0,#7a6cf4 98%,transparent);
+ filter:drop-shadow(0 0 6px rgba(154,107,255,.55));animation:ozDrip 5.5s ease-in-out infinite}
+@keyframes ozDrip{50%{transform:translateY(.05em) scaleY(1.12)}}
+html.mv-calm .mvt-logo h1.oz-logo-text::after{animation:none}
+.mvt-logo h1.oz-logo-img{background:none!important;filter:none!important;margin-top:4px!important;line-height:0}
+.mvt-logo h1.oz-logo-img img{display:block;width:min(560px,88vw);height:auto;margin:0 auto;filter:drop-shadow(0 4px 0 #05040a) drop-shadow(0 0 22px rgba(63,224,200,.4)) drop-shadow(0 0 46px rgba(154,107,255,.3))}
+.mvt-logo small{color:#9ff0e2!important}
+.mvt-orn::before{background:linear-gradient(90deg,transparent,#3fe0c8)!important}.mvt-orn::after{background:linear-gradient(270deg,transparent,#9a6bff)!important}
+.mvt-orn b{border-color:#9ff6e6!important;box-shadow:0 0 10px #3fe0c899!important;background:#10222a!important}
+/* painted slime title: keep the hero + pet in frame on phones */
+#titleScreen.oz-title .mvt-art img{object-position:27% 52%}
+@media (min-aspect-ratio:1/1){#titleScreen.oz-title .mvt-art img{object-position:40% 45%}}
+
+/* ---------- creator: slime swatches + companion ---------- */
+#mvCreator .mvc-goo{position:relative;overflow:hidden;background:radial-gradient(circle at 34% 28%,#ffffffd0 0 9%,transparent 22%),radial-gradient(circle at 60% 75%,#ffffff33 0 6%,transparent 14%),radial-gradient(circle at 50% 55%,var(--sw) 0 55%,color-mix(in srgb,var(--sw) 55%,#05080d) 100%)!important}
+#mvCreator .mvc-goo i{position:absolute;left:22%;right:22%;bottom:-3px;height:9px;border-radius:0 0 50% 50%;background:var(--sw);opacity:.7;filter:blur(.3px)}
+#mvCreator .mvc-pet .mvc-petrow{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+#mvCreator .mvc-pet canvas{flex:none;width:84px;height:84px;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at 50% 70%,#123a3a 0%,#0a0c14 70%);border:1px solid rgba(216,177,106,.45);box-shadow:inset 0 0 0 3px rgba(8,6,3,.6),0 0 14px -4px var(--oz-teal)}
+#mvCreator .mvc-pet b{display:block;font:700 15px/1.15 "MV Cinzel",serif;color:#f2e4c0;margin-bottom:4px}
+#mvCreator .mvc-pet small{display:block;font:500 12.5px/1.4 "MV Fira",sans-serif;color:#b9ad92}
+#mvCreator .mvc-pet .mvc-evo{display:block;margin-top:6px;font:600 10.5px/1.35 "MV Fira",sans-serif;letter-spacing:.04em;color:#8fe9da}
+#classDialog #mvCreator .mvc-pet .mvc-field span{width:auto;flex:none;white-space:nowrap}
+#mvCreator [hidden]{display:none!important}
+#mvCreator .mvc-hero b{letter-spacing:-.03em}
+
+/* ---------- pet stash ---------- */
+dialog#ozStash{width:min(560px,94vw);max-height:min(86vh,760px);overflow:auto;padding:18px 16px 16px}
+#ozStash .oz-head{display:flex;gap:14px;align-items:center;margin:2px 34px 10px 0}
+#ozStash .oz-head canvas{flex:none;width:104px;height:104px;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at 50% 72%,#14403e 0%,#0a0c14 72%);border:1px solid rgba(216,177,106,.5);box-shadow:inset 0 0 0 3px rgba(8,6,3,.6),0 0 18px -6px var(--oz-teal)}
+#ozStash .oz-head>div{min-width:0;flex:1}
+#ozStash h2{margin:4px 0 2px;font:700 24px/1.1 "MV Cinzel",serif;color:#f4e6c3}
+#ozStash .oz-sub{margin:0 0 8px;font:500 12.5px/1.35 "MV Fira",sans-serif;color:#8fe9da}
+#ozStash .oz-cap{height:8px;border-radius:8px;background:#07090f;border:1px solid rgba(216,177,106,.45);overflow:hidden;box-shadow:inset 0 1px 2px #000}
+#ozStash .oz-cap i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2aa995,#7ff0dc,#a98cff);box-shadow:0 0 8px #3fe0c8aa}
+#ozStash .oz-capt{margin:6px 0 0;font:600 11px/1 "MV Fira",sans-serif;letter-spacing:.06em;color:#a79a80}
+#ozStash .oz-help{margin:4px 0 10px;font:500 13px/1.45 "MV Fira",sans-serif;color:#cfc2a3}
+#ozStash .oz-bulk{display:flex;gap:8px;margin-bottom:12px}
+#ozStash .oz-bulk .mv-btn{flex:1;min-height:44px;font-size:13px!important}
+#ozStash .oz-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+#ozStash .oz-item{padding:10px 11px;border-radius:12px;background:linear-gradient(180deg,rgba(24,21,32,.96),rgba(11,10,16,.96));border:1px solid color-mix(in srgb,var(--rc) 55%,transparent);box-shadow:inset 0 0 0 2px rgba(8,6,3,.55),0 0 12px -8px var(--rc)}
+#ozStash .oz-item b{display:block;font:700 14px/1.2 "MV Cinzel",serif;color:var(--rc);overflow-wrap:anywhere}
+#ozStash .oz-item small{display:block;margin:3px 0 8px;font:500 11.5px/1.35 "MV Fira",sans-serif;color:#a79a80}
+#ozStash .oz-acts{display:flex;gap:6px}
+#ozStash .oz-acts .mv-btn{flex:1;min-height:38px;padding:0 6px!important;font-size:12px!important}
+#ozStash .oz-empty{grid-column:1/-1;margin:8px 0;text-align:center;font:italic 500 13px/1.5 "MV Fira",sans-serif;color:#8fe9da}
+.oz-bagpet{display:block;width:100%;min-height:42px;margin:8px 0 6px}
+@media (max-width:420px){#ozStash .oz-head canvas{width:84px;height:84px}#ozStash h2{font-size:21px}#ozStash .oz-list{grid-template-columns:1fr}}
+
+/* ---------- creator: looks (3 painted presets per class) ---------- */
+#mvCreator .mvc-looks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#mvCreator .mvc-looks:empty{display:none}
+#mvCreator .mvc-look{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:8px 4px 7px;border-radius:12px;cursor:pointer;
+ border:1px solid rgba(216,177,106,.26)!important;background:linear-gradient(180deg,#171521,#0d0c13)!important;box-shadow:inset 0 0 0 2px rgba(8,6,3,.55);color:inherit;font:inherit}
+#mvCreator .mvc-look canvas{width:64px;height:64px;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at 50% 70%,#1d2a36,#0a0b12 72%);border:1px solid rgba(216,177,106,.45);box-shadow:0 0 0 2px #0b0804}
+#mvCreator .mvc-look span{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;max-width:100%;text-align:center}
+#mvCreator .mvc-look b{font:700 11px/1.15 "MV Cinzel",serif;color:#efe2c2;letter-spacing:-.01em}
+#mvCreator .mvc-look small{font:600 9px/1 "MV Fira",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#a79a80;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#mvCreator .mvc-look.on{border-color:var(--hero,#7fe3d6)!important;background:linear-gradient(180deg,#2a2232,#120f18)!important;box-shadow:inset 0 0 0 1px var(--hero,#7fe3d6),0 0 16px -4px var(--hero,#7fe3d6)}
+#mvCreator .mvc-look.on canvas{border-color:var(--hero,#7fe3d6);box-shadow:0 0 0 2px #0b0804,0 0 12px var(--hero,#7fe3d6)}
+#mvCreator .mvc-look.locked{opacity:.55;cursor:not-allowed}
+#mvCreator .mvc-look.locked small{color:#e0b65f}
+@media (min-width:900px){#mvCreator .mvc-look canvas{width:76px;height:76px}#mvCreator .mvc-look b{font-size:12.5px}}
+/* hero sheet: the pet stash button gets its own full-width row (no overflow at 360) */
+#mvHero .mvh-actions{flex-wrap:wrap}
+#mvHero .mvh-actions #mvhPet{flex:1 1 100%}

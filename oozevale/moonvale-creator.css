@@ -1,0 +1,102 @@
+/* Moonvale painted-hero creator — matches the ornate HUD: dark panels, gold trim, painted backdrops. */
+#classDialog.mv-c2{position:fixed;inset:0;width:100vw!important;max-width:100vw!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:#06070c!important;box-shadow:none!important;color:#f1e8d4;overflow:hidden;font-family:"MV Fira",system-ui,sans-serif}
+#classDialog.mv-c2::backdrop{background:#000}
+#classDialog.mv-c2::before,#classDialog.mv-c2::after{display:none!important}
+#classDialog.mv-c2>*:not(#mvCreator){display:none!important}
+#mvCreator{display:none}
+#classDialog.mv-c2 #mvCreator{--g:#d8b16a;--g-hi:#f7dc9a;--g-lo:#6e5026;--hero:#d8b16a;display:flex;flex-direction:column;height:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+ background:radial-gradient(120% 60% at 50% 0%,#1a1626 0%,#08080e 60%)}
+#mvCreator button{font-family:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#mvCreator *{box-sizing:border-box}
+
+/* ---------- stage ---------- */
+#classDialog.mv-c2 #mvCreator .mvc-stage{position:relative;flex:none;height:min(56dvh,470px);min-height:330px;overflow:hidden;border-bottom:1px solid var(--g-lo);isolation:isolate}
+#classDialog.mv-c2 #mvCreator .mvc-bg{position:absolute;inset:-12px;background:#111 center 38%/cover no-repeat;filter:blur(2px) saturate(1) brightness(.8);transform:scale(1.06);transition:background-image .3s}
+#classDialog.mv-c2 #mvCreator .mvc-vignette{position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 62%,transparent 0,rgba(6,7,12,.35) 55%,rgba(6,7,12,.92) 100%),linear-gradient(180deg,rgba(6,7,12,.85) 0,transparent 26%,transparent 70%,#08080e 100%)}
+#classDialog.mv-c2 #mvCreator .mvc-stage::after{content:"";position:absolute;inset:8px;border:1px solid rgba(216,177,106,.35);border-radius:14px;pointer-events:none;box-shadow:inset 0 0 0 3px rgba(10,8,4,.5),inset 0 0 40px rgba(0,0,0,.6)}
+#mvcCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;cursor:pointer}
+#classDialog.mv-c2 #mvCreator .mvc-head{position:absolute;top:18px;left:0;right:0;text-align:center;z-index:2;pointer-events:none}
+#classDialog.mv-c2 #mvCreator .mvc-head small{display:block;font:700 10px/1 "MV Fira";letter-spacing:.32em;text-transform:uppercase;color:var(--g)}
+#classDialog.mv-c2 #mvCreator .mvc-head h2{margin:6px 0 0;font:700 26px/1 "MV Cinzel",serif;letter-spacing:.08em;color:#f7e6bd;text-shadow:0 2px 0 #000,0 0 18px rgba(216,177,106,.35)}
+#classDialog.mv-c2 #mvCreator .mvc-arrow{position:absolute;top:46%;z-index:3;width:44px;height:44px;aspect-ratio:1/1;border-radius:50%;padding:0;border:1.5px solid var(--g)!important;
+ background:radial-gradient(circle at 40% 35%,#3c3122,#14100a 75%)!important;box-shadow:0 0 0 2px #0b0804,0 4px 12px #000a;font:400 30px/40px "MV Cinzel",serif;color:var(--g-hi)}
+#classDialog.mv-c2 #mvCreator .mvc-arrow.prev{left:14px}#classDialog.mv-c2 #mvCreator .mvc-arrow.next{right:14px}
+#classDialog.mv-c2 #mvCreator .mvc-x{position:absolute;top:14px;right:14px;z-index:4;width:38px;height:38px;aspect-ratio:1/1;border-radius:50%;padding:0;border:1.5px solid var(--g)!important;background:#14100a!important;font-size:22px;line-height:34px;color:var(--g-hi)}
+#classDialog.mv-c2 #mvCreator .mvc-anims{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:3;display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(8,7,12,.78);border:1px solid rgba(216,177,106,.45);box-shadow:0 6px 18px #000a}
+#classDialog.mv-c2 #mvCreator .mvc-anims button{border:0!important;background:transparent!important;padding:7px 12px;border-radius:999px;font:600 12px/1 "MV Fira";color:#cfc3a8;letter-spacing:.02em}
+#classDialog.mv-c2 #mvCreator .mvc-anims button.on{background:linear-gradient(180deg,#e9c67f,#a57b3a)!important;color:#1b1206;box-shadow:inset 0 1px #fff6}
+#classDialog.mv-c2 #mvCreator .mvc-tap{position:absolute;left:0;right:0;bottom:58px;margin:0;text-align:center;font:500 11px/1 "MV Fira";color:rgba(241,232,212,.55);z-index:2;pointer-events:none}
+
+/* ---------- panel ---------- */
+#classDialog.mv-c2 #mvCreator .mvc-panel{flex:1 0 auto;padding:12px 14px 6px;display:flex;flex-direction:column;gap:12px}
+#classDialog.mv-c2 #mvCreator .mvc-heroes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#classDialog.mv-c2 #mvCreator .mvc-hero{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 6px;border-radius:12px;border:1px solid rgba(216,177,106,.22)!important;background:linear-gradient(180deg,#171521,#0d0c13)!important;min-width:0}
+#classDialog.mv-c2 #mvCreator .mvc-portrait{position:relative;display:block;width:52px;height:52px;aspect-ratio:1/1;border-radius:50%;overflow:hidden;flex:none;border:2px solid #5a4728;box-shadow:0 0 0 2px #0b0804;background:radial-gradient(circle at 50% 30%,#2a2333,#0c0a10)}
+#classDialog.mv-c2 #mvCreator .mvc-portrait canvas{width:100%;height:100%;display:block}
+#classDialog.mv-c2 #mvCreator .mvc-hero b{font:700 9px/1.1 "MV Cinzel",serif;letter-spacing:-.02em;color:#efe2c2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#classDialog.mv-c2 #mvCreator .mvc-hero small{font:600 9px/1 "MV Fira";letter-spacing:.06em;text-transform:uppercase;color:#a79a80;white-space:nowrap}
+#classDialog.mv-c2 #mvCreator .mvc-hero.on{border-color:var(--hc)!important;background:linear-gradient(180deg,#2a2232,#120f18)!important;box-shadow:0 0 0 1px var(--hc) inset,0 0 16px -4px var(--hc)}
+#classDialog.mv-c2 #mvCreator .mvc-hero.on .mvc-portrait{border-color:var(--hc);box-shadow:0 0 0 2px #0b0804,0 0 12px var(--hc)}
+#classDialog.mv-c2 #mvCreator .mvc-hero.locked{opacity:.62;cursor:not-allowed}
+#classDialog.mv-c2 #mvCreator .mvc-hero.locked small{color:#e0b65f}
+#classDialog.mv-c2 #mvCreator .mvc-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;color:#e0b65f;font-size:16px;text-shadow:0 0 6px #000;background:rgba(0,0,0,.25)}
+#classDialog.mv-c2 #mvCreator .mvc-card{position:relative;padding:14px 14px 12px;border-radius:14px;background:linear-gradient(180deg,rgba(24,21,32,.96),rgba(11,10,16,.96));border:1px solid rgba(216,177,106,.42);box-shadow:inset 0 0 0 3px rgba(8,6,3,.6),inset 0 1px 0 rgba(255,236,190,.08),0 8px 24px #0008}
+#classDialog.mv-c2 #mvCreator .mvc-card::before,#classDialog.mv-c2 #mvCreator .mvc-card::after{content:"";position:absolute;top:-4px;width:8px;height:8px;background:var(--g);transform:rotate(45deg);box-shadow:0 0 6px #000}
+#classDialog.mv-c2 #mvCreator .mvc-card::before{left:14px}#classDialog.mv-c2 #mvCreator .mvc-card::after{right:14px}
+#classDialog.mv-c2 #mvCreator .mvc-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#classDialog.mv-c2 #mvCreator .mvc-title h3{margin:0;font:700 25px/1.05 "MV Cinzel",serif;color:#f7e6bd;text-shadow:0 2px 0 #000,0 0 14px color-mix(in srgb,var(--hero) 45%,transparent)}
+#classDialog.mv-c2 #mvCreator .mvc-role{flex:none;padding:5px 10px;border-radius:999px;font:700 10px/1 "MV Fira";letter-spacing:.14em;text-transform:uppercase;color:#1b1206;background:linear-gradient(180deg,var(--g-hi),#b08443);box-shadow:inset 0 1px #fff7}
+#classDialog.mv-c2 #mvCreator .mvc-class{margin:5px 0 0;font:600 12px/1.3 "MV Fira";color:var(--hero);letter-spacing:.02em}
+#classDialog.mv-c2 #mvCreator .mvc-desc{margin:8px 0 10px;font:500 13px/1.45 "MV Fira";color:#d6cdb9}
+#classDialog.mv-c2 #mvCreator .mvc-label{font:700 10px/1 "MV Fira";letter-spacing:.26em;text-transform:uppercase;color:var(--g);margin:2px 0 8px}
+#classDialog.mv-c2 #mvCreator .mvc-spells{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+#classDialog.mv-c2 #mvCreator .mvc-spell{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0;border:0!important;background:none!important;min-width:0}
+#classDialog.mv-c2 #mvCreator .mvc-icon{display:block;width:48px;height:48px;aspect-ratio:1/1;flex:none;border-radius:50%;background-image:var(--mv-icons);background-size:500% 400%;background-position:var(--mvpos);background-repeat:no-repeat;background-color:#120f18;
+ border:2px solid #7a5d2c;box-shadow:0 0 0 2px #0b0804,0 0 0 3px rgba(216,177,106,.35),0 4px 10px #000a}
+#classDialog.mv-c2 #mvCreator .mvc-spell small{font:600 10px/1.15 "MV Fira";color:#cbbf9f;text-align:center;max-width:100%}
+#classDialog.mv-c2 #mvCreator .mvc-spell.on .mvc-icon{border-color:var(--g-hi);box-shadow:0 0 0 2px #0b0804,0 0 14px var(--hero)}
+#classDialog.mv-c2 #mvCreator .mvc-spell.on small{color:#f7e6bd}
+#classDialog.mv-c2 #mvCreator .mvc-spellhelp{min-height:34px;margin:10px 0 0;font:500 12px/1.4 "MV Fira";color:#b9ae96}
+#classDialog.mv-c2 #mvCreator .mvc-spellhelp b{color:#f1dfb5}
+#classDialog.mv-c2 #mvCreator .mvc-field{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#classDialog.mv-c2 #mvCreator .mvc-field span{font:700 11px/1 "MV Fira";letter-spacing:.12em;text-transform:uppercase;color:#a79a80;width:46px}
+#classDialog.mv-c2 #mvCreator .mvc-field input{flex:1;min-width:0;height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(216,177,106,.45);background:#0b0a10;color:#f7e6bd;font:600 16px/1 "MV Cinzel",serif;letter-spacing:.04em;outline:none}
+#classDialog.mv-c2 #mvCreator .mvc-field input:focus{border-color:var(--g-hi);box-shadow:0 0 0 2px rgba(216,177,106,.25)}
+#classDialog.mv-c2 #mvCreator .mvc-sub{font:700 11px/1.3 "MV Fira";letter-spacing:.1em;text-transform:uppercase;color:#a79a80;margin:4px 0 8px}
+#classDialog.mv-c2 #mvCreator .mvc-sub em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:500;color:#7f7663}
+#classDialog.mv-c2 #mvCreator .mvc-swatches{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+#classDialog.mv-c2 #mvCreator .mvc-sw{width:34px;height:34px;aspect-ratio:1/1;flex:none;padding:0;border-radius:50%;border:2px solid #3d3020!important;background:radial-gradient(circle at 40% 35%,#fff8,transparent 45%),var(--sw)!important;box-shadow:0 0 0 2px #0b0804,0 0 10px -2px var(--sw)}
+#classDialog.mv-c2 #mvCreator .mvc-sw.none{background:repeating-linear-gradient(135deg,#1a1620 0 5px,#0d0b11 5px 10px)!important;position:relative}
+#classDialog.mv-c2 #mvCreator .mvc-sw.none::after{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:2px;background:#8a6f3e;transform:rotate(45deg)}
+#classDialog.mv-c2 #mvCreator .mvc-sw.on{border-color:var(--g-hi)!important;box-shadow:0 0 0 2px #0b0804,0 0 0 4px var(--g),0 0 14px var(--sw)}
+#classDialog.mv-c2 #mvCreator .mvc-races{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#classDialog.mv-c2 #mvCreator .mvc-race{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:9px 10px;border-radius:10px;border:1px solid rgba(216,177,106,.22)!important;background:#100e16!important;text-align:left}
+#classDialog.mv-c2 #mvCreator .mvc-race b{font:700 13px/1 "MV Cinzel",serif;color:#efe2c2}
+#classDialog.mv-c2 #mvCreator .mvc-race small{font:500 11px/1.2 "MV Fira";color:#9d927b}
+#classDialog.mv-c2 #mvCreator .mvc-race.on{border-color:var(--rc)!important;box-shadow:inset 0 0 0 1px var(--rc);background:#1a1622!important}
+#classDialog.mv-c2 #mvCreator .mvc-race.on small{color:#d9cdb2}
+
+/* ---------- footer ---------- */
+#classDialog.mv-c2 #mvCreator .mvc-foot{position:sticky;bottom:0;z-index:5;flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(8,8,14,0),rgba(8,8,14,.94) 30%,#08080e);border-top:1px solid rgba(216,177,106,.18)}
+#classDialog.mv-c2 #mvCreator .mvc-back{flex:none;height:46px;padding:0 14px;border-radius:12px;border:1px solid rgba(216,177,106,.35)!important;background:#100e16!important;font:600 13px/1 "MV Fira";color:#cbbf9f}
+#classDialog.mv-c2 #mvCreator .mvc-begin{flex:1;height:52px;border-radius:12px;border:1.5px solid #f7dc9a!important;background:linear-gradient(180deg,#f0cf86 0%,#c8964a 52%,#9c6d2c 100%)!important;color:#1d1307!important;
+ font:800 17px/1 "MV Cinzel",serif!important;letter-spacing:.08em;text-shadow:0 1px 0 #ffe9b8;box-shadow:0 0 0 2px #2a1c0a,0 0 0 3px rgba(216,177,106,.45),0 8px 22px rgba(0,0,0,.6),inset 0 1px #fff8}
+#classDialog.mv-c2 #mvCreator .mvc-begin:disabled{filter:saturate(.4) brightness(.8)}
+
+/* ---------- desktop / wide ---------- */
+@media (min-width:900px){
+ #classDialog.mv-c2{background:radial-gradient(ellipse at 50% 40%,#151222,#040408 70%)!important}
+ #classDialog.mv-c2 #mvCreator{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(380px,.85fr);grid-template-rows:1fr auto;width:min(1180px,96vw);height:min(780px,94dvh);margin:calc((100dvh - min(780px,94dvh))/2) auto 0;
+  border:1.5px solid var(--g);border-radius:20px;box-shadow:0 0 0 4px #0b0804,0 0 0 5px rgba(216,177,106,.35),0 30px 90px #000;overflow:hidden}
+ #classDialog.mv-c2 #mvCreator .mvc-stage{grid-row:1/3;height:auto;min-height:0;border-bottom:0;border-right:1px solid var(--g-lo)}
+ #classDialog.mv-c2 #mvCreator .mvc-head h2{font-size:34px}
+ #classDialog.mv-c2 #mvCreator .mvc-panel{overflow-y:auto;padding:18px 20px 8px}
+ #classDialog.mv-c2 #mvCreator .mvc-foot{position:static;background:#0a0910;padding:12px 20px 14px}
+ #classDialog.mv-c2 #mvCreator .mvc-portrait{width:58px;height:58px}
+}
+@media (max-height:700px) and (max-width:899px){#classDialog.mv-c2 #mvCreator .mvc-stage{height:min(50dvh,400px);min-height:300px}}
+
+@media (min-width:900px){#classDialog.mv-c2 #mvCreator .mvc-hero b{font-size:11.5px}}
+#classDialog.mv-c2 #mvCreator .mvc-anims button.on{color:#1b1206!important}
+#classDialog.mv-c2 #mvCreator .mvc-back{color:#cbbf9f!important}
