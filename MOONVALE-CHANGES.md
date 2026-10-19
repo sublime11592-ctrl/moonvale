@@ -140,3 +140,48 @@ Tools: `tools/ship_survey2.py`, `first_run.py`, `overflow_check.py`, `reach_chec
   - Jelly slimes: new art `art/enemy-jelly.png` (translucent body, violet core, bubbles, gloss), plus live squash-and-stretch wobble, rising bubbles, fading drip trail and a soft halo (halo is desktop-only).
 - Performance: culling to the viewport, phone-lite mode (fewer motes, no secondary lamp cores, no slime halo) and an auto-degrade that drops lamp and cluster glows if frames average below ~30 fps for 3 s. `MV_NOGLOW=true` in the console disables the whole layer.
 - Fix: dialog close buttons are pinned to the top of their sheet (the Bag's × sat below the fold on phones, leaving no visible way out without Escape).
+
+## Oozevale, phase 1 (Oct 18, night): slime takeover
+The game is now **Oozevale** everywhere it shows: page title, boot screen, header, title screen, settings, release/story/HUD text. Until the painted logo is imported, the title uses a CSS slime logo (teal-to-violet jelly letters with gold edges and slow drips).
+Three classes can be played. The two spellweavers show as locked "coming soon" cards and can't be picked, but old mage saves still load.
+
+| Class (slot) | Kit | Presets (looks) | Pet line |
+|---|---|---|---|
+| **Gelguard** (warrior) | Gelbreaker, Ooze Cyclone, Jelly Bash, Slime Surge, Gel Bulwark. Every hit splashes ooze | **Chrome Ooze Knight** ✔, Tidemane (sheets made, needs import), Gilded Gloop (not painted) | Bulwark Blob: Blobling → Bulwark Blob (lv 10) → Gel Golem (lv 25) |
+| **Sporecaller** (druid) | Spore Burst, Mycelium Snare, Glowcap Mend, Sporefall, Cap Shell; Spores resource, Glowcap Grove signature | **Glowcap Witch** ✔, Mossmother (not painted), Ambercap (not painted) | Capslime: Sporeling → Capslime → Elder Shroomgel |
+| **Slimewright** (ranger) | Acid Glob, **Summon Jellies**, **Gloop Command**, Slime Slip, Feeding Frenzy; Ooze resource, Gelspike Lance signature | **Hooded Oozeseer** ✔, Chrome Veil (not painted), Lanternhood (not painted) | Jelly Familiar: Gloomlet → Jelly Familiar → Void Gelwyrm |
+
+✔ = can be picked now. The preset-1 looks come from the user's own concept sheet (`art-src/ooze/user-favorites.jpg`, cut by `tools/ooze_looks.py`).
+
+New files:
+- `oozevale.js`
+  - `MoonSlime`: slime presets teal, amethyst, ember, gold and chrome. The recolour runs at runtime and only touches each look's slime hue band (`SPEC`), so plate, cloth and faces stay put. It covers frame sheets and stills alike, and the result is cached.
+  - `MoonLooks`: the 3×3 preset registry. A look can be picked only when its art is in the build.
+  - `MoonPet`: one pet line per class. AI rules:
+    - It only fights what you fight.
+    - It defends you if you are AFK and something hits you.
+    - It stops and follows when you run.
+    - It stays leashed with spring-damped catch-up.
+    - It auto-loots into a stash you can sort, sell or keep. The items glint inside the jelly, and the stash saves with the adventure.
+    - Pounce support for Gloop Command.
+  - Also holds the class renames and kits, identity text and gear names.
+- `oozevale-kits.js` (loaded last)
+  - Slimewright jellylings: 2, or 3 from level 10, for 13 s, at most 5 out. They stay leashed to you and attack your target or whatever is hitting you.
+  - Gloop Command pounces with a 2 s glue. With no slimes out, an orb lash replaces it.
+  - The Slimewright fires jelly globs, not arrows.
+  - Looks without frame sheets cast from the painted staff tip or palm orb (`art/ooze/looks.js`).
+- `oozevale.css`: logo, look chips, slime swatches, pet card, pet stash, and hero-sheet button wrap.
+- `art/hero-chromeknight.png`, `hero-glowcap.png`, `hero-oozeseer.png`, `art/ooze/looks.js`
+- `tools/ooze_looks.py`, `tools/ooze_import.py` (generated art → assets), `tools/ooze_test.py`, `tools/ooze_shots.py`
+
+Changed files:
+- `moonvale-creator.js`: class tiles, a row of 3 look chips, slime colour and companion card (species, evolution line, name, jelly colour). Arrows and swipe step through every look. Stills get transform-based idle, walk, attack and cast in the preview.
+- `moonvale-art.js`: `heroFor` resolves the saved look and tints frames. Spell icons updated.
+- `moonvale-motion.js`: tint hook and staff-tip emit for the new looks.
+- `moonvale-title.js`: Oozevale logo and title art from `OOZE_ART` when present.
+- `moonvale-ship.js`: new names.
+- `moonvale-buttons.css`: look chips are excluded from the painted button kit.
+- `tools/process_anim.py`: per-character runs, frame overrides, and no purple de-spill on heroes that wear purple or on green keys.
+- `tools/creator_test.py`, `tools/enter.py`: moved to the new classes.
+
+Art pipeline: the frame sheets for all three preset-1 looks, plus the Tidemane sheets and the pets, were generated but sit outside the box. Copy them into `art-src/ooze/incoming/` and run `python3 tools/ooze_import.py`. It processes the sheets, writes `anim.js`, `manifest.js` and `ooze-art.js`, and cache-busts them. Then re-run `python3 tools/ooze_shots.py`. Until then the preset-1 looks play as painted stills with rigid motion: bob, lean, lunge, cast lift, and the same front image for every direction.

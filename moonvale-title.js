@@ -15,10 +15,13 @@ root.classList.toggle('mv-calm',!!prefs.calm);
 /* ---------- title screen ---------- */
 T.classList.add('mvt');
 const scene=document.createElement('div');scene.className='mvt-scene';scene.setAttribute('aria-hidden','true');
-scene.innerHTML='<div class="mvt-back"></div><div class="mvt-art"><img src="art/title-a.webp" alt="" decoding="async" fetchpriority="high"></div><canvas class="mvt-flies"></canvas><div class="mvt-shade"></div>';
+const OZ=globalThis.OOZE_ART||{};
+scene.innerHTML='<div class="mvt-back"></div><div class="mvt-art"><img src="'+(OZ.title?OZ.title.src:'art/title-a.webp')+'" alt="" decoding="async" fetchpriority="high"></div><canvas class="mvt-flies"></canvas><div class="mvt-shade"></div>';
+if(OZ.title){T.classList.add('oz-title');scene.querySelector('.mvt-back').style.backgroundImage='url("'+OZ.title.blur+'")';}
 const ui=document.createElement('div');ui.className='mvt-ui';
-ui.innerHTML='<div class="mvt-logo"><small>A tale of the open roads</small><h1>Moonvale</h1><i class="mvt-orn" aria-hidden="true"><b></b></i></div><div class="mvt-actions"></div><div class="mvt-fresh"></div><p class="mvt-save"></p><p class="mvt-foot">Single-player · Autosaves on this device</p>';
+ui.innerHTML='<div class="mvt-logo"><small>Tales of the glowing ooze</small><h1>Oozevale</h1><i class="mvt-orn" aria-hidden="true"><b></b></i></div><div class="mvt-actions"></div><div class="mvt-fresh"></div><p class="mvt-save"></p><p class="mvt-foot">Single-player · Autosaves on this device</p>';
 T.prepend(scene,ui);
+{const h1=ui.querySelector('.mvt-logo h1');if(OZ.logo){h1.classList.add('oz-logo-img');h1.innerHTML='<img src="'+OZ.logo.src+'" alt="Oozevale" width="'+OZ.logo.w+'" height="'+OZ.logo.h+'">';}else{h1.classList.add('oz-logo-text');h1.setAttribute('data-text','Oozevale');}}
 const acts=ui.querySelector('.mvt-actions');
 const nb=$$('newAdventure'),rb=$$('resumeAdventure');
 const sb=document.createElement('button');sb.id='titleSettings';sb.type='button';
@@ -58,7 +61,7 @@ new MutationObserver(kick).observe(T,{attributes:true,attributeFilter:['open']})
 
 /* ---------- settings ---------- */
 const S=document.createElement('dialog');S.id='mvSettings';S.className='mv-panel';
-S.innerHTML='<button class="close mv-x" type="button" aria-label="Close settings">×</button><small class="mv-kicker">Moonvale</small><h2>Settings</h2>'+
+S.innerHTML='<button class="close mv-x" type="button" aria-label="Close settings">×</button><small class="mv-kicker">Oozevale</small><h2>Settings</h2>'+
  '<div class="mvs-list"><label class="mvs-row"><span><b>Music</b><em>Ambient grove score</em></span><input type="checkbox" id="mvsMusic" class="mv-toggle"></label>'+
  '<label class="mvs-row"><span><b>Sound effects</b><em>Spells, hits and loot</em></span><input type="checkbox" id="mvsSound" class="mv-toggle"></label>'+
  '<label class="mvs-row"><span><b>Reduced motion</b><em>Stills the title drift, fireflies and fades</em></span><input type="checkbox" id="mvsCalm" class="mv-toggle"></label></div>'+
@@ -79,7 +82,7 @@ globalThis.MoonSettings={open:openSettings,prefs};
 
 /* ---------- prologue (fresh heroes only) + fade into the world ---------- */
 const I=document.createElement('dialog');I.id='mvIntro';
-I.innerHTML='<div class="mvi-art"><img src="art/title-b.webp" alt="" decoding="async"></div><div class="mvi-shade"></div><div class="mvi-card"><small class="mv-kicker">Chapter I · The Elder Grove</small><h2>The lanterns are fading</h2><p class="mvi-l1">Night after night the grove grows darker, and Vale\u2019s scout has not come home.</p><p class="mvi-l2">Gather moondew, find the scout, and the open roads of Moonvale are yours to walk.</p><button type="button" class="mv-btn mv-btn-gold" id="mvIntroGo">Enter the grove</button></div>';
+I.innerHTML='<div class="mvi-art"><img src="art/title-b.webp" alt="" decoding="async"></div><div class="mvi-shade"></div><div class="mvi-card"><small class="mv-kicker">Chapter I · The Elder Grove</small><h2>The lanterns are fading</h2><p class="mvi-l1">Night after night the grove grows darker, and Vale\u2019s scout has not come home.</p><p class="mvi-l2">Gather moondew, find the scout, and the glowing roads of Oozevale are yours to walk.</p><button type="button" class="mv-btn mv-btn-gold" id="mvIntroGo">Enter the grove</button></div>';
 document.body.appendChild(I);
 I.addEventListener('cancel',e=>{e.preventDefault();closeIntro();});
 let introAt=0;

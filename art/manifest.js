@@ -8,7 +8,10 @@ globalThis.MOONVALE_ART={
   "warden": "art/hero-warden.png",
   "frostcaller": "art/hero-frostcaller.png",
   "embermage": "art/hero-embermage.png",
-  "warrior": "art/hero-warrior.png"
+  "warrior": "art/hero-warrior.png",
+  "chromeknight": "art/hero-chromeknight.png",
+  "glowcap": "art/hero-glowcap.png",
+  "oozeseer": "art/hero-oozeseer.png"
  },
  "heroesBack": {
   "warden": "art/heroback-warden.png",

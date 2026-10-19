@@ -12,11 +12,17 @@
  // Rangers have no painted sheet yet and keep their original sprite.
  // The creator stores the painted choice in customHero.paint; older saves fall back to dwarves → Frostcaller
  // (the selectable race id is 'mountaindwarves', so match any *dwarf* id).
- const heroFor=cls=>{if(cls==='druid')return 'warden';if(cls==='warrior')return 'warrior';if(cls!=='mage')return null;
+ const heroFor=cls=>{
+  // Oozevale looks (presets): the saved look if its art loaded, else the class's first available look
+  const L=globalThis.MoonLooks;if(L&&!classic&&cls!=='mage'){const h=typeof customHero!=='undefined'?customHero:null;
+   const cs=globalThis.MoonCreator&&MoonCreator.state,dl=document.getElementById('classDialog');
+   const want=(cs&&dl&&dl.open&&L.get(cs.hero)&&L.get(cs.hero).cls===cls)?cs.hero:h&&h.look;
+   for(const id of [want,...L.list(cls).map(l=>l.id)])if(id&&L.get(id)&&L.get(id).cls===cls&&heroes[id])return id;}
+  if(cls==='druid')return 'warden';if(cls==='warrior')return (A.heroes&&A.heroes.gelguard&&!classic&&heroes.gelguard!==null)?'gelguard':'warrior';if(cls!=='mage')return null;
   const h=typeof customHero!=='undefined'?customHero:null;if(h&&(h.paint==='frostcaller'||h.paint==='embermage'))return h.paint;
   return /dwarf/.test(h?.race||'')?'frostcaller':'embermage';};
  // staff-bearers are drawn a little taller so the body (not the staff tip) matches the other heroes
- const heroScale={warden:1.1,embermage:1.1,frostcaller:1.0,warrior:1.0};
+ const heroScale={warden:1.1,embermage:1.1,frostcaller:1.0,warrior:1.0,gelguard:1.0,chromeknight:1.04,gildedgloop:1.0,glowcap:1.12,mossmother:1.1,ambercap:1.12,oozeseer:1.08,chromeveil:1.08,lanternhood:1.08};
  // NPC id -> painted NPC (scale relative to the 77px NPC height the game uses)
  const npcFor={chronicler:'keeper',caravan:'ranger',wayfarer:'bard',quartermaster:'goblin'};
  const npcScale={keeper:1.3,ranger:1.36,bard:1.3,goblin:1.12,witch:1.3};
@@ -25,7 +31,7 @@
  (async()=>{
   for(const [z,src] of Object.entries(A.zones||{})){const img=await load(src);if(img){zoneArt[z]=img;if(zones[z])zones[z].image=img;}}
   if(!classic){
-   for(const [k,src] of Object.entries(A.heroes||{})){const img=await load(src);if(!img)continue;const back=A.heroesBack?.[k]?await load(A.heroesBack[k]):null;const e={heightScale:heroScale[k]||1};
+   for(const [k,src] of Object.entries(A.heroes||{})){const img=await load(src);if(!img){if(k==='gelguard')heroes.gelguard=null;continue;}const back=A.heroesBack?.[k]?await load(A.heroesBack[k]):null;const e={heightScale:heroScale[k]||1};
     heroes[k]={front:frame(img,e),back:frame(back||img,e),left:frame(mirror(img),e),right:frame(img,e)};}
    for(const [type,src] of Object.entries(A.enemies||{})){const img=await load(src);if(!img)continue;const e={enemyScale:enemyScale[type]||1};
     enemies[type]={front:frame(img,e),back:frame(img,e),left:frame(img,e),right:frame(mirror(img),e)};}
@@ -33,11 +39,11 @@
   }
   if(A.icons)document.documentElement.style.setProperty('--mv-icons','url("'+A.icons+'")'),document.body.classList.add('mv-art-icons');
   MoonMotion.art={
-   hero:(cls,face)=>{const k=heroFor(cls);return k&&heroes[k]?.[face]||null;},
+   hero:(cls,face)=>{const k=heroFor(cls);const f=k&&heroes[k]?.[face]||null;return f&&MoonMotion.tintFrame?MoonMotion.tintFrame(k,f):f;},
    heroKey:cls=>{const k=heroFor(cls);return k&&heroes[k]?k:null;},
    enemy:(o,face)=>{const kind=MoonZones.kindFor(story.zone);let t=o.type;if(t==='wisp'&&kind==='chapel'&&enemies.wraith)t='wraith';return enemies[t]?.[face]||null;}
   };
-  if(typeof heroFrame==='function'){const before=heroFrame;heroFrame=function(cls,face){const k=heroFor(cls);return (k&&heroes[k]?.[face])||before(cls,face);};}
+  if(typeof heroFrame==='function'){const before=heroFrame;heroFrame=function(cls,face){const k=heroFor(cls);const f=k&&heroes[k]?.[face];return f?(MoonMotion.tintFrame?MoonMotion.tintFrame(k,f):f):before(cls,face);};}
   if(typeof npcFrame==='function'){const before=npcFrame;npcFrame=function(n,face='front'){
    let k=npcFor[n.id];if(!k&&n.hub>0){const kind=MoonZones.kindFor(story.zone);k=kind==='marsh'?'witch':kind==='chapel'?'keeper':null;}
    const set=k&&npcs[k];if(!set)return before(n,face);return set[face]||set.front;};}
@@ -47,7 +53,7 @@
  // Skill icons: one 5x4 sheet (index = row*5+col). Each class's five skills point at the closest painting.
  //  0 ice shards 1 snowflake 2 frost vortex 3 fire swirl 4 flame | 5 meteor streak 6 arcane arrow 7 arcane sigil 8 lightning 9 thorns
  // 10 leaf 11 poison skull 12 slash 13 shield 14 whirlwind | 15 arrow volley 16 eagle 17 charging beast 18 potion 19 lantern
- const ICONS={mage:[6,1,5,2,7],warrior:[12,14,8,17,13],ranger:[11,15,9,2,16],druid:[3,9,10,0,13]};
+ const ICONS={mage:[6,1,5,2,7],warrior:[12,14,8,17,13],ranger:[11,7,17,2,6],druid:[19,9,10,0,13]};
  {const before=hud;hud=function(){before();if(!document.body.classList.contains('mv-art-icons'))return;const map=ICONS[p.cls];if(!map)return;
   [...$('hotbar').children].forEach((b,i)=>{const gl=b.querySelector('.glyph');const k=map[i];if(gl&&k!=null){gl.style.setProperty('--mvpos',((k%5)/4*100)+'% '+(Math.floor(k/5)/3*100)+'%');gl.classList.add('mv-icon');}});};}
 })();

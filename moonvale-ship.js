@@ -55,8 +55,8 @@ document.body.appendChild(HS);
 HS.querySelector('.mv-x').onclick=()=>HS.close();HS.addEventListener('click',e=>{if(e.target===HS)HS.close();});
 $$('mvhGear').onclick=()=>{HS.close();try{openInventory()}catch{}};
 $$('mvhSkills').onclick=()=>{HS.close();try{openTraining()}catch{}};
-function heroSheet(){const ch=(typeof customHero!=='undefined'&&customHero)||{};const paint=ch.paint||(MoonCreator?.state?.hero)||'warden';
- const cls=(typeof CLASSES!=='undefined'&&CLASSES[p.cls])||{};const names={warden:'Grove Warden',warrior:'Warrior',embermage:'Embermage',frostcaller:'Frostcaller',ranger:'Ranger'};
+function heroSheet(){const ch=(typeof customHero!=='undefined'&&customHero)||{};const paint=(typeof MoonMotion!=='undefined'&&MoonMotion.art?.heroKey?.(p.cls))||ch.paint||(MoonCreator?.state?.hero)||'warden';
+ const cls=(typeof CLASSES!=='undefined'&&CLASSES[p.cls])||{};const names={warden:'Sporecaller',warrior:'Gelguard',gelguard:'Gelguard',embermage:'Magmaweaver',frostcaller:'Rimegel',ranger:'Slimewright'};
  HS.querySelector('img').src='art/hero-'+paint+'.png';
  HS.querySelector('.mv-kicker').textContent=(names[paint]||cls.name||'Adventurer')+' · '+(zones?.[story.zone]?.name||'');
  HS.querySelector('h2').textContent=ch.name||p.name||'Wanderer';
@@ -74,7 +74,7 @@ try{const pb=isPaused;isPaused=function(){return pb()||D.open||F.open||HS.open;}
 const LV=document.createElement('div');LV.id='mvLevel';LV.setAttribute('aria-live','polite');LV.innerHTML='<i class="mvl-rays"></i><small>Level up</small><b></b><span></span>';document.body.appendChild(LV);
 let lvT=0;try{const g0=gainXp;gainXp=function(){const before=p.level;const r=g0.apply(this,arguments);if(p.level>before){LV.querySelector('b').textContent='Level '+p.level;LV.querySelector('span').textContent='Power +'+(3*(p.level-before))+' · Health +'+(14*(p.level-before))+' · New training point';LV.classList.remove('on');void LV.offsetWidth;LV.classList.add('on');clearTimeout(lvT);lvT=setTimeout(()=>LV.classList.remove('on'),2900);}return r;};}catch{}
 /* ---------- leftover UI ---------- */
-const kick=$$('menuDialog')?.querySelector('.release-kicker');if(kick)kick.textContent='Moonvale';
+const kick=$$('menuDialog')?.querySelector('.release-kicker');if(kick)kick.textContent='Oozevale';
 try{const oi=openInventory;openInventory=function(){const r=oi.apply(this,arguments);try{
  const d=typeof progressionDialog!=='undefined'?progressionDialog:null;if(d){for(const id of ['followGearLook','epicChangeLook']){const b=d.querySelector('#'+id);if(b)b.remove();}
   for(const h of d.querySelectorAll('.set-overview h2,.set-overview h3,.set-overview header'))if(/identity/i.test(h.textContent))h.textContent='Armor sets';const p0=d.querySelector('.set-overview p');if(p0)p0.textContent='Equip loot to raise your power, armor and health. Common pieces are plain; uncommon, rare and epic loot hit harder, and matching sets grant extra combat bonuses.';}

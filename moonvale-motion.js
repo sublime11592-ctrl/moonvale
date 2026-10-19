@@ -164,7 +164,7 @@ const MoonMotion=(()=>{
  //  - warrior melee: weaponAttack progress, impact at .48 (warrior-motion.js resolves damage there)
  //  - staff basic attacks: the projectile is held back for the wind-up and spawned on the key frame
  //  - spells: wind-up frames span cinematic.pending, the release frame plays when releaseSpell fires
- const ACT_FPS=12,STAFF={warden:1,embermage:1,frostcaller:1};
+ const ACT_FPS=12,STAFF={warden:1,embermage:1,frostcaller:1,glowcap:1,mossmother:1,ambercap:1,oozeseer:1,chromeveil:1,lanternhood:1};
  function heroTarget(){return (typeof target!=='undefined'&&target&&target.alive)?target:null;}
  function faceTarget(H){const t=heroTarget();if(t&&Math.abs(t.x-p.x)>2)H.side=t.x<p.x?'left':'right';}
  function actionFrame(sh,s,H){
@@ -233,7 +233,7 @@ const MoonMotion=(()=>{
  function blitCell(m,i,k,flip,flash){
   const w=m.cellW*k,h=m.cellH*k,ax=m.anchorX*k,ay=m.baseY*k;
   g.save();if(flip)g.scale(-1,1);
-  const src={img:m.img,sx:i*m.cellW,sy:0,sw:m.cellW,sh:m.cellH};
+  const src={img:(MoonMotion.tint&&MoonMotion.tint(m))||m.img,sx:i*m.cellW,sy:0,sw:m.cellW,sh:m.cellH};
   g.translate(w/2-ax,h-ay);blit(src,w,h,flash);g.restore();
  }
  const PP_GHOST=a=>a<1;

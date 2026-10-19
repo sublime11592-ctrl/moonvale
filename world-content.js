@@ -65,10 +65,10 @@ const regionContent=[
  ['Heathermoon Bouquet','gather',4,'Moon heather','Optional: collect four sprigs of luminous heather for Tavi.'],
  ['The Three Sisters','puzzle',3,'Constellation stone','Optional: align the constellations: Sparrow → Stag → Swan.'],
  ['Above the Clouds','survey',4,'Highland vista','Optional: visit four viewpoints above the cloud line.'] ]},
- {name:'Crown of Dawn',image:'crown.webp',theme:'#f3d9a0',level:17,boss:'The Sunless Sovereign',creatures:['Garden Sprite','Gilded Tusk','Dawnless Shade'],intro:'The restored roads lead to a silent monastery. One final shadow stands between Moonvale and the morning.',quests:[
+ {name:'Crown of Dawn',image:'crown.webp',theme:'#f3d9a0',level:17,boss:'The Sunless Sovereign',creatures:['Garden Sprite','Gilded Tusk','Dawnless Shade'],intro:'The restored roads lead to a silent monastery. One final shadow stands between Oozevale and the morning.',quests:[
  ['At the Gates of Morning','talk',1,'Dawnkeeper Aven','Find Aven in the eastern courtyard and learn why the dawn bells are silent.'],
  ['Petals of the First Garden','gather',5,'Dawn petal','Recover five dawn petals to restore the monastery gardens.'],
- ['The Pilgrim’s Last Steps','survey',4,'Pilgrim monument','Discover the four monuments to the first keepers of Moonvale.'],
+ ['The Pilgrim’s Last Steps','survey',4,'Pilgrim monument','Discover the four monuments to the first keepers of Oozevale.'],
  ['Shadows at Daybreak','kill',8,'wisp','Disperse eight Dawnless Shades from the monastery grounds.'],
  ['The Golden Hours','puzzle',3,'Hour stone','Set the hour stones in order: Hope → Courage → Mercy.'],
  ['Wake the Dawn Bells','channel',3,'Dawn bell','Restore each bell while standing beneath it.'],

@@ -107,7 +107,7 @@
   const ch=typeof chapters!=='undefined'?chapters[story.step]:null;
   if(ch){const [t,c]=split($('questText')?.textContent||ch[0]);const done=c&&c.split('/')[0]===c.split('/')[1];rows.push('<h4>'+esc(ch[0])+'</h4><ul>'+obj(t===ch[0]?ch[1].split('.')[0]:t,done,c)+'</ul>');}
   try{const q=typeof activeQuest==='function'?activeQuest():null;if(q){const c=typeof questCountText==='function'?questCountText(q):'';rows.push('<h4>'+esc(q.title)+'</h4><ul>'+obj(q.description?.split('.')[0]||'',false,/\d+\/\d+/.test(c)?c:'')+'</ul>');}}catch(e){}
-  if(!rows.length){const h=$('questText')?.textContent||'Explore Moonvale';const [t,c]=split(h);rows.push('<h4>Quests</h4><ul>'+obj(t,false,c)+'</ul>');}
+  if(!rows.length){const h=$('questText')?.textContent||'Explore Oozevale';const [t,c]=split(h);rows.push('<h4>Quests</h4><ul>'+obj(t,false,c)+'</ul>');}
   const extra=typeof questLog!=='undefined'?questLog.accepted.size:0;
   return '<div class="mv-qh"><i></i>Quests'+(questLog?.ready?.size?'<b class="ready">'+questLog.ready.size+' ready</b>':'')+'</div>'+rows.slice(0,2).join('')+(extra?'<div class="mv-qf">+'+extra+' in journal</div>':'');}
 
