@@ -1832,7 +1832,7 @@
       192.3
      ]
     ],
-    "key": 2,
+    "key": 3,
     "tour": [
      null,
      null
@@ -1908,12 +1908,12 @@
    "walk": {
     "char": "chromeknight",
     "anim": "walk",
-    "src": "art/anim/chromeknight-walk.png?v=b00169a5",
+    "src": "art/anim/chromeknight-walk.png?v=5769f8c2",
     "frames": 8,
     "cellW": 178,
-    "cellH": 281,
+    "cellH": 295,
     "anchorX": 89,
-    "baseY": 275,
+    "baseY": 289,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -1927,139 +1927,153 @@
     ],
     "legChange": 0.169,
     "spreadRange": 0.138,
-    "weak": true,
+    "weak": false,
     "order": [
-     5,
-     7,
-     2,
-     1,
      0,
+     1,
+     2,
      3,
      4,
-     6
+     5,
+     6,
+     7
     ],
     "bob": [
-     -0.083,
-     -0.222,
-     -0.5,
-     -0.222,
-     -1.0,
-     -0.0,
-     -0.25,
-     -0.194
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.9455,
     "bg": [
      8,
      235,
      12
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "chromeknight",
     "anim": "walkback",
-    "src": "art/anim/chromeknight-walkback.png?v=cd606d98",
-    "frames": 6,
+    "src": "art/anim/chromeknight-walkback.png?v=341a2ea7",
+    "frames": 10,
     "cellW": 170,
-    "cellH": 281,
+    "cellH": 295,
     "anchorX": 85,
-    "baseY": 275,
+    "baseY": 289,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     -8.0,
-     -7.0,
-     -2.0,
-     -3.0,
-     -2.0,
-     -8.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     1.173,
-     1.058
+     null,
+     null
     ],
     "legChange": 0.196,
     "spreadRange": 0.023,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     3,
      1,
      2,
+     3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.0,
-     -0.5,
-     -0.167,
-     -0.5,
-     -1.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.7172,
     "bg": [
      2,
      236,
      8
-    ]
+    ],
+    "deep": {
+     "base": 4,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "chromeknight",
     "anim": "walkfront",
-    "src": "art/anim/chromeknight-walkfront.png?v=3af7712b",
-    "frames": 6,
+    "src": "art/anim/chromeknight-walkfront.png?v=60b04edb",
+    "frames": 10,
     "cellW": 146,
-    "cellH": 283,
+    "cellH": 297,
     "anchorX": 73,
-    "baseY": 277,
+    "baseY": 291,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     -3.0,
-     -3.0,
-     -2.0,
-     2.0,
-     -2.0,
-     -4.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.755,
-     0.736
+     null,
+     null
     ],
     "legChange": 0.126,
     "spreadRange": 0.023,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.167,
-     -0.833,
-     -0.333,
-     -0.0,
-     -1.0,
-     -0.5
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.646,
     "bg": [
      4,
      233,
      10
-    ]
+    ],
+    "deep": {
+     "base": 4,
+     "n": 10
+    }
    }
   },
   "oozeseer": {
@@ -2805,7 +2819,7 @@
       246.0
      ]
     ],
-    "key": 1,
+    "key": 3,
     "tour": [
      null,
      null
@@ -2876,7 +2890,7 @@
       253.6
      ]
     ],
-    "key": 4,
+    "key": 3,
     "tour": [
      null,
      null
@@ -2952,12 +2966,12 @@
    "walk": {
     "char": "tidemane",
     "anim": "walk",
-    "src": "art/anim/tidemane-walk.png?v=a1a324c3",
+    "src": "art/anim/tidemane-walk.png?v=ad291b5e",
     "frames": 8,
     "cellW": 164,
-    "cellH": 273,
+    "cellH": 287,
     "anchorX": 82,
-    "baseY": 267,
+    "baseY": 281,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -2971,139 +2985,153 @@
     ],
     "legChange": 0.321,
     "spreadRange": 0.204,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     7,
-     5,
+     1,
+     2,
      3,
      4,
+     5,
      6,
-     1,
-     2
+     7
     ],
     "bob": [
-     -0.0,
-     -1.0,
-     -0.528,
-     -0.245,
-     -0.057,
-     -0.906,
-     -0.245,
-     -0.189
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.8125,
     "bg": [
      244,
      0,
      245
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "tidemane",
     "anim": "walkback",
-    "src": "art/anim/tidemane-walkback.png?v=f983c638",
-    "frames": 6,
+    "src": "art/anim/tidemane-walkback.png?v=f23999d4",
+    "frames": 10,
     "cellW": 130,
-    "cellH": 273,
+    "cellH": 287,
     "anchorX": 65,
-    "baseY": 267,
+    "baseY": 281,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     2.0,
-     2.0,
-     0.0,
-     1.0,
-     1.0,
-     1.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.904,
-     0.727
+     null,
+     null
     ],
     "legChange": 0.151,
     "spreadRange": 0.008,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     3,
-     5,
      1,
      2,
-     4
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -1.0,
-     -0.25,
-     -0.5,
-     -0.25,
-     -0.625
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5765,
     "bg": [
      244,
      1,
      245
-    ]
+    ],
+    "deep": {
+     "base": 1,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "tidemane",
     "anim": "walkfront",
-    "src": "art/anim/tidemane-walkfront.png?v=82a7f56c",
-    "frames": 6,
+    "src": "art/anim/tidemane-walkfront.png?v=278a1d2a",
+    "frames": 10,
     "cellW": 136,
-    "cellH": 273,
+    "cellH": 287,
     "anchorX": 68,
-    "baseY": 267,
+    "baseY": 281,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     0.0,
-     1.0,
-     1.0,
-     1.0,
-     0.0,
-     0.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.788,
-     0.67
+     null,
+     null
     ],
     "legChange": 0.131,
     "spreadRange": 0.004,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
-     5,
      3,
-     4
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.636,
-     -0.0,
-     -0.182,
-     -0.636,
-     -1.0,
-     -0.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5664,
     "bg": [
      238,
      2,
      235
-    ]
+    ],
+    "deep": {
+     "base": 2,
+     "n": 10
+    }
    }
   },
   "gildedgloop": {
@@ -3218,7 +3246,7 @@
       225.1
      ]
     ],
-    "key": 4,
+    "key": 3,
     "tour": [
      null,
      null
@@ -3294,12 +3322,12 @@
    "walk": {
     "char": "gildedgloop",
     "anim": "walk",
-    "src": "art/anim/gildedgloop-walk.png?v=cc5ad49b",
+    "src": "art/anim/gildedgloop-walk.png?v=7ce13a72",
     "frames": 8,
     "cellW": 160,
-    "cellH": 274,
+    "cellH": 288,
     "anchorX": 80,
-    "baseY": 268,
+    "baseY": 282,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -3313,101 +3341,20 @@
     ],
     "legChange": 0.189,
     "spreadRange": 0.104,
-    "weak": true,
+    "weak": false,
     "order": [
-     4,
-     7,
-     6,
-     2,
      0,
      1,
-     5,
-     3
-    ],
-    "bob": [
-     -0.037,
-     -0.333,
-     -0.296,
-     -0.407,
-     -0.0,
-     -1.0,
-     -0.593,
-     -0.148
-    ],
-    "scale": 0.871,
-    "bg": [
-     245,
-     0,
-     246
-    ]
-   },
-   "walkback": {
-    "char": "gildedgloop",
-    "anim": "walkback",
-    "src": "art/anim/gildedgloop-walkback.png?v=3c5a4f68",
-    "frames": 6,
-    "cellW": 136,
-    "cellH": 278,
-    "anchorX": 68,
-    "baseY": 272,
-    "bodyH": 260,
-    "fps": 10,
-    "view": "back",
-    "faces": "back",
-    "stepD": [
-     5.0,
-     1.0,
-     2.0,
-     0.0,
-     2.0,
-     3.0
-    ],
-    "emit": null,
-    "key": null,
-    "tour": [
-     0.646,
-     0.531
-    ],
-    "legChange": 0.108,
-    "spreadRange": 0.019,
-    "weak": true,
-    "order": [
-     0,
+     2,
      3,
+     4,
      5,
-     1,
-     2,
-     4
+     6,
+     7
     ],
     "bob": [
-     -0.0,
-     -0.5,
-     -1.0,
-     -0.333,
-     -0.667,
-     -0.083
-    ],
-    "scale": 0.6161,
-    "bg": [
-     249,
-     0,
-     248
-    ]
-   },
-   "walkfront": {
-    "char": "gildedgloop",
-    "anim": "walkfront",
-    "src": "art/anim/gildedgloop-walkfront.png?v=3ab8febc",
-    "frames": 6,
-    "cellW": 162,
-    "cellH": 276,
-    "anchorX": 81,
-    "baseY": 270,
-    "bodyH": 260,
-    "fps": 10,
-    "view": "front",
-    "faces": "front",
-    "stepD": [
+     0.0,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -3415,37 +3362,132 @@
      0.0,
      0.0
     ],
+    "scale": 0.871,
+    "bg": [
+     245,
+     0,
+     246
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
+   },
+   "walkback": {
+    "char": "gildedgloop",
+    "anim": "walkback",
+    "src": "art/anim/gildedgloop-walkback.png?v=fbb25d57",
+    "frames": 10,
+    "cellW": 136,
+    "cellH": 292,
+    "anchorX": 68,
+    "baseY": 286,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "back",
+    "faces": "back",
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.679,
-     0.632
+     null,
+     null
     ],
-    "legChange": 0.113,
-    "spreadRange": 0.0,
-    "weak": true,
+    "legChange": 0.108,
+    "spreadRange": 0.019,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.75,
-     -0.75,
-     -0.75,
-     -0.0,
-     -1.0,
-     -0.5
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "scale": 0.6161,
+    "bg": [
+     249,
+     0,
+     248
+    ],
+    "deep": {
+     "base": 1,
+     "n": 10
+    }
+   },
+   "walkfront": {
+    "char": "gildedgloop",
+    "anim": "walkfront",
+    "src": "art/anim/gildedgloop-walkfront.png?v=e3c6d378",
+    "frames": 10,
+    "cellW": 162,
+    "cellH": 290,
+    "anchorX": 81,
+    "baseY": 284,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "front",
+    "faces": "front",
+    "stepD": null,
+    "emit": null,
+    "key": null,
+    "tour": [
+     null,
+     null
+    ],
+    "legChange": 0.113,
+    "spreadRange": 0.0,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "bob": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.6508,
     "bg": [
      246,
      3,
      245
-    ]
+    ],
+    "deep": {
+     "base": 1,
+     "n": 10
+    }
    }
   },
   "mossmother": {

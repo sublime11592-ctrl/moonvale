@@ -170,7 +170,7 @@ const MoonMotion=(()=>{
  function actionFrame(sh,s,H){
   const wa=s.weaponAttack,a0=H.act;
   if(wa&&sh.attack?.ok&&!wa.castShown&&!(a0&&a0.name==='cast')){const m=sh.attack,n=m.frames,key=m.key??Math.floor(n/2),u=clamp(wa.elapsed/wa.duration,0,1);
-   const i=u<.48?Math.floor(u/.48*key):key+Math.floor((u-.48)/.52*(n-key));faceTarget(H);return {m,i:clamp(i,0,n-1),state:'attack'};}
+   const i=u<.48?Math.floor(Math.pow(u/.48,1.7)*key):key+Math.floor(Math.pow((u-.48)/.52,.75)*(n-key));faceTarget(H);return {m,i:clamp(i,0,n-1),state:'attack',u};}
   const a=H.act;
   if(a&&sh[a.name]?.ok){const m=sh[a.name],n=m.frames,key=m.key??Math.floor(n/2);
    const i=a.t<a.W?Math.floor(a.t/a.W*key):key+Math.floor((a.t-a.W)/a.A*(n-key));return {m,i:clamp(i,0,n-1),state:a.name};}
@@ -237,6 +237,127 @@ const MoonMotion=(()=>{
   g.translate(w/2-ax,h-ay);blit(src,w,h,flash);g.restore();
  }
  const PP_GHOST=a=>a<1;
+
+ // ---- Deep hero FX (Oozevale anim pass 2): combo variants, weapon smear, impact splash, class cast styles,
+ //      stepped flinch, idle fidgets, knockdown on defeat, roll puffs. Drawn in world space around the hero.
+ const LOOK_CLASS={chromeknight:'gel',tidemane:'gel',gildedgloop:'gel',gelguard:'gel',glowcap:'spore',mossmother:'spore',ambercap:'spore',warden:'spore',oozeseer:'sigil',chromeveil:'sigil',lanternhood:'sigil',embermage:'sigil',frostcaller:'sigil'};
+ const FX={combo:0,lastWa:null,lastU:0,hit:false,parts:[],splats:[],flashes:[],cast:null,fidget:{next:4+Math.random()*3,t:-1},corpse:null,lastHp:null,lastPos:null,wasRoll:false};
+ const COMBO=[ // per variant: smear sweep (deg, 0 = forward, -90 = up), body lunge px, rotation, splash scale
+  {a0:-120,a1:35,lunge:9,rot:.10,sc:1},       // 1: diagonal down-slash
+  {a0:55,a1:-80,lunge:7,rot:-.08,sc:1},       // 2: rising backhand
+  {a0:-4,a1:4,lunge:18,rot:.05,sc:1.6,thrust:1} // 3: lunging thrust finisher
+ ];
+ function slimeHex(){try{return globalThis.MoonSlime?MoonSlime.hex(MoonSlime.current()):'#5fe3c8';}catch(e){return '#5fe3c8';}}
+ const calm=()=>document.body.classList.contains('mv-calm')||(globalThis.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+ function drop(x,y,vx,vy,col,r,life,grav=520,kind='drop'){if(FX.parts.length>160)FX.parts.shift();FX.parts.push({x,y,vx,vy,col,r,life,max:life,grav,kind});}
+ function splash(x,y,col,sc=1){const n=Math.round((calm()?6:16)*sc);
+  for(let i=0;i<n;i++){const a=-Math.PI*(.1+.8*Math.random()),v=(70+Math.random()*170)*sc;drop(x,y,Math.cos(a)*v*(Math.random()<.5?-1:1),Math.sin(a)*v,col,2+Math.random()*3.5*sc,.45+Math.random()*.45);}
+  FX.splats.push({x,y:y+26,r:10*sc,col,t:0,life:1.4});FX.flashes.push({x,y,r:26*sc,col,t:0,life:.16});}
+ function heroBody(){const ss=sheetSet(p,true);if(!ss)return 112;return sizeFor(p,true,frameFor(p,true,'front'))*(ss.stat?.bodyFrac||.92);}
+ function fxTick(dt,ss){
+  const s=stateFor(p,true),wa=s.weaponAttack,B=heroBody(),dir=anim.hero.side==='left'?-1:1,col=slimeHex();
+  // combo: a new swing advances the variant (resets after 1.6 s without swinging)
+  if(wa&&wa.duration){const u=clamp(wa.elapsed/wa.duration,0,1);
+   if(wa!==FX.lastWa||u<FX.lastU-.2){FX.combo=(time-(FX.lastSwing||-9)>1.6)?0:(FX.combo+1)%COMBO.length;FX.lastSwing=time;FX.hit=false;FX.lastWa=wa;}
+   if(!FX.hit&&u>=.48&&!wa.castShown){FX.hit=true;const t=heroTarget(),V=COMBO[FX.combo];
+    const ix=t&&Math.abs(t.x-p.x)<B*1.1?t.x:p.x+dir*B*.5,iy=t&&Math.abs(t.x-p.x)<B*1.1?t.y-B*.3:p.y-B*.35;
+    splash(ix,iy,col,V.sc);if(V.thrust&&typeof cinematic!=='undefined'&&!calm())cinematic.shake=Math.max(cinematic.shake||0,2.6);}
+   FX.lastU=u;}else FX.lastU=0;
+  // cast gather: particles converge on the emit point while the spell winds up
+  const c=typeof cinematic!=='undefined'?cinematic.pending:null,style=LOOK_CLASS[ss.key]||'gel';
+  if(c&&c.cls===p.cls&&!calm()){const e=emitNow()||{x:p.x+dir*B*.3,y:p.y-B*.6};const k=1-c.life/c.total;
+   if(Math.random()<dt*(28+40*k)){const a=Math.random()*Math.PI*2,R=B*(.45+.25*Math.random());
+    if(style==='gel')drop(p.x+(Math.random()-.5)*B*.6,p.y+4,0,-(140+120*k),col,2+Math.random()*2.5,.55,-60,'rise');
+    else drop(e.x+Math.cos(a)*R,e.y+Math.sin(a)*R*.7,0,0,style==='spore'?'#d8ff9a':col,1.6+Math.random()*2,.5,0,'seek');}
+   FX.gather={x:e.x,y:e.y,k,style};}else FX.gather=null;
+  // particles
+  for(let i=FX.parts.length-1;i>=0;i--){const q=FX.parts[i];q.life-=dt;if(q.life<=0){if(q.kind==='drop'&&q.vy>0)FX.splats.push({x:q.x,y:q.y,r:q.r*1.6,col:q.col,t:0,life:.8});FX.parts.splice(i,1);continue;}
+   if(q.kind==='seek'){const e=FX.gather||{x:q.x,y:q.y};q.x+=(e.x-q.x)*Math.min(1,dt*7);q.y+=(e.y-q.y)*Math.min(1,dt*7);}
+   else{q.vy+=q.grav*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;if(q.kind==='drop'&&q.floor===undefined)q.floor=p.y+8;if(q.kind==='drop'&&q.y>q.floor+Math.random()*10&&q.vy>0)q.life=0;}}
+  for(const L of [FX.splats,FX.flashes])for(let i=L.length-1;i>=0;i--){L[i].t+=dt;if(L[i].t>=L[i].life)L.splice(i,1);}
+  if(FX.cast){FX.cast.t+=dt;if(FX.cast.t>FX.cast.life)FX.cast=null;}
+  // idle fidget every ~5-8 s of standing still
+  const idle=!(anim.hero.speed>25)&&!(s.action>0)&&!wa&&!c&&!anim.hero.act;
+  if(idle){FX.fidget.next-=dt;if(FX.fidget.next<=0&&FX.fidget.t<0){FX.fidget.t=0;FX.fidget.kind=(FX.fidget.kind+1||0)%3;FX.fidget.next=5+Math.random()*3;
+    drop(p.x+dir*(Math.random()*.3-.15)*B,p.y-B*(.35+Math.random()*.25),0,10,col,2.4,.9,380);}}
+  else FX.fidget.next=Math.max(FX.fidget.next,2.5);
+  if(FX.fidget.t>=0){FX.fidget.t+=dt;if(FX.fidget.t>1.4||!idle)FX.fidget.t=-1;}
+  // roll: slime puffs at start and along the roll
+  if(heroTrack.roll&&!FX.wasRoll&&!calm())for(let i=0;i<8;i++)drop(p.x,p.y+2,(Math.random()-.5)*160,-40-Math.random()*90,col,2+Math.random()*2,.5);
+  if(heroTrack.roll&&Math.random()<dt*20)FX.splats.push({x:p.x+(Math.random()-.5)*14,y:p.y+6,r:5+Math.random()*4,col,t:0,life:.7});
+  FX.wasRoll=!!heroTrack.roll;
+  // defeat: the game respawns instantly at camp, so leave a knockdown of the hero where they fell
+  if(FX.lastHp!==null&&FX.lastHp<p.maxHp*.35&&p.hp>=p.maxHp-.5&&FX.lastPos&&Math.hypot(p.x-FX.lastPos.x,p.y-FX.lastPos.y)>150){
+   const sh=ss.set.idle;if(sh)FX.corpse={x:FX.lastPos.x,y:FX.lastPos.y,m:sh,flip:anim.hero.side==='left',t:0,col};splash(FX.lastPos.x,FX.lastPos.y-B*.3,col,1.4);}
+  FX.lastHp=p.hp;FX.lastPos={x:p.x,y:p.y};
+  if(FX.corpse){FX.corpse.t+=dt;if(FX.corpse.t>1.6)FX.corpse=null;}
+ }
+ // pose additions for the framed hero (combo lunge, cast channel, stepped flinch, fidgets)
+ function fxPose(P,s,sel,B){
+  const dir=anim.hero.side==='left'?-1:1,wa=s.weaponAttack;
+  if(wa&&wa.duration&&sel.state==='attack'){const u=clamp(wa.elapsed/wa.duration,0,1),V=COMBO[FX.combo];
+   let k;if(u<.4)k=-.35*ease.inOut(u/.4);else if(u<.55)k=lerp(-.35,1,ease.back((u-.4)/.15));else k=1-ease.out((u-.55)/.45);
+   P.x+=dir*V.lunge*k;P.rot+=dir*V.rot*k;P.sy+=-.04*Math.max(0,k)+.03*Math.max(0,-k);P.sx+=.03*Math.max(0,k);}
+  if(sel.state==='cast-windup'){const q=Math.sin(time*16);P.sy+=.03+.008*q;P.sx-=.02;P.y+=1.5;}
+  if(FX.cast&&FX.cast.channel){const u=FX.cast.t/FX.cast.life;P.y-=6*Math.sin(Math.PI*Math.min(1,u*1.4));}
+  else if(FX.cast&&FX.cast.t<.25){const u=FX.cast.t/.25;P.x+=dir*5*Math.sin(Math.PI*u);P.sy-=.04*Math.sin(Math.PI*u);}
+  const h=heroTrack.hurt;if(h>0){const e=.2-h,step=e<.06?0:e<.13?1:2,away=(heroTarget()?Math.sign(p.x-heroTarget().x):-dir)||-dir;
+   const X=[8,6,2][step],R=[.14,.09,.03][step],SQ=[.07,.04,.01][step];P.x+=away*X;P.rot+=away*R;P.sy-=SQ;P.sx+=SQ*.7;}
+  if(FX.fidget.t>=0){const u=FX.fidget.t/1.4,w=Math.sin(Math.PI*u);
+   if(FX.fidget.kind===0){P.x+=dir*2.5*w;P.rot+=dir*.035*w;}            // weight shift
+   else if(FX.fidget.kind===1){P.sy+=.03*w;P.sx-=.015*w;P.y-=2*w;}      // deep breath / shoulders up
+   else{P.y+=1.5*Math.abs(Math.sin(u*Math.PI*3));P.sx+=.02*Math.abs(Math.sin(u*Math.PI*3));}} // slime shake-off
+ }
+ function smearPath(cx,cy,R,a0,a1,head,len,dir){
+  const A=a=>a*Math.PI/180,N=14,pts=[];const s0=Math.max(0,head-len),s1=head;
+  for(let i=0;i<=N;i++){const t=s0+(s1-s0)*i/N,a=A(lerp(a0,a1,t)),w=Math.sin(Math.PI*(i/N))*.24+.02;pts.push([a,w]);}
+  g.beginPath();pts.forEach(([a,w],i)=>{const x=cx+dir*Math.cos(a)*R,y=cy+Math.sin(a)*R;i?g.lineTo(x,y):g.moveTo(x,y);});
+  for(let i=pts.length-1;i>=0;i--){const [a,w]=pts[i],r=R*(1-w);g.lineTo(cx+dir*Math.cos(a)*r,cy+Math.sin(a)*r);}g.closePath();
+ }
+ function fxDraw(o,s,sel,B,layer){
+  const col=slimeHex(),dir=anim.hero.side==='left'?-1:1;
+  if(layer==='under'){
+   FX.splats.forEach(q=>{const a=1-q.t/q.life;g.save();g.globalAlpha=.55*a;g.fillStyle=q.col;g.beginPath();g.ellipse(q.x,q.y,q.r*(1+q.t*.6),q.r*.38*(1+q.t*.6),0,0,Math.PI*2);g.fill();g.globalAlpha=.35*a;g.fillStyle='#ffffff';g.beginPath();g.ellipse(q.x-q.r*.3,q.y-q.r*.08,q.r*.3,q.r*.1,0,0,Math.PI*2);g.fill();g.restore();});
+   if(FX.corpse){const c=FX.corpse,u=clamp(c.t/.45,0,1),fade=1-clamp((c.t-1)/.6,0,1),k=B/(c.m.bodyH||260);
+    g.save();g.globalAlpha=fade;g.translate(c.x,c.y+7);g.rotate((c.flip?1:-1)*1.35*ease.in(u));g.translate(0,-Math.sin(Math.PI*u)*6);blitCell(c.m,0,k,c.flip,Math.max(0,1-c.t*4));g.restore();}
+   if(FX.cast&&!calm()){const c=FX.cast,u=c.t/c.life;g.save();g.globalCompositeOperation='lighter';
+    if(c.style==='gel'||c.channel){g.globalAlpha=.7*(1-u);g.strokeStyle=c.col;g.lineWidth=5*(1-u)+1;g.beginPath();g.ellipse(p.x,p.y+6,B*(.3+1.1*u),B*(.3+1.1*u)*.33,0,0,Math.PI*2);g.stroke();}
+    if(c.style==='sigil'){g.translate(p.x,p.y+6);g.scale(1,.38);g.rotate(time*2.2);g.globalAlpha=.8*(1-u*u);g.strokeStyle=c.col;g.lineWidth=2.5;const R=B*.55;
+     g.beginPath();g.arc(0,0,R,0,Math.PI*2);g.stroke();g.beginPath();g.arc(0,0,R*.78,0,Math.PI*2);g.stroke();
+     g.beginPath();for(let i=0;i<=5;i++){const a=i*Math.PI*4/5;g.lineTo(Math.cos(a)*R*.78,Math.sin(a)*R*.78);}g.stroke();
+     for(let i=0;i<8;i++){const a=i*Math.PI/4;g.fillStyle=c.col;g.fillRect(Math.cos(a)*R*.9-3,Math.sin(a)*R*.9-3,6,6);}}
+    g.restore();}
+   return;}
+  g.save();g.globalCompositeOperation='lighter';
+  // weapon smear on the swing frames
+  const wa=s.weaponAttack;
+  if(wa&&wa.duration&&sel.state==='attack'&&!calm()){const u=clamp(wa.elapsed/wa.duration,0,1),V=COMBO[FX.combo];
+   if(u>.34&&u<.72){const head=clamp((u-.34)/.18,0,1),fade=u<.52?1:1-(u-.52)/.2,cx=p.x+dir*B*.06,cy=p.y+7-B*.58;
+    if(V.thrust){g.globalAlpha=.85*fade;const L=B*(.5+.6*head),y=p.y+7-B*.5;const gr=g.createLinearGradient(cx,y,cx+dir*L*1.3,y);gr.addColorStop(0,col+'00');gr.addColorStop(.6,col);gr.addColorStop(1,'#ffffff');
+     g.fillStyle=gr;g.beginPath();g.moveTo(cx,y-3);g.lineTo(cx+dir*L*1.3,y);g.lineTo(cx,y+3);g.closePath();g.fill();g.globalAlpha=.4*fade;g.fillRect(Math.min(cx,cx+dir*L),y-9,L,1.5);g.fillRect(Math.min(cx,cx+dir*L*.8),y+8,L*.8,1.5);}
+    else{g.globalAlpha=.78*fade;g.fillStyle=col;smearPath(cx,cy,B*.62,V.a0,V.a1,head,.75,dir);g.fill();g.globalAlpha=.9*fade;g.fillStyle='#ffffff';smearPath(cx,cy,B*.62,V.a0,V.a1,head,.25,dir);g.fill();}}}
+  // cast gather glow + release flash
+  if(FX.gather){const e=FX.gather;glow(e.x,e.y,10+22*e.k,FX.gather.style==='spore'?'#d8ff9a':col,.35+.5*e.k);
+   if(e.style==='sigil'){g.save();g.translate(e.x,e.y);g.rotate(-time*4);g.globalAlpha=.6*e.k;g.strokeStyle=col;g.lineWidth=1.5;g.beginPath();g.arc(0,0,12+8*e.k,0,Math.PI*1.5);g.stroke();g.restore();}}
+  if(FX.cast){const c=FX.cast,u=c.t/c.life;if(c.t<.22)glow(c.x,c.y,30+50*(c.t/.22),'#ffffff',.6*(1-c.t/.22));
+   if(c.style==='sigil'&&!calm())for(let i=0;i<3;i++){const a=time*3+i*2.094,r=B*(.25+.35*u);glow(p.x+Math.cos(a)*r,p.y-B*.45+Math.sin(a)*r*.4,9,c.col,.8*(1-u));}
+   if(c.channel)glow(p.x,p.y-B*.5,B*.7,c.col,.25*(1-u));}
+  FX.flashes.forEach(q=>glow(q.x,q.y,q.r*(1+q.t/q.life),q.col,.9*(1-q.t/q.life)));
+  g.restore();
+  // droplets (normal blend: glossy blobs)
+  FX.parts.forEach(q=>{const a=Math.min(1,q.life/q.max*2);g.save();g.globalAlpha=a;
+   if(q.kind==='seek'||q.kind==='rise'){g.globalCompositeOperation='lighter';glow(q.x,q.y,q.r*3,q.col,.8*a);}
+   else{g.fillStyle=q.col;g.beginPath();g.ellipse(q.x,q.y,q.r,q.r*(1+Math.min(.8,Math.abs(q.vy)/400)),0,0,Math.PI*2);g.fill();g.fillStyle='rgba(255,255,255,.7)';g.fillRect(q.x-q.r*.4,q.y-q.r*.5,Math.max(1,q.r*.45),Math.max(1,q.r*.45));}
+   g.restore();});
+ }
+ function fxRelease(spellName){const ss=sheetSet(p,true);if(!ss)return;const e=emitWorld('cast')||{x:p.x,y:p.y-60},style=LOOK_CLASS[ss.key]||'gel',col=slimeHex();
+  const channel=/summon|jell|heal|mend|shield|ward|bulwark|barrier|guard|renew|bloom|regrow/i.test(spellName||'');
+  FX.cast={t:0,life:channel?.9:.6,x:e.x,y:e.y,style,channel,col:style==='spore'?'#c8ff7a':col};
+  if(calm())return;
+  if(style==='gel')for(let i=0;i<14;i++){const a=-Math.PI*Math.random();drop(p.x+Math.cos(a)*20,p.y,Math.cos(a)*190,-80-Math.random()*200,col,2.5+Math.random()*3,.6);}
+  else if(style==='spore')for(let i=0;i<18;i++)drop(e.x,e.y,(Math.random()-.5)*160,-30-Math.random()*120,i%3?'#d8ff9a':'#ffe08a',1.5+Math.random()*2,.9,-40,'rise');
+  else for(let i=0;i<10;i++){const a=Math.random()*Math.PI*2;drop(e.x,e.y,Math.cos(a)*150,Math.sin(a)*110,col,3+Math.random()*3,.5,200);}
+ }
  function framedDraw(o,s,ss,ghostAlpha,dt){
   const H=anim.hero,moving=(H.speed||0)>25?clamp(Math.max(s.moving||0,.6),0,1):0;
   const sel=pick(ss.set,s,H,moving),m=sel.m;
@@ -245,6 +366,7 @@ const MoonMotion=(()=>{
   const bodyTarget=sizeFor(o,true,frame)*(ss.stat?.bodyFrac||.92),k=bodyTarget/(m.bodyH||260);
   const P=pose(o,sel.real?{...s,kind:'idle',action:0}:s,'hero',true,true);
   P.y+=sel.bob||0;P.x+=sel.sway||0;
+  if(ghostAlpha===1){fxPose(P,s,sel,bodyTarget*1);}
   if(sel.breathe){const br=Math.sin(time*2.3);P.sy+=.01*br;P.sx-=.005*br;}
   const bodyW=bodyTarget*.42;
   H.info={state:sel.state,sheet:ss.key+'-'+(m.src.split('/').pop().replace(/\.png.*/,'').split('-').pop()),i:sel.i,flip:sel.flip,k:+k.toFixed(3),bodyPx:+bodyTarget.toFixed(1)};
@@ -253,11 +375,13 @@ const MoonMotion=(()=>{
    if(PP.roll){const hh=bodyTarget;g.translate(0,-hh*.45);g.rotate(PP.roll);g.translate(0,hh*.45);}
    g.rotate(PP.rot);g.scale(PP.sx,PP.sy);blitCell(m,sel.i,k,sel.flip,PP.flash);g.restore();};
   if(heroTrack.roll&&ghostAlpha===1){heroTrack.trail.forEach((q,j)=>{g.save();g.globalAlpha=.12*(j+1)/heroTrack.trail.length;g.translate(q.x,q.y+7);body({...P,x:0,y:0,flash:0,roll:q.roll});g.restore();});}
+  if(ghostAlpha===1)fxDraw(o,s,sel,bodyTarget,'under');
   g.save();g.globalAlpha=ghostAlpha*heroAlpha();
   g.translate(o.x,o.y+7);const race=typeof customHero!=='undefined'?customHero?.race:null;if(race==='ashbound')g.translate(0,-2-Math.sin(time*2)*1.2);
   {const T=g.getTransform();H.info.dev=[T.a,T.e,T.f];}
   {const ac=MoonMotion.accent&&MoonMotion.accent();if(ac&&!PP_GHOST(ghostAlpha)){g.shadowColor=ac;g.shadowBlur=11*(cinematic.dpr||1);}}   // creator aura: a glow around the real sprite
   body(P);g.restore();
+  if(ghostAlpha===1)fxDraw(o,s,sel,bodyTarget,'over');
   return bodyTarget/(ss.stat?.bodyFrac||.92);
  }
  // Hero opacity: always solid. The only exceptions are a real dodge-roll afterimage (ghostAlpha<1 while
@@ -317,6 +441,7 @@ const MoonMotion=(()=>{
  function update(dt){
   if(typeof p!=='undefined'&&p)trackHero(p,dt);
   actionTick(dt);
+  try{const ss=typeof p!=='undefined'&&p&&sheetSet(p,true);if(ss)fxTick(dt,ss);}catch(e){if(!fxTick.err){fxTick.err=1;console.warn('hero fx',e);}}
   for(let i=corpses.length-1;i>=0;i--){corpses[i].t+=dt;if(corpses[i].t>1)corpses.splice(i,1);}
   // Hero hit + dodge tracking.
   if(heroTrack.hp!==null&&p.hp<heroTrack.hp-.5&&p.hp>0)heroTrack.hurt=.2;heroTrack.hp=p.hp;heroTrack.hurt=Math.max(0,heroTrack.hurt-dt);
@@ -325,7 +450,7 @@ const MoonMotion=(()=>{
   heroTrack.evade=p.evade;
   if(heroTrack.roll){const r=heroTrack.roll;r.t+=dt;heroTrack.trail.push({x:p.x,y:p.y,roll:r.dir*Math.PI*2*ease.inOut(clamp(r.t/r.dur,0,1))});if(heroTrack.trail.length>4)heroTrack.trail.shift();if(r.t>=r.dur){heroTrack.roll=null;heroTrack.trail=[];}}
  }
- return {art:null,anim,heroAlpha,heroTrack,emitWorld,emitNow,startAction,emitFrom:'auto',animInfo:()=>anim.hero.info,actorDraw,articulated,warriorRig,addCorpse,drawCorpses,update,pose,ease,corpses};
+ return {art:null,fx:FX,fxRelease,anim,heroAlpha,heroTrack,emitWorld,emitNow,startAction,emitFrom:'auto',animInfo:()=>anim.hero.info,actorDraw,articulated,warriorRig,addCorpse,drawCorpses,update,pose,ease,corpses};
 })();
 
 // Install: the single motion system replaces every previous body renderer.
@@ -370,7 +495,7 @@ drawArticulated=MoonMotion.articulated;drawWarriorRig=MoonMotion.warriorRig;
  };
  if(typeof releaseSpell==='function'){const beforeRelease=releaseSpell;releaseSpell=function(i){
   const cd=p.cd[i];inSpell=true;let r;try{r=beforeRelease(i);}finally{inSpell=false;}
-  if(p.cd[i]>cd&&sheetsOn()){MoonMotion.startAction('cast');const e=MoonMotion.emitWorld('cast');
+  if(p.cd[i]>cd&&sheetsOn()){MoonMotion.startAction('cast');try{MoonMotion.fxRelease(CLASSES[p.cls].skills[i][0]);}catch(e){}const e=MoonMotion.emitWorld('cast');
    // every spell flashes at the emit point, also self/area spells whose main effect is on the ground or target
    if(e)cinematic.decals.push({x:e.x,y:e.y,r:30,color:(typeof colorFor!=='undefined'&&colorFor[CLASSES[p.cls].skills[i][5]])||CLASSES[p.cls].color,life:.4,max:.4,kind:'flare'});}
   return r;};}

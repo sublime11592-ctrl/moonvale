@@ -350,3 +350,23 @@ New layer `oozevale-balance.js?v=2` (after juice). XP curve in `oozevale-juice.j
 
 Known: ranged classes need ~8 autos on a boar (abilities bring it into the target range). Gelguard is still the tankiest class.
 Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep doesn't rescale it.
+
+## NPCs & monsters, checkpoint 1 (Oct 19, logic only; art blocked)
+- `oozevale-bestiary.js?v=1` (+ `art/beasts/beasts.js`): zone rosters for zones 0-5, 3-4 types plus 1 elite (★) per zone. Each mob keeps its base AI (melee, boar = charger, wisp = ranged), and the layer adds a name, stat tilts, loot, pack alerts and fliers. Elites get HP x2.6, damage x1.45, XP x3. Also adds attack telegraphs, a hit flash/squash and death-frame playback once sheets exist. `?nobeast` turns the layer off.
+- `oozevale-npcs.js?v=1`: Tessa, Vale, Bran and Eryn have personality lines, and the starter chain (steps 0-4) gets story beats.
+- `tools/process_beasts.py`: magenta-key sheets go from `art-src/beasts/<id>-a|b.jpg` to `art/beasts/`. This is separate from the hero `anim.js`.
+- Tests: `juice_test` now blocks respawn of the mobs it clears (faster pack wolves were re-engaging).
+
+## Hero animation pass 2, Gelguard checkpoint (Oct 19, night)
+- `tools/anim_deepen.py` (new; also called from `process_anim.py` after a re-process): builds deeper walks from the painted frames, so design, scale and slime-tint stay the same. Frozen bases are in `art-src/anim/deep-base/`.
+  - walkfront and walkback: 10-frame two-step cycles with per-leg foot lift and shin compression, body bob, hip sway, shoulder roll and drip jiggle. The slime puddle stays planted.
+  - Side walk: the painted 8 frames, plus a bob from foot spread, trailing cloth and drip jiggle.
+  - Applied to chromeknight, tidemane and gildedgloop. Impact and release keys are hand-fixed (Tidemane's attack key moved from 1 to 3).
+- `moonvale-motion.js` v7:
+  - Attack frames run on eased timing: anticipation hold, then the snap, then follow-through. Damage still lands at .48.
+  - 3-hit combo that resets after 1.6 s: diagonal down-slash, rising backhand, lunging thrust finisher with shake. Each hit has its own body lunge, a slime-coloured weapon smear and an impact splash with droplets, splats and a flash.
+  - Casts: gather particles converge on the hand. Style by class: Gelguard ooze rises from the feet, Sporecaller spores, Slimewright sigil. On release: a flash, then a class burst (Gelguard ooze shock ring and droplets, spore puff, or a rotating sigil with jelly orbs). Summons, heals and shields get a channel lift with a ring.
+  - 3-step hit flinch, idle fidgets every 5–8 s (weight shift, breath, slime shake-off with a drip), slime puffs on dodge rolls, and a knockdown left where the hero falls.
+  - Reduced motion turns the particles off.
+- Shots: `tools/anim2_shots.py`, which writes `shots/anim2/<look>.gif` and a contact sheet.
+- Not new art: attacks still use 6 painted frames, with combo variety from transforms and FX. Requests for real 8–10 frame sheets are in `art-src/ooze/REQUESTS-anim2.md`.
