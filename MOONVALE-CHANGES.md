@@ -328,3 +328,25 @@ Twelve zones now use `art/env/`.
 - `env_ba.py` makes the before/after and contact sheets.
 - `env_portals.py` and `env_rings.py` are new.
 - `reach_check.py` now also checks quest givers, landmarks and the quest destination.
+
+## Balance pass (Oct 19)
+New layer `oozevale-balance.js?v=2` (after juice). XP curve in `oozevale-juice.js?v=4`: `180 + 50(L-1) + 12(L-1)^2` (was `55 + 35(L-1) + 6(L-1)^2`).
+- Mobs scaled once on spawn (`m.bal`): effective level = max(mob lv, 1 + zone*1.6) + 0.35*(hero lv above that). HP x1.1*(1+.16/lv), damage x1.6*(1+.11/lv), XP x0.5. Aggro radius 125 + 12/zone (cap 230).
+- Pet damage x0.6, Slimewright jellies x0.5. Gelguard: Spin 2.1->1.45, Sunder 2.2->1.8.
+- Measured by `tools/balance_sim.py` (bot, per class).
+
+| Metric | Before | After |
+|---|---|---|
+| Time to lv 2 / 5 / 10 (min) | ~0.5 / 4.5 / 27 | 3.5-3.9 / 23-25 / 115-119 |
+| Boar HP / XP (lv1) | 95 / 30 | 121 / 15 (168 at lv10, 227 in zone 4) |
+| Slime HP / XP | 65 / 20 | 72 / 10 |
+| Hits to kill, slime (careless) | not measured | 4-5 |
+| Hits to kill, boar (careless) | 4-5 | 5 melee / 8 ranged |
+| Gelguard skilled boar TTK | 0.9 s | ~3.4 s |
+| Careless 1v3 at lv1 | none died (Gelguard took 10%) | Sporecaller and Slimewright die; Gelguard min HP 49% |
+| Skilled 1v3 at lv1 | Gelguard took 0%, no deaths | min HP 44-57%, uses potions |
+| Pet damage share | up to 46% | 6-26% |
+| Slimewright lv10 1v3 share (you/pet/jelly) | 26 / 22 / 52 | 60 / 12 / 29 |
+
+Known: ranged classes need ~8 autos on a boar (abilities bring it into the target range). Gelguard is still the tankiest class.
+Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep doesn't rescale it.

@@ -324,7 +324,7 @@ hurt=function(n){
  return r;};}
 
 /* ------------------------------------------------------------------ XP curve (review P1) + level-up beat */
-const curve=L=>Math.round(55+(L-1)*35+(L-1)**2*6);
+const curve=L=>Math.round(180+(L-1)*50+(L-1)**2*12);   // balance pass (Oct 19): was 55+35(L-1)+6(L-1)²
 {const b=gainXp;gainXp=function(n){
  const lv0=p.level;if(p.nextXp!==curve(p.level))p.nextXp=curve(p.level);
  const r=b.apply(this,arguments);if(p.nextXp!==curve(p.level))p.nextXp=curve(p.level);
