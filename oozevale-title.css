@@ -1,0 +1,25 @@
+/* Oozevale key art: full-bleed cover everywhere (portrait keeps the heroes on the left in frame) */
+#titleScreen .mvt-art{inset:-3%!important;left:-3%!important;width:auto!important;height:auto!important;top:-3%!important;-webkit-mask-image:none!important;mask-image:none!important}
+#titleScreen .mvt-art img{object-fit:cover!important;object-position:8% 50%!important}
+@media (min-aspect-ratio:1/1){#titleScreen .mvt-art img{object-position:40% 45%!important}}
+#titleScreen .mvt-shade{background:linear-gradient(180deg,rgba(5,6,14,.35) 0%,rgba(5,6,14,0) 22%,rgba(5,6,14,0) 50%,rgba(5,6,14,.82) 100%)!important}
+@media (max-aspect-ratio:1/1){#titleScreen .mvt-shade{background:linear-gradient(180deg,rgba(5,6,14,.25) 0%,rgba(5,6,14,0) 30%,rgba(5,6,14,.25) 55%,rgba(5,6,14,.9) 100%)!important}}
+/* slime drips on the logo */
+.mvt-logo h1{position:relative}
+.oz-drips{position:absolute;left:8%;right:8%;bottom:14%;height:0;pointer-events:none}
+.oz-drip{position:absolute;top:0;width:calc(9px*var(--s,1));height:calc(9px*var(--s,1));margin-left:-4px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;
+ background:radial-gradient(circle at 35% 30%,#d9fff6 0 12%,#3fe0c8 40%,#1a8f86 100%);box-shadow:0 0 10px rgba(63,224,200,.7);opacity:0;
+ animation:ozDrip 4.2s cubic-bezier(.55,0,.8,.4) infinite}
+.oz-drip::before{content:"";position:absolute;left:50%;bottom:60%;width:40%;height:0;transform:translateX(-50%);background:linear-gradient(#3fe0c8,#2ac0aa);border-radius:2px;animation:ozNeck 4.2s ease-in infinite;animation-delay:inherit}
+@keyframes ozDrip{0%{transform:translateY(0) scale(.4,.6);opacity:0}12%{opacity:1;transform:translateY(0) scale(.8,.9)}45%{transform:translateY(4px) scale(.9,1.25)}70%{transform:translateY(46px) scale(.85,1.15);opacity:1}86%{transform:translateY(70px) scale(1.2,.6);opacity:0}100%{opacity:0}}
+@keyframes ozNeck{0%,12%{height:0}45%{height:10px}62%{height:16px}70%,100%{height:0}}
+html.mv-calm .oz-drip{animation:none;opacity:0}
+/* prologue banner (non-blocking) */
+#ozPrologue{position:fixed;left:50%;top:max(84px,calc(env(safe-area-inset-top) + 72px));transform:translateX(-50%);z-index:60;pointer-events:none;width:min(560px,90vw);text-align:center;
+ padding:14px 20px;border:1px solid #8a6a36;border-radius:12px;background:linear-gradient(180deg,rgba(24,20,30,.92),rgba(12,10,18,.92));box-shadow:0 0 0 3px rgba(20,16,10,.8),0 10px 30px rgba(0,0,0,.6);
+ animation:ozPin .5s ease-out both;transition:opacity .9s,transform .9s}
+#ozPrologue small{display:block;font:700 10px/1 "MV Fira",sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#9ff0e2}
+#ozPrologue b{display:block;margin:6px 0 4px;font:700 22px/1.15 "MV Cinzel",Georgia,serif;color:#f3d79a}
+#ozPrologue p{margin:0;font:14px/1.4 "MV Fira",sans-serif;color:#e8e0cc}
+#ozPrologue.out{opacity:0;transform:translateX(-50%) translateY(-10px)}
+@keyframes ozPin{from{opacity:0;transform:translateX(-50%) translateY(-12px)}}

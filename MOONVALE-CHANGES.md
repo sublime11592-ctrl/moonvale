@@ -380,3 +380,8 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
   - When v2 sheets exist, combo hits 2 and 3 use `attack2`/`attack3`, and channel spells use a `channel` sheet. Without them, the transform-based variants stay.
 - v2 real frames: `tools/anim_v2_ingest.py` imports `art-src/ooze/incoming/v2/<look>-<anim>.*` and records them in `art-src/anim/v2-imported.json`. That list drives frame-count overrides in `process_anim.py` (walks 10, attacks and cast 8, channel 6, hurt 4), `anim_deepen` leaves those sheets as painted, and `process_anim` runs on the affected looks. Prompts for all 9 looks are in `art-src/ooze/REQUESTS-anim2.md`.
 - Shots: `shots/anim2/<look>.gif` for all 9 looks, filmed in open grass east of camp with labels hidden and the pet off.
+
+## Opening flow + key art (Oct 20)
+- Flow: a new hero goes Begin Adventure → creator → **Enter Oozevale** → in game. The prologue card ("Enter the grove") no longer blocks; it shows as a 4 s banner. With a save, **Continue** is the gold primary button and loads straight in; "New hero" still asks before overwriting. The native click handlers are untouched, so the first click still unlocks audio.
+- Title: new key art `art/title-key.webp` (1280 px, 166 KB) and a blurred backdrop. It's full-bleed cover on every aspect ratio; portrait is positioned at 8% so the knight and witch stay in frame. Existing drift, parallax and fireflies are kept, and slime drips animate under the logo (off in calm mode).
+- New files: `oozevale-title-art.js`, `oozevale-title.js`, `oozevale-title.css`. A runtime text pass replaces any "Moonvale" in visible UI text.
