@@ -2282,12 +2282,12 @@
    "walk": {
     "char": "oozeseer",
     "anim": "walk",
-    "src": "art/anim/oozeseer-walk.png?v=ece27ec9",
+    "src": "art/anim/oozeseer-walk.png?v=f51990e6",
     "frames": 8,
     "cellW": 188,
-    "cellH": 305,
+    "cellH": 319,
     "anchorX": 94,
-    "baseY": 299,
+    "baseY": 313,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -2301,139 +2301,153 @@
     ],
     "legChange": 0.143,
     "spreadRange": 0.073,
-    "weak": true,
+    "weak": false,
     "order": [
-     2,
-     5,
-     1,
-     6,
-     7,
      0,
+     1,
+     2,
      3,
-     4
+     4,
+     5,
+     6,
+     7
     ],
     "bob": [
-     -0.579,
-     -0.789,
-     -0.0,
-     -1.0,
-     -0.684,
-     -0.263,
-     -0.316,
-     -0.158
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 1.0039,
     "bg": [
      249,
      1,
      248
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "oozeseer",
     "anim": "walkback",
-    "src": "art/anim/oozeseer-walkback.png?v=ce586a49",
-    "frames": 6,
+    "src": "art/anim/oozeseer-walkback.png?v=7de7beea",
+    "frames": 10,
     "cellW": 144,
-    "cellH": 279,
+    "cellH": 293,
     "anchorX": 72,
-    "baseY": 273,
+    "baseY": 287,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     -1.0,
-     -2.0,
-     3.0,
-     -1.0,
-     0.0,
-     -2.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.643,
-     0.565
+     null,
+     null
     ],
     "legChange": 0.107,
     "spreadRange": 0.019,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
+     2,
      3,
      4,
      5,
-     2
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.727,
-     -0.409,
-     -1.0,
-     -0.818,
-     -0.0,
-     -0.273
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5804,
     "bg": [
      249,
      0,
      252
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "oozeseer",
     "anim": "walkfront",
-    "src": "art/anim/oozeseer-walkfront.png?v=b1404dd7",
-    "frames": 6,
+    "src": "art/anim/oozeseer-walkfront.png?v=c94a5fa7",
+    "frames": 10,
     "cellW": 138,
-    "cellH": 291,
+    "cellH": 305,
     "anchorX": 69,
-    "baseY": 285,
+    "baseY": 299,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     0.0,
-     0.0,
-     2.0,
-     0.0,
-     4.0,
-     0.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.774,
-     0.704
+     null,
+     null
     ],
     "legChange": 0.129,
     "spreadRange": 0.015,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.5,
-     -0.667,
-     -0.167,
-     -0.833,
-     -0.0,
-     -1.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5956,
     "bg": [
      244,
      2,
      246
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    }
   },
   "glowcap": {
@@ -2624,12 +2638,12 @@
    "walk": {
     "char": "glowcap",
     "anim": "walk",
-    "src": "art/anim/glowcap-walk.png?v=ec4b852b",
+    "src": "art/anim/glowcap-walk.png?v=015deb29",
     "frames": 8,
     "cellW": 164,
-    "cellH": 290,
+    "cellH": 304,
     "anchorX": 82,
-    "baseY": 284,
+    "baseY": 298,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -2643,139 +2657,153 @@
     ],
     "legChange": 0.11,
     "spreadRange": 0.027,
-    "weak": true,
+    "weak": false,
     "order": [
-     7,
-     3,
+     0,
      1,
+     2,
+     3,
      4,
      5,
      6,
-     0,
-     2
+     7
     ],
     "bob": [
-     -1.0,
-     -0.857,
-     -0.571,
-     -0.143,
-     -0.143,
-     -0.0,
-     -0.143,
-     -0.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.8739,
     "bg": [
      249,
      0,
      248
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "glowcap",
     "anim": "walkback",
-    "src": "art/anim/glowcap-walkback.png?v=2cfd7511",
-    "frames": 6,
+    "src": "art/anim/glowcap-walkback.png?v=5585378d",
+    "frames": 10,
     "cellW": 126,
-    "cellH": 270,
+    "cellH": 284,
     "anchorX": 63,
-    "baseY": 264,
+    "baseY": 278,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     5.0,
-     5.0,
-     6.0,
-     4.0,
-     5.0,
-     4.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     1.472,
-     1.304
+     null,
+     null
     ],
     "legChange": 0.245,
     "spreadRange": 0.008,
-    "weak": true,
-    "order": [
-     0,
-     2,
-     5,
-     3,
-     1,
-     4
-    ],
-    "bob": [
-     -0.0,
-     -0.8,
-     -0.6,
-     -0.8,
-     -1.0,
-     -0.6
-    ],
-    "scale": 0.5628,
-    "bg": [
-     246,
-     0,
-     250
-    ]
-   },
-   "walkfront": {
-    "char": "glowcap",
-    "anim": "walkfront",
-    "src": "art/anim/glowcap-walkfront.png?v=919f2cdf",
-    "frames": 6,
-    "cellW": 146,
-    "cellH": 292,
-    "anchorX": 73,
-    "baseY": 286,
-    "bodyH": 260,
-    "fps": 10,
-    "view": "front",
-    "faces": "front",
-    "stepD": [
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     2.0
-    ],
-    "emit": null,
-    "key": null,
-    "tour": [
-     0.766,
-     0.716
-    ],
-    "legChange": 0.128,
-    "spreadRange": 0.008,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.25,
-     -1.0,
-     -0.5,
-     -0.75,
-     -0.75,
-     -0.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "scale": 0.5628,
+    "bg": [
+     246,
+     0,
+     250
+    ],
+    "deep": {
+     "base": 5,
+     "n": 10
+    }
+   },
+   "walkfront": {
+    "char": "glowcap",
+    "anim": "walkfront",
+    "src": "art/anim/glowcap-walkfront.png?v=893c9d78",
+    "frames": 10,
+    "cellW": 146,
+    "cellH": 306,
+    "anchorX": 73,
+    "baseY": 300,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "front",
+    "faces": "front",
+    "stepD": null,
+    "emit": null,
+    "key": null,
+    "tour": [
+     null,
+     null
+    ],
+    "legChange": 0.128,
+    "spreadRange": 0.008,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "bob": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.6005,
     "bg": [
      247,
      0,
      250
-    ]
+    ],
+    "deep": {
+     "base": 4,
+     "n": 10
+    }
    }
   },
   "tidemane": {
@@ -3678,12 +3706,12 @@
    "walk": {
     "char": "mossmother",
     "anim": "walk",
-    "src": "art/anim/mossmother-walk.png?v=bfa47967",
+    "src": "art/anim/mossmother-walk.png?v=1b33e481",
     "frames": 8,
     "cellW": 156,
-    "cellH": 288,
+    "cellH": 302,
     "anchorX": 78,
-    "baseY": 282,
+    "baseY": 296,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -3697,139 +3725,153 @@
     ],
     "legChange": 0.22,
     "spreadRange": 0.092,
-    "weak": true,
+    "weak": false,
     "order": [
-     4,
-     1,
-     7,
-     6,
      0,
-     5,
+     1,
+     2,
      3,
-     2
+     4,
+     5,
+     6,
+     7
     ],
     "bob": [
-     -0.083,
-     -0.625,
-     -0.792,
-     -1.0,
-     -0.0,
-     -0.792,
-     -0.75,
-     -0.875
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.7429,
     "bg": [
      246,
      4,
      246
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "mossmother",
     "anim": "walkback",
-    "src": "art/anim/mossmother-walkback.png?v=432f90b6",
-    "frames": 6,
+    "src": "art/anim/mossmother-walkback.png?v=584af2fe",
+    "frames": 10,
     "cellW": 140,
-    "cellH": 286,
+    "cellH": 300,
     "anchorX": 70,
-    "baseY": 280,
+    "baseY": 294,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     3.0,
-     2.0,
-     -6.0,
-     -2.0,
-     5.0,
-     4.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.632,
-     0.632
+     null,
+     null
     ],
     "legChange": 0.105,
     "spreadRange": 0.042,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -1.0,
-     -0.0,
-     -0.889,
-     -0.611,
-     -1.0,
-     -0.667
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5696,
     "bg": [
      247,
      0,
      239
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "mossmother",
     "anim": "walkfront",
-    "src": "art/anim/mossmother-walkfront.png?v=1624e718",
-    "frames": 6,
+    "src": "art/anim/mossmother-walkfront.png?v=d6607d24",
+    "frames": 10,
     "cellW": 166,
-    "cellH": 329,
+    "cellH": 343,
     "anchorX": 83,
-    "baseY": 323,
+    "baseY": 337,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     0.0,
-     0.0,
-     0.0,
-     -1.0,
-     0.0,
-     0.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.913,
-     0.886
+     null,
+     null
     ],
     "legChange": 0.152,
     "spreadRange": 0.004,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.0,
-     -0.025,
-     -1.0,
-     -0.025,
-     -0.038
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.6624,
     "bg": [
      249,
      0,
      248
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    }
   },
   "ambercap": {
@@ -4020,12 +4062,12 @@
    "walk": {
     "char": "ambercap",
     "anim": "walk",
-    "src": "art/anim/ambercap-walk.png?v=b7ac5570",
+    "src": "art/anim/ambercap-walk.png?v=a8d08542",
     "frames": 8,
     "cellW": 140,
-    "cellH": 273,
+    "cellH": 287,
     "anchorX": 70,
-    "baseY": 267,
+    "baseY": 281,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -4039,48 +4081,20 @@
     ],
     "legChange": 0.234,
     "spreadRange": 0.054,
-    "weak": true,
+    "weak": false,
     "order": [
-     6,
-     5,
      0,
-     7,
-     4,
-     2,
      1,
-     3
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
     ],
     "bob": [
-     -0.857,
-     -1.0,
-     -0.786,
-     -0.786,
-     -0.071,
-     -0.571,
-     -0.0,
-     -0.714
-    ],
-    "scale": 0.7283,
-    "bg": [
-     245,
-     2,
-     245
-    ]
-   },
-   "walkback": {
-    "char": "ambercap",
-    "anim": "walkback",
-    "src": "art/anim/ambercap-walkback.png?v=1a5c7645",
-    "frames": 6,
-    "cellW": 140,
-    "cellH": 281,
-    "anchorX": 70,
-    "baseY": 275,
-    "bodyH": 260,
-    "fps": 10,
-    "view": "back",
-    "faces": "back",
-    "stepD": [
+     0.0,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -4088,90 +4102,132 @@
      0.0,
      0.0
     ],
+    "scale": 0.7283,
+    "bg": [
+     245,
+     2,
+     245
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
+   },
+   "walkback": {
+    "char": "ambercap",
+    "anim": "walkback",
+    "src": "art/anim/ambercap-walkback.png?v=e15f6034",
+    "frames": 10,
+    "cellW": 140,
+    "cellH": 295,
+    "anchorX": 70,
+    "baseY": 289,
+    "bodyH": 260,
+    "fps": 10,
+    "view": "back",
+    "faces": "back",
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.555,
-     0.537
+     null,
+     null
     ],
     "legChange": 0.092,
     "spreadRange": 0.0,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.273,
-     -0.091,
-     -0.182,
-     -0.818,
-     -1.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5998,
     "bg": [
      247,
      1,
      248
-    ]
+    ],
+    "deep": {
+     "base": 5,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "ambercap",
     "anim": "walkfront",
-    "src": "art/anim/ambercap-walkfront.png?v=8585b915",
-    "frames": 6,
+    "src": "art/anim/ambercap-walkfront.png?v=d56dbb0e",
+    "frames": 10,
     "cellW": 162,
-    "cellH": 304,
+    "cellH": 318,
     "anchorX": 81,
-    "baseY": 298,
+    "baseY": 312,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     6.0,
-     3.0,
-     4.0,
-     4.0,
-     3.0,
-     4.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.76,
-     0.685
+     null,
+     null
     ],
     "legChange": 0.127,
     "spreadRange": 0.012,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     3,
      1,
      2,
+     3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.171,
-     -0.571,
-     -1.0,
-     -0.543,
-     -0.971
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.6878,
     "bg": [
      248,
      2,
      247
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    }
   },
   "chromeveil": {
@@ -4362,12 +4418,12 @@
    "walk": {
     "char": "chromeveil",
     "anim": "walk",
-    "src": "art/anim/chromeveil-walk.png?v=1feb1a1b",
+    "src": "art/anim/chromeveil-walk.png?v=336b3a7f",
     "frames": 8,
     "cellW": 148,
-    "cellH": 282,
+    "cellH": 296,
     "anchorX": 74,
-    "baseY": 276,
+    "baseY": 290,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -4381,139 +4437,153 @@
     ],
     "legChange": 0.198,
     "spreadRange": 0.123,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     3,
-     6,
-     4,
-     7,
-     2,
      1,
-     5
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
     ],
     "bob": [
-     -0.0,
-     -1.0,
-     -0.25,
-     -0.125,
-     -0.219,
-     -0.75,
-     -0.812,
-     -0.094
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.8347,
     "bg": [
      3,
      242,
      9
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "chromeveil",
     "anim": "walkback",
-    "src": "art/anim/chromeveil-walkback.png?v=149400a0",
-    "frames": 6,
+    "src": "art/anim/chromeveil-walkback.png?v=21cd290e",
+    "frames": 10,
     "cellW": 138,
-    "cellH": 274,
+    "cellH": 288,
     "anchorX": 69,
-    "baseY": 268,
+    "baseY": 282,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     -1.0,
-     -1.0,
-     -1.0,
-     0.0,
-     -1.0,
-     0.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.658,
-     0.594
+     null,
+     null
     ],
     "legChange": 0.11,
     "spreadRange": 0.004,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
-     4,
-     2,
      1,
+     2,
      3,
-     5
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.909,
-     -1.0,
-     -0.909,
-     -1.0,
-     -0.727
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5579,
     "bg": [
      4,
      237,
      6
-    ]
+    ],
+    "deep": {
+     "base": 5,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "chromeveil",
     "anim": "walkfront",
-    "src": "art/anim/chromeveil-walkfront.png?v=dfcb87d5",
-    "frames": 6,
+    "src": "art/anim/chromeveil-walkfront.png?v=61de6dc6",
+    "frames": 10,
     "cellW": 140,
-    "cellH": 279,
+    "cellH": 293,
     "anchorX": 70,
-    "baseY": 273,
+    "baseY": 287,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     -1.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     0.479,
-     0.473
+     null,
+     null
     ],
     "legChange": 0.08,
     "spreadRange": 0.004,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -0.0,
-     -0.0,
-     -1.0,
-     -1.0,
-     -1.0,
-     -0.667
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.5765,
     "bg": [
      3,
      239,
      6
-    ]
+    ],
+    "deep": {
+     "base": 3,
+     "n": 10
+    }
    }
   },
   "lanternhood": {
@@ -4704,12 +4774,12 @@
    "walk": {
     "char": "lanternhood",
     "anim": "walk",
-    "src": "art/anim/lanternhood-walk.png?v=bded5084",
+    "src": "art/anim/lanternhood-walk.png?v=33040e7f",
     "frames": 8,
     "cellW": 154,
-    "cellH": 296,
+    "cellH": 310,
     "anchorX": 77,
-    "baseY": 290,
+    "baseY": 304,
     "bodyH": 260,
     "fps": 10,
     "view": "side",
@@ -4723,139 +4793,153 @@
     ],
     "legChange": 0.182,
     "spreadRange": 0.2,
-    "weak": true,
+    "weak": false,
     "order": [
+     0,
+     1,
      2,
-     7,
      3,
      4,
      5,
      6,
-     0,
-     1
+     7
     ],
     "bob": [
-     -1.0,
-     -0.115,
-     -0.0,
-     -0.135,
-     -0.058,
-     -0.0,
-     -0.058,
-     -0.0
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.7903,
     "bg": [
      246,
      0,
      244
-    ]
+    ],
+    "deep": {
+     "base": -1,
+     "n": 8
+    }
    },
    "walkback": {
     "char": "lanternhood",
     "anim": "walkback",
-    "src": "art/anim/lanternhood-walkback.png?v=28f79c27",
-    "frames": 6,
+    "src": "art/anim/lanternhood-walkback.png?v=e1b7abc8",
+    "frames": 10,
     "cellW": 150,
-    "cellH": 343,
+    "cellH": 357,
     "anchorX": 75,
-    "baseY": 337,
+    "baseY": 351,
     "bodyH": 260,
     "fps": 10,
     "view": "back",
     "faces": "back",
-    "stepD": [
-     1.0,
-     0.0,
-     1.0,
-     0.0,
-     0.0,
-     0.0
-    ],
+    "stepD": null,
     "emit": null,
     "key": null,
     "tour": [
-     1.697,
-     1.225
+     null,
+     null
     ],
     "legChange": 0.283,
     "spreadRange": 0.004,
-    "weak": true,
+    "weak": false,
     "order": [
      0,
      1,
-     5,
-     4,
      2,
-     3
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
     ],
     "bob": [
-     -1.0,
-     -0.589,
-     -0.768,
-     -0.732,
-     -0.0,
-     -0.482
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
     ],
     "scale": 0.6599,
     "bg": [
      247,
      0,
      243
-    ]
+    ],
+    "deep": {
+     "base": 5,
+     "n": 10
+    }
    },
    "walkfront": {
     "char": "lanternhood",
     "anim": "walkfront",
-    "src": "art/anim/lanternhood-walkfront.png?v=f0f7c6c0",
-    "frames": 6,
+    "src": "art/anim/lanternhood-walkfront.png?v=cb6907d5",
+    "frames": 10,
     "cellW": 140,
-    "cellH": 294,
+    "cellH": 308,
     "anchorX": 70,
-    "baseY": 288,
+    "baseY": 302,
     "bodyH": 260,
     "fps": 10,
     "view": "front",
     "faces": "front",
-    "stepD": [
-     -1.0,
+    "stepD": null,
+    "emit": null,
+    "key": null,
+    "tour": [
+     null,
+     null
+    ],
+    "legChange": 0.209,
+    "spreadRange": 0.004,
+    "weak": false,
+    "order": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "bob": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
      0.0,
      0.0,
      0.0,
      0.0,
      0.0
     ],
-    "emit": null,
-    "key": null,
-    "tour": [
-     1.255,
-     0.952
-    ],
-    "legChange": 0.209,
-    "spreadRange": 0.004,
-    "weak": true,
-    "order": [
-     0,
-     3,
-     1,
-     2,
-     4,
-     5
-    ],
-    "bob": [
-     -0.821,
-     -1.0,
-     -0.143,
-     -0.75,
-     -0.0,
-     -0.464
-    ],
     "scale": 0.597,
     "bg": [
      249,
      2,
      244
-    ]
+    ],
+    "deep": {
+     "base": 2,
+     "n": 10
+    }
    }
   }
  },

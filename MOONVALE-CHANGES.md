@@ -370,3 +370,13 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
   - Reduced motion turns the particles off.
 - Shots: `tools/anim2_shots.py`, which writes `shots/anim2/<look>.gif` and a contact sheet.
 - Not new art: attacks still use 6 painted frames, with combo variety from transforms and FX. Requests for real 8–10 frame sheets are in `art-src/ooze/REQUESTS-anim2.md`.
+- Oct 19, 10:30 PM: all 26 creature sheet pairs are processed (`art/beasts/`, `beasts.js?v=efe51fe3`, `oozevale-bestiary.js?v=3`). A creature is only renamed and repainted when its art exists. Will-o'-wisp has no art, so zone 1 wisps become Lantern Moths. `tools/beast_test.py` checks zones 0-5.
+
+## Hero animation pass 2, casters (Oct 19, late night)
+- `anim_deepen.py` now covers all 9 looks: glowcap, mossmother, ambercap, oozeseer, chromeveil and lanternhood have 10-frame walks toward and away from the camera, and an enhanced side walk.
+- `moonvale-motion.js` v10:
+  - Staff basic attacks get a tip flash and a spark spray on the release frame.
+  - Sporecaller casts sprout a ring of glowing mushrooms with a spore glow.
+  - When v2 sheets exist, combo hits 2 and 3 use `attack2`/`attack3`, and channel spells use a `channel` sheet. Without them, the transform-based variants stay.
+- v2 real frames: `tools/anim_v2_ingest.py` imports `art-src/ooze/incoming/v2/<look>-<anim>.*` and records them in `art-src/anim/v2-imported.json`. That list drives frame-count overrides in `process_anim.py` (walks 10, attacks and cast 8, channel 6, hurt 4), `anim_deepen` leaves those sheets as painted, and `process_anim` runs on the affected looks. Prompts for all 9 looks are in `art-src/ooze/REQUESTS-anim2.md`.
+- Shots: `shots/anim2/<look>.gif` for all 9 looks, filmed in open grass east of camp with labels hidden and the pet off.

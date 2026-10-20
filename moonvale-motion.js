@@ -169,9 +169,10 @@ const MoonMotion=(()=>{
  function faceTarget(H){const t=heroTarget();if(t&&Math.abs(t.x-p.x)>2)H.side=t.x<p.x?'left':'right';}
  function actionFrame(sh,s,H){
   const wa=s.weaponAttack,a0=H.act;
-  if(wa&&sh.attack?.ok&&!wa.castShown&&!(a0&&a0.name==='cast')){const m=sh.attack,n=m.frames,key=m.key??Math.floor(n/2),u=clamp(wa.elapsed/wa.duration,0,1);
+  if(wa&&sh.attack?.ok&&!wa.castShown&&!(a0&&a0.name==='cast')){const alt=FX.combo===1?sh.attack2:FX.combo===2?sh.attack3:null,m=alt&&alt.ok?alt:sh.attack,n=m.frames,key=m.key??Math.floor(n/2),u=clamp(wa.elapsed/wa.duration,0,1);
    const i=u<.48?Math.floor(Math.pow(u/.48,1.7)*key):key+Math.floor(Math.pow((u-.48)/.52,.75)*(n-key));faceTarget(H);return {m,i:clamp(i,0,n-1),state:'attack',u};}
   const a=H.act;
+  if(a&&a.name==='cast'&&FX.cast&&FX.cast.channel&&sh.channel?.ok&&FX.cast.t<FX.cast.life){const m=sh.channel;return {m,i:Math.floor(FX.cast.t*(m.fps||8))%m.frames,state:'channel'};}
   if(a&&sh[a.name]?.ok){const m=sh[a.name],n=m.frames,key=m.key??Math.floor(n/2);
    const i=a.t<a.W?Math.floor(a.t/a.W*key):key+Math.floor((a.t-a.W)/a.A*(n-key));return {m,i:clamp(i,0,n-1),state:a.name};}
   const c=typeof cinematic!=='undefined'?cinematic.pending:null;
@@ -270,6 +271,9 @@ const MoonMotion=(()=>{
     if(style==='gel')drop(p.x+(Math.random()-.5)*B*.6,p.y+4,0,-(140+120*k),col,2+Math.random()*2.5,.55,-60,'rise');
     else drop(e.x+Math.cos(a)*R,e.y+Math.sin(a)*R*.7,0,0,style==='spore'?'#d8ff9a':col,1.6+Math.random()*2,.5,0,'seek');}
    FX.gather={x:e.x,y:e.y,k,style};}else FX.gather=null;
+  // staff basic attack: tip flash + spark spray on the release frame (casters)
+  {const a=anim.hero.act;if(a&&a.name==='attack'&&!a.fxDone&&a.t>=a.W){a.fxDone=1;const e=emitWorld('attack');
+   if(e&&!calm()){const cc=style==='spore'?'#d8ff9a':col;FX.flashes.push({x:e.x,y:e.y,r:20,col:cc,t:0,life:.14});for(let i=0;i<7;i++){const an=Math.random()*Math.PI*2;drop(e.x,e.y,Math.cos(an)*110,Math.sin(an)*80,cc,1.6+Math.random()*1.6,.35,style==='spore'?-30:240,style==='spore'?'rise':'drop');}}}}
   // particles
   for(let i=FX.parts.length-1;i>=0;i--){const q=FX.parts[i];q.life-=dt;if(q.life<=0){if(q.kind==='drop'&&q.vy>0)FX.splats.push({x:q.x,y:q.y,r:q.r*1.6,col:q.col,t:0,life:.8});FX.parts.splice(i,1);continue;}
    if(q.kind==='seek'){const e=FX.gather||{x:q.x,y:q.y};q.x+=(e.x-q.x)*Math.min(1,dt*7);q.y+=(e.y-q.y)*Math.min(1,dt*7);}
@@ -322,6 +326,11 @@ const MoonMotion=(()=>{
     g.save();g.globalAlpha=fade;g.translate(c.x,c.y+7);g.rotate((c.flip?1:-1)*1.35*ease.in(u));g.translate(0,-Math.sin(Math.PI*u)*6);blitCell(c.m,0,k,c.flip,Math.max(0,1-c.t*4));g.restore();}
    if(FX.cast&&!calm()){const c=FX.cast,u=c.t/c.life;g.save();g.globalCompositeOperation='lighter';
     if(c.style==='gel'||c.channel){g.globalAlpha=.7*(1-u);g.strokeStyle=c.col;g.lineWidth=5*(1-u)+1;g.beginPath();g.ellipse(p.x,p.y+6,B*(.3+1.1*u),B*(.3+1.1*u)*.33,0,0,Math.PI*2);g.stroke();}
+    if(c.style==='spore'){const n=7,R=B*.5,pop=Math.min(1,u*4),fade=1-Math.max(0,(u-.6)/.4);
+     for(let i=0;i<n;i++){const a=i/n*Math.PI*2+.4,x=p.x+Math.cos(a)*R,y=p.y+6+Math.sin(a)*R*.36,sz=(5+3*(i%3))*pop*(1+.15*Math.sin(time*9+i));
+      g.globalAlpha=.85*fade;g.fillStyle=i%2?'#c8ff7a':'#ffe08a';g.beginPath();g.ellipse(x,y-sz*.9,sz,sz*.6,0,Math.PI,0);g.fill();g.fillRect(x-sz*.18,y-sz*.9,sz*.36,sz*.9);
+      glow(x,y-sz,sz*3,'#c8ff7a',.5*fade);}
+     glow(p.x,p.y-B*.2,B*.8*(.6+u),'#9dff6a',.22*fade);}
     if(c.style==='sigil'){g.translate(p.x,p.y+6);g.scale(1,.38);g.rotate(time*2.2);g.globalAlpha=.8*(1-u*u);g.strokeStyle=c.col;g.lineWidth=2.5;const R=B*.55;
      g.beginPath();g.arc(0,0,R,0,Math.PI*2);g.stroke();g.beginPath();g.arc(0,0,R*.78,0,Math.PI*2);g.stroke();
      g.beginPath();for(let i=0;i<=5;i++){const a=i*Math.PI*4/5;g.lineTo(Math.cos(a)*R*.78,Math.sin(a)*R*.78);}g.stroke();
