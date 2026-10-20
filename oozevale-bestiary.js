@@ -40,13 +40,13 @@
  const sheets={},meta=globalThis.OOZE_BEASTS||{};
  for(const [id,m] of Object.entries(meta))for(const k of ['a','b','idle'])if(m[k]){const img=new Image();img.decoding='async';const e={...m[k],img,ok:false,H:m.H};img.onload=()=>e.ok=true;img.src=m[k].src;(sheets[id]||(sheets[id]={}))[k]=e;}
  const zone=()=>typeof story!=='undefined'?story.zone:0;
- const eligible=m=>m.alive&&!m.beast&&m.type!=='boss'&&!m.ozTest&&m.maxHp<3000&&['slime','boar','wisp'].includes(m.type);
+ const eligible=m=>m.alive&&!m.beast&&m._bnone!==zone()+1&&m.type!=='boss'&&!m.ozTest&&m.maxHp<3000&&['slime','boar','wisp'].includes(m.type);
  function assign(m){
-  const R=ROSTER[zone()];if(!R)return;const plain=R.filter(r=>!r.elite&&r.base===m.type);
+  const R0=ROSTER[zone()];if(!R0)return;const R=R0.filter(r=>meta[r.id]);const plain=R.filter(r=>!r.elite&&r.base===m.type);
   const zm=mobs.filter(o=>o.alive&&o.type!=='boss');
   let r=null;
   if(m.type==='boar'&&!zm.some(o=>o.beastElite)){r=R.find(x=>x.elite);}
-  if(!r)r=plain.length?plain[m.id%plain.length]:R.filter(x=>!x.elite)[m.id%R.filter(x=>!x.elite).length];
+  if(!r){if(!plain.length){m._bnone=zone()+1;return;}r=plain[m.id%plain.length];}
   const f=m.hp/(m.maxHp||1),el=r.elite?ELITE:{hp:1,dmg:1,xp:1,gold:1,size:1};
   m.beast=r.id;m.beastDef=r;m.beastElite=!!r.elite;m.name=(r.elite?'★ ':'')+r.name;m.color=r.glow;
   m.maxHp=Math.round(m.maxHp*r.hp*el.hp);m.hp=Math.max(1,Math.round(m.maxHp*f));m.damage*=r.dmg*el.dmg;m.speed*=r.spd;
@@ -95,7 +95,8 @@
   // ground shadow
   g.save();g.globalAlpha=.45;g.fillStyle='rgba(4,10,18,.8)';g.beginPath();g.ellipse(o.x,o.y+4,hpx*.38,hpx*.11,0,0,7);g.fill();g.restore();
   if(o.elite){g.save();g.globalCompositeOperation='lighter';g.globalAlpha=.18+.06*Math.sin(o._ph*4);const gr=g.createRadialGradient(o.x,o.y-hpx*.4,0,o.x,o.y-hpx*.4,hpx*.8);gr.addColorStop(0,o.color);gr.addColorStop(1,'transparent');g.fillStyle=gr;g.fillRect(o.x-hpx,o.y-hpx*1.3,hpx*2,hpx*1.6);g.restore();}
-  const sq=hit?1+.12*hit:1;blit(sh,i,o.x+(hit?-(o._face||1)*4*hit:0),o.y+7-lift,hpx,o._face||1,hit*.8,sq,2-sq);
+  const BOB={lanternmoth:'flap',gargbat:'flap',capcrab:'bob',beetle:'bob'}[o.beast];let by=0,fs=1;if(BOB&&sh===s.a){const w=o._mv>8?1:.5;if(BOB==='flap'){fs=1+.07*w*Math.sin(o._ph*16);by=3*w*Math.sin(o._ph*8);}else{by=Math.abs(Math.sin(o._ph*(o._mv>8?9:3)))*-3*w;}}
+  const sq=(hit?1+.12*hit:1)*fs;blit(sh,i,o.x+(hit?-(o._face||1)*4*hit:0),o.y+7-lift+by,hpx,o._face||1,hit*.8,sq,BOB==='flap'&&!hit?1/fs:2-sq);
   if(typeof drawEnemyStatus==='function')drawEnemyStatus(o,hpx+lift);
  };
  // Death: real death frames (b 3..5), then fade.
