@@ -14,9 +14,9 @@
  const LK=globalThis.MoonLooks;
  // three playable classes, each with three painted looks (presets); the two spellweavers come later
  const HEROES=[
-  {key:'gelguard',cls:'warrior',name:'Gelguard',tag:'Jelly blade',glow:'#3fe0c8',zone:'art/zone-chapel.webp',lore:'Plate run through with living ooze. The Gelguard holds the line, and a loyal armored slime guards the Gelguard’s back.'},
-  {key:'sporecaller',cls:'druid',name:'Sporecaller',tag:'Spores',glow:'#8fe8a0',zone:'art/zone-camp.webp',lore:'A keeper of the glowing groves. Spores drift from the staff, mycelium binds, and wounds close under a cap of moonlit mushrooms.'},
-  {key:'slimewright',cls:'ranger',name:'Slimewright',tag:'Summoner',glow:'#b483ff',zone:'art/zone-marsh.webp',lore:'Pulls living slime out of a staff orb and gives it orders. Never fights alone.'},
+  {key:'gelguard',cls:'warrior',name:'Gelguard',tag:'Jelly blade',glow:'#3fe0c8',zone:'art/env/zone-sanctum.webp',lore:'Plate run through with living ooze. The Gelguard holds the line, and a loyal armored slime guards the Gelguard’s back.'},
+  {key:'sporecaller',cls:'druid',name:'Sporecaller',tag:'Spores',glow:'#8fe8a0',zone:'art/env/zone-camp.webp',lore:'A keeper of the glowing groves. Spores drift from the staff, mycelium binds, and wounds close under a cap of moonlit mushrooms.'},
+  {key:'slimewright',cls:'ranger',name:'Slimewright',tag:'Summoner',glow:'#b483ff',zone:'art/env/zone-duskfen.webp',lore:'Pulls living slime out of a staff orb and gives it orders. Never fights alone.'},
   {key:'embermage',cls:'mage',name:'Magmaweaver',tag:'Coming soon',glow:'#ff9a4d',locked:true,lore:'Stirs molten slime into flame. Still simmering in the vats.'},
   {key:'frostcaller',cls:'mage',name:'Rimegel',tag:'Coming soon',glow:'#9fd8ff',locked:true,lore:'Cold as deep gel. Still setting in the vats.'}
  ];

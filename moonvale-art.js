@@ -22,14 +22,15 @@
   const h=typeof customHero!=='undefined'?customHero:null;if(h&&(h.paint==='frostcaller'||h.paint==='embermage'))return h.paint;
   return /dwarf/.test(h?.race||'')?'frostcaller':'embermage';};
  // staff-bearers are drawn a little taller so the body (not the staff tip) matches the other heroes
- const heroScale={warden:1.1,embermage:1.1,frostcaller:1.0,warrior:1.0,gelguard:1.0,chromeknight:1.04,gildedgloop:1.0,glowcap:1.12,mossmother:1.1,ambercap:1.12,oozeseer:1.08,chromeveil:1.08,lanternhood:1.08};
+ const heroScale={warden:1.1,embermage:1.1,frostcaller:1.0,warrior:1.0,gelguard:1.0,tidemane:1.04,chromeknight:1.04,gildedgloop:1.0,glowcap:1.12,mossmother:1.1,ambercap:1.12,oozeseer:1.08,chromeveil:1.08,lanternhood:1.08};
  // NPC id -> painted NPC (scale relative to the 77px NPC height the game uses)
  const npcFor={chronicler:'keeper',caravan:'ranger',wayfarer:'bard',quartermaster:'goblin'};
  const npcScale={keeper:1.3,ranger:1.36,bard:1.3,goblin:1.12,witch:1.3};
  const enemyScale={wraith:1.15,wisp:1.1,slime:1.05,boar:1.1,boss:1.0};
  const heroes={},enemies={},npcs={},zoneArt={};
  (async()=>{
-  for(const [z,src] of Object.entries(A.zones||{})){const img=await load(src);if(img){zoneArt[z]=img;if(zones[z])zones[z].image=img;}}
+  const repainted=/[?&](noart|classic_env)\b/.test(location.search)?new Set():new Set(['0','1','2','5','9','10']);   // oozevale-world.js lazy-loads the new maps for these
+  for(const [z,src] of Object.entries(A.zones||{})){if(repainted.has(String(z)))continue;const img=await load(src);if(img){zoneArt[z]=img;if(zones[z])zones[z].image=img;}}
   if(!classic){
    for(const [k,src] of Object.entries(A.heroes||{})){const img=await load(src);if(!img){if(k==='gelguard')heroes.gelguard=null;continue;}const back=A.heroesBack?.[k]?await load(A.heroesBack[k]):null;const e={heightScale:heroScale[k]||1};
     heroes[k]={front:frame(img,e),back:frame(back||img,e),left:frame(mirror(img),e),right:frame(img,e)};}

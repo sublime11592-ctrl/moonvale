@@ -24,6 +24,7 @@ const ORDER=['teal','purple','orange','gold','chrome'];
    it was painted in (native = no change). Only pixels inside the band move, so plate, cloth, skin stay put. */
 const SPEC={
  gelguard:    {h:172,w:36,s:.16,v:0,  native:'teal'},
+ tidemane:    {h:172,w:36,s:.16,v:0,  native:'teal'},
  chromeknight:{h:280,w:30,s:.38,v:.42,native:'purple'},
  glowcap:     {h:160,w:28,s:.30,v:.34,native:'teal'},
  oozeseer:    {h:166,w:28,s:.30,v:.30,native:'teal'},
@@ -97,7 +98,7 @@ if(typeof MoonMotion!=='undefined'){
 const LOOKS={
  warrior:[
   {id:'chromeknight',name:'Chrome Ooze Knight',tag:'Silver & gold',lore:'Mirror-bright plate trimmed in gold, purple and orange ooze pumping through glass tubes. A slime orb rides in the open palm.'},
-  {id:'gelguard',name:'Tidemane',tag:'Iron & teal',lore:'Dark iron run through with teal ooze, a slime-mane helm, jelly sword and a jelly shield strapped high on the back.'},
+  {id:'tidemane',name:'Tidemane',tag:'Iron & teal',lore:'Dark iron run through with teal ooze, a hood of translucent teal jelly over an iron half-mask with glowing eyes, a jelly sword and one jelly shield slung high on the back.'},
   {id:'gildedgloop',name:'Gilded Gloop',tag:'Bronze & amber',lore:'Bronze and gold plate glowing with amber ooze, behind a shield of set honey-jelly.'}],
  druid:[
   {id:'glowcap',name:'Glowcap Witch',tag:'Lantern & cap',lore:'A purple mushroom hat speckled with glowing spots, a brass lantern staff brimming with slime and an arm of living teal jelly.'},
@@ -112,8 +113,11 @@ const LOOK_BY={};for(const [cls,arr] of Object.entries(LOOKS))for(const l of arr
 const ART=()=>globalThis.MOONVALE_ART||{},ANIM=()=>globalThis.MOONVALE_ANIM||{};
 const MoonLooks={
  LOOKS,get:id=>LOOK_BY[id]||null,
- animated:id=>!!(ANIM().chars&&ANIM().chars[id]&&ANIM().chars[id].idle),
- available(id){return !!(LOOK_BY[id]&&((ART().heroes&&ART().heroes[id])||MoonLooks.animated(id)));},
+ // A look is selectable ONLY when its full drawn frame-by-frame set is imported: idle, walk (side),
+ // walkfront, walkback, attack and cast. No painted still is ever offered as a rigid-motion stand-in.
+ NEED:['idle','walk','walkfront','walkback','attack','cast'],
+ animated:id=>{const c=ANIM().chars&&ANIM().chars[id];return !!c&&MoonLooks.NEED.every(a=>c[a]&&(c[a].n||c[a].frames||1)>1);},
+ available(id){return !!(LOOK_BY[id]&&MoonLooks.animated(id));},
  list:cls=>LOOKS[cls]||[],
  first(cls){const l=(LOOKS[cls]||[]).find(x=>MoonLooks.available(x.id));return l?l.id:null;},
  // look for the class (saved choice if valid, else the first available)
@@ -136,7 +140,7 @@ try{
  // Sporecaller (druid): same proven kit, grown into spores and glowcaps
  Object.assign(CLASSES.druid,{name:'Sporecaller',role:'Hybrid · Spores & renewal',desc:'Seed foes with glowing spores, snare a pack in slimy mycelium and mend through the fight. Sporefall turns a crowd into a drifting glow.'});
  CLASSES.druid.skills=[
-  ['Spore Burst','☾',10,3,250,'moonfire',1.1,'Fling a puff of glowing spores: lunar damage, then the spores smoulder on the foe for 6 seconds.'],
+  ['Spore Burst','☾',10,3,250,'moonfire',1.1,'Fling a puff of glowing spores: spore damage, then the spores smoulder on the foe for 6 seconds.'],
   ['Mycelium Snare','❧',20,8,260,'trap',.8,'Slimy mycelium bursts up around your target and roots every foe nearby for 3 seconds.'],
   ['Glowcap Mend','✚',25,12,0,'heal',0,'A glowcap blooms at your feet: restore 35% of maximum health, then regenerate for 6 seconds.'],
   ['Sporefall','✧',30,12,280,'rain',1.5,'Shake loose a cloud of shining spores over the target area for 4 seconds.'],
@@ -146,25 +150,36 @@ try{
  Object.assign(CLASSES.ranger,{name:'Slimewright',role:'Summoner · Living slime',glyph:'◉',hp:125,armor:2,range:260,desc:'Pull living slime out of your staff orb and command it. Jellylings swarm your target, Gloop Command makes every slime you own pounce, and your familiar never leaves your side.'});
  CLASSES.ranger.skills=[
   ['Acid Glob','◉',10,3,300,'poison',1.4,'Lob a glob of acidic jelly from your staff orb: it hits, then corrodes the foe for 7 seconds.'],
-  ['Summon Jellies','✺',24,11,300,'summon',.5,'Pull jellylings from the orb (2, or 3 from level 10). They swarm your target and keep fighting for 13 seconds.'],
+  ['Summon Jellies','✺',24,11,300,'summon',.5,'Pull jellylings from the orb (2, or 3 from level 10). No target needed: they orbit you until a fight starts, then swarm your target for 13 seconds.'],
   ['Gloop Command','⇶',16,7,300,'command',1.3,'Every slime you own pounces on your target, hits hard and glues it in place for 2 seconds. With no slimes out, the orb lashes it instead.'],
-  ['Slime Slip','➶',12,6,0,'blink',0,'Melt into a puddle and slither in your movement direction, slipping past every attack.'],
-  ['Feeding Frenzy','◎',15,10,320,'mark',0,'Mark a foe for 10 seconds: it takes 50% more damage from you and from all of your slimes.']];
+  ['Feeding Frenzy','◎',15,10,320,'mark',0,'Mark a foe for 10 seconds: it takes 50% more damage from you and from all of your slimes. If it dies marked, a free jellyling bursts out of it.'],
+  ['Slime Slip','➶',12,6,0,'blink',0,'Melt into a puddle and slither in your movement direction, slipping past every attack.']];
  Object.defineProperty(CLASSES.ranger,'color',{configurable:true,get:()=>MoonSlime.hex(heroSlime())});
  if(typeof classIdentity!=='undefined'){
   Object.assign(classIdentity.ranger,{resource:'Ooze',signature:'Gelspike Lance',short:'Lance',glyph:'◉',role:'Summoner · Slime at your command',passive:'Long Reach',
-   description:'Deal 20% more damage when your target is over 160 steps away. Standing still lets ooze pool in your orb (25 per second); moving drains 20 per second. Keep your slimes between you and the fight.',
+   description:'Deal 20% more damage when your target is over 160 steps away. Ooze is earned by your slimes: +4 for every jellyling or familiar hit, +10 for every Acid Glob hit, +8 per second while you stand still. Moving never drains it.',
    signatureHelp:'Spend 60 Ooze to fire a lance of hardened jelly through every enemy in a 380-step line toward your target. Hits deal heavy damage and leave foes 30% more vulnerable for 4 seconds.',
    rotation:'Summon Jellies → Feeding Frenzy → Acid Glob → Gloop Command when they cluster → Gelspike Lance.'});
   Object.assign(classIdentity.druid,{resource:'Spores',signature:'Glowcap Grove',short:'Grove',passive:'Cycle of Spores',
    description:'Spore Burst, Mycelium Snare and Sporefall each grow 1 Spore, up to 3. Glowcap Mend consumes Spores to heal an extra 8% of maximum health per Spore and extend regeneration.',
    signatureHelp:'Spend 3 Spores to grow an 8-second glowcap grove where you stand. Each second it heals you for 4% maximum health inside its 125-step radius and damages and slows nearby enemies.',
    rotation:'Spore Burst → Mycelium Snare → choose between an empowered Glowcap Mend and Glowcap Grove.'});
-  Object.assign(classIdentity.warrior,{signature:'Ooze Quake',passive:'Living Armor'});
+  Object.assign(classIdentity.warrior,{resource:'Gel',signature:'Ooze Quake',short:'Quake',glyph:'◍',passive:'Living Armor',role:'Front-line bruiser · Gel & sustain',
+   description:'Melee hits generate 8 Gel and taking health damage generates 15. Melee kills restore 6% of maximum health. At 60+ Gel your living armor hardens (+2 armor). Gel slowly seeps away out of combat.',
+   signatureHelp:'Spend 60 Gel to quake the ground within 145 steps: heavy damage, a 1.5-second stun that interrupts casts, and an ooze shield worth 15% of your maximum health.',
+   rotation:'Slime Surge in → Gelbreaker → Ooze Cyclone (spreads the goo) → spend Gel on Ooze Quake.'});
+  CLASSES.warrior.desc='Wade in behind a wall of living ooze. Slime Surge closes the gap, Gelbreaker coats a foe in goo, Ooze Cyclone splashes the whole pack and Ooze Quake spends your Gel.';
  }
+ // skill order + unlocks (design/classes.md, review M10): the combo partner sits in slot 3, unlocks at [1,1,2,4,6]
+ {const W=CLASSES.warrior.skills,a=W.findIndex(s=>s[5]==='charge'),b=W.findIndex(s=>s[5]==='bash');if(a===3&&b===2){W[2]=W.splice(3,1,W[2])[0];}
+  W.forEach(s=>{if(s[5]==='bash')s[7]='Slam your jelly shield into the target: interrupts it, stuns it for 1.5 seconds, then glues it in goo for 1.5 more.';if(s[5]==='sunder')s[7]='A heavy jelly-blade strike that coats the target in clinging ooze: it takes 30% extra damage for 6 seconds. +10 Gel.';if(s[5]==='spin')s[7]='Spin the jelly blade: splash every nearby foe, pull them in and slow them. Goo on one target spreads to every foe hit.';});}
+ if(typeof skillUnlockLevels!=='undefined')skillUnlockLevels.splice(0,skillUnlockLevels.length,1,1,2,4,6);
+ if(typeof originalSkills!=='undefined')for(const id of ['warrior','druid','ranger'])originalSkills[id]=CLASSES[id].skills.map(s=>[...s]);
+ if(typeof syncTraining==='function')try{syncTraining();}catch(e){}
  if(typeof classGearNames!=='undefined'){
   classGearNames.ranger={weapon:'Orb-Knot Staff',helm:'Seeping Hood',chest:'Dripping Robe',gloves:'Gel-Lined Gauntlets',boots:'Puddle Boots'};
   classGearNames.druid={weapon:'Glowcap Staff',helm:'Spore Cap',chest:'Mossweave Robe',gloves:'Mycelium Wraps',boots:'Rootsoft Boots'};
+  classGearNames.warrior={weapon:'Jelly Blade',helm:'Iron Gelhelm',chest:'Gel-Plate Cuirass',gloves:'Gooseal Gauntlets',boots:'Slimetread Greaves'};
  }
 }catch(e){console.warn('oozevale classes',e);}
 
@@ -290,7 +305,7 @@ function portrait(canvas,colorKey,stage,opts={}){const x=canvas.getContext('2d')
 
 // ---- state helpers ----
 function active(){return typeof started!=='undefined'&&started&&typeof p!=='undefined'&&!!defFor(p.cls)&&!(typeof customHero!=='undefined'&&customHero&&customHero.pet===false);}
-function cap(){return CAP[stageOf(p.level)];}
+function cap(){return CAP[stageOf(p.level)]+(p.level>=5?4:0);}   // lv5 bond: +4 (classes.md §4)
 let lastInput=0,hurtAt=-99,playerHitAt=-99,petHitting=false,prevP=null,pv={x:0,y:0},lastStage=null,seenZone=null;
 const now=()=>typeof time!=='undefined'?time:performance.now()/1000;
 for(const ev of ['keydown','pointerdown','touchstart','wheel'])addEventListener(ev,()=>{lastInput=now();},{passive:true,capture:true});
@@ -312,7 +327,8 @@ function tick(dt){
   pet.x=q.x0+(tx-q.x0)*u;pet.y=q.y0+(ty-q.y0)*u;pet.hopY=-Math.sin(u*Math.PI)*46;pet.face=Math.sign(tx-q.x0)||pet.face;pet.vx=pet.vy=0;
   if(u>=1){pet.pounce=null;pet.hopY=0;pet.lunge=.28;if(e&&e.alive&&q.onHit)q.onHit(e);pet.mode='fight';pet.target=e&&e.alive?e:null;pet.cd=.6;}
   return;}
- const st=stageOf(p.level);if(lastStage&&st!==lastStage){const nm=petName();bubble('✦');say(nm+' evolved into a '+PETS[p.cls].stages[st]+'!');if(typeof effect==='function')effect(pet.x,pet.y,70,MoonSlime.hex(petColor()),'ring',1.2);if(typeof burst==='function')burst(pet.x,pet.y-20,MoonSlime.hex(petColor()),30,120);}
+ const st=stageOf(p.level);if(lastStage&&st!==lastStage&&STAGE_AT[st]&&globalThis.MoonJuice&&MoonJuice.evolve){bubble('✦');MoonJuice.evolve(pet,st,petName(),PETS[p.cls].stages[st]);}
+ else if(lastStage&&st!==lastStage){const nm=petName();bubble('✦');say(nm+' evolved into a '+PETS[p.cls].stages[st]+'!');if(typeof effect==='function')effect(pet.x,pet.y,70,MoonSlime.hex(petColor()),'ring',1.2);if(typeof burst==='function')burst(pet.x,pet.y-20,MoonSlime.hex(petColor()),30,120);}
  lastStage=st;pet.stage=st;
  const speedP=Math.hypot(pv.x,pv.y),moving=speedP>30;
  const tgt=(typeof target!=='undefined'&&target&&target.alive)?target:null;
@@ -331,11 +347,12 @@ function tick(dt){
   if(fighting&&!away&&d2(tgt,p)<LEASH_FIGHT){pet.mode='fight';pet.target=tgt;}
   else if(isAfk()&&t-hurtAt<2.5&&!safe){const foe=(typeof mobs!=='undefined'?mobs:[]).filter(m=>m.alive&&m.aggro&&d2(m,p)<150).sort((a,b)=>d2(a,p)-d2(b,p))[0];if(foe){pet.mode='defend';pet.target=foe;bubble('!');}}
  }
- if(pet.mode==='follow'&&!moving&&typeof inventory!=='undefined'&&(!p.inCombat||p.inCombat<2)){
-  if(pet.stash.length<cap()){const drop=inventory.ground.filter(g=>g.zone===story.zone&&d2(g,p)<150&&d2(g,p)>30).sort((a,b)=>d2(a,pet)-d2(b,pet))[0];if(drop){pet.mode='loot';pet.lootT=drop;}}
+ const calm=!fighting&&!(typeof mobs!=='undefined'&&mobs.some(m=>m.alive&&m.aggro&&d2(m,p)<200));
+ if(pet.mode==='follow'&&calm&&typeof inventory!=='undefined'){   // loot vacuum (review M13): no stand-still, up to 220 away, as soon as the fight around you is over
+  if(pet.stash.length<cap()){const drop=inventory.ground.filter(g=>g.zone===story.zone&&d2(g,p)<220&&d2(g,p)>24).sort((a,b)=>d2(a,pet)-d2(b,pet))[0];if(drop){pet.mode='loot';pet.lootT=drop;if(globalThis.MoonJuice)MoonJuice.lootSeen(drop);}}
   else if(pet.full<=0&&inventory.ground.some(g=>g.zone===story.zone&&d2(g,p)<150)){pet.full=12;bubble('full');say(petName()+'’s stash is full · open the pet stash to sort it');}
  }
- if(pet.mode==='loot'&&(moving||!pet.lootT||!inventory.ground.includes(pet.lootT)||d2(pet.lootT,p)>170)){pet.mode='follow';pet.lootT=null;}
+ if(pet.mode==='loot'&&(!calm||!pet.lootT||!inventory.ground.includes(pet.lootT)||d2(pet.lootT,p)>260)){pet.mode='follow';pet.lootT=null;}
  pet.full=Math.max(0,pet.full-dt);
  // ---- steer (spring-damped arrive; never snaps) ----
  let gx,gy,stop=8;
@@ -344,7 +361,7 @@ function tick(dt){
  else{const f=moving?(Math.abs(pv.x)>8?Math.sign(pv.x):(pet.x<p.x?1:-1)):(pet.x<p.x?1:-1);gx=p.x-f*LEASH_FOLLOW;gy=p.y+14;
   if(moving){gx-=pv.x*.12;gy-=pv.y*.12;}stop=14;}
  // the goal itself is leashed to the player (fights never pull the pet far away)
- {const lx=gx-p.x,ly=gy-p.y,ll=Math.hypot(lx,ly),lim=pet.mode==='follow'?LEASH_FOLLOW+30:LEASH_FIGHT;if(ll>lim){gx=p.x+lx/ll*lim;gy=p.y+ly/ll*lim;}}
+ {const lx=gx-p.x,ly=gy-p.y,ll=Math.hypot(lx,ly),lim=pet.mode==='follow'?LEASH_FOLLOW+30:pet.mode==='loot'?250:LEASH_FIGHT;if(ll>lim){gx=p.x+lx/ll*lim;gy=p.y+ly/ll*lim;}}
  const dx=gx-pet.x,dy=gy-pet.y,dd=Math.hypot(dx,dy);
  const base=Math.max(170,speedP*1.12),boost=1+clamp01((dp-110)/110)*.75,vmax=base*boost;
  let want=dd<stop?0:Math.min(vmax,(dd-stop)*4.2);
@@ -357,14 +374,14 @@ function tick(dt){
  if((pet.mode==='fight'||pet.mode==='defend')&&pet.target&&d2(pet,pet.target)<40&&pet.cd<=0){
   const e=pet.target,lv=p.level,dmg=Math.round(3+lv*1.5+(pet.stage==='grown'?4:pet.stage==='evolved'?10:0));
   pet.cd=1.15;pet.lunge=.28;pet.face=Math.sign(e.x-pet.x)||pet.face;
-  petHitting=true;try{damage(e,dmg,MoonSlime.hex(petColor()));}finally{petHitting=false;}
+  petHitting=true;globalThis.OZ_SRC='pet';try{damage(e,dmg,MoonSlime.hex(petColor()));}finally{petHitting=false;globalThis.OZ_SRC=null;}
   if(typeof burst==='function')burst(e.x,e.y-18,MoonSlime.hex(petColor()),10,90);
-  if(typeof sfx==='function')try{sfx('hit')}catch{}
+  if(typeof sfx==='function')try{sfx('jellyHit')}catch{}
  }
  if(pet.mode==='loot'&&pet.lootT&&d2(pet,pet.lootT)<18){
   const i=inventory.ground.indexOf(pet.lootT);if(i>=0){const it=inventory.ground.splice(i,1)[0].item;pet.stash.push(it);
    const nm=petName();if(typeof log==='function')log(nm+' swallowed '+it.name);say(nm+' swallowed '+it.name+' · Pet stash '+pet.stash.length+'/'+cap());
-   if(typeof burst==='function')burst(pet.x,pet.y-16,rarityCol()[it.rarity]||'#fff',14,70);if(typeof sfx==='function')try{sfx('loot')}catch{}}
+   if(globalThis.MoonJuice)MoonJuice.slurp(pet,rarityCol()[it.rarity]||'#fff');else if(typeof burst==='function')burst(pet.x,pet.y-16,rarityCol()[it.rarity]||'#fff',14,70);if(typeof sfx==='function')try{sfx('slurp')}catch{}}
   pet.mode='follow';pet.lootT=null;
  }
 }
@@ -452,7 +469,7 @@ addEventListener('keydown',e=>{if(e.key&&e.key.toLowerCase()==='p'&&!e.repeat&&!
 setInterval(install,1000);addEventListener('load',install);
 
 globalThis.MoonPet={state:pet,defs:PETS,stageOf,cap,open,close:()=>D.close(),portrait,draw:drawPet,drawBlob,name:petName,active,STAGE_AT,color:()=>petColor(),
- hit(e,n,c){petHitting=true;try{damage(e,n,c);}finally{petHitting=false;}},
+ hit(e,n,c,src){petHitting=true;const s0=globalThis.OZ_SRC;globalThis.OZ_SRC=src||s0||'pet';try{damage(e,n,c);}finally{petHitting=false;globalThis.OZ_SRC=s0||null;}},
  pounce(target,onHit){if(!active()||!pet.seen||!target)return false;pet.pounce={t:0,dur:.38,x0:pet.x,y0:pet.y,target,onHit};return true;},
  rules:{LEASH_FOLLOW,LEASH_FIGHT,LEASH_MAX},debug:()=>({mode:pet.mode,x:+pet.x.toFixed(1),y:+pet.y.toFixed(1),d:+d2(pet,p).toFixed(1),stash:pet.stash.length,stage:pet.stage,afk:isAfk(),target:pet.target?pet.target.name||pet.target.type:null})};
 })();

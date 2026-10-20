@@ -315,3 +315,8 @@ body.mv-ui2 .epic-wardrobe-preview img{object-fit:contain}
 #stick::after{content:"";position:absolute;inset:-16px;border-radius:50%}
 #stick.mv-active #knob{filter:brightness(1.25)}
 body.mv-ui2 .mv-arc .skill,body.mv-ui2 .mv-mini,body.mv-ui2 .mv-potion,body.mv-ui2 #autoBtn,body.mv-ui2 .mv-navbtns button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+
+/* ---------- input v2: touch devices always get the stick (any width); floating stick follows the thumb ---------- */
+body.mv-touch .touch-stick,body.mv-ui2.mv-touch .touch-stick,#stick.mv-floating{display:block!important}
+@media (any-pointer:coarse){body.mv-ui2 .touch-stick{display:block!important}}
+#stick.mv-floating{opacity:.92;transition:none}

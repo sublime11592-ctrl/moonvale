@@ -24,7 +24,9 @@ const SPR={};for(const k of ['teal','purple'])SPR[k]=CL.map(set=>mk(84,64,(x)=>{
 let zoneKey=-1,clusters=[],lamps=[],motes=[];
 const rnd=s=>()=>((s=Math.imul(s^s>>>15,1|s)+0x6D2B79F5|0),((s^s>>>14)>>>0)/4294967296);
 const kind=()=>{try{return MoonZones.kindFor(story.zone)}catch{return ''}};
-function place(){zoneKey=story.zone;clusters=[];lamps=[];const k=kind();const R=rnd(9173+story.zone*131);
+function place(){zoneKey=story.zone;clusters=[];lamps=[];motes=[];const k=kind();
+ // repainted Oozevale zones carry their own painted mushrooms + lanterns (oozevale-world.js glows them)
+ if(globalThis.OozeWorld&&OozeWorld.data(story.zone))return;const R=rnd(9173+story.zone*131);
  if(k==='grove'||k==='marsh'){const want=small()?12:18;let tries=0;
   while(clusters.length<want&&tries++<900){const x=60+R()*(WORLD.w-120),y=80+R()*(WORLD.h-140);
    if(Math.hypot(x-CAMP.x,y-CAMP.y)<170)continue;

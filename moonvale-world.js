@@ -14,7 +14,7 @@ const MoonFeel=(()=>{let stop=0;
 globalThis.MoonCamera=(()=>{let last=0,inited=false,lx=0,ly=0;
  function follow(){const now=performance.now(),dt=Math.min(.1,(now-last)/1000||0);last=now;
   const s=typeof stateFor==='function'?stateFor(p,true):null,m=s?s.moving:0;
-  lx+=((p.dx||0)*60*m-lx)*Math.min(1,dt*2.5);ly+=((p.dy||0)*40*m-ly)*Math.min(1,dt*2.5);
+  lx+=((p.dx||0)*60*m-lx)*Math.min(1,dt*2.5);ly+=((p.dy||0)*40*m-ly)*Math.min(1,dt*2.5);if(!isFinite(lx))lx=0;if(!isFinite(ly))ly=0;if(!isFinite(camera.x)||!isFinite(camera.y))inited=false;
   // portrait phones: hero sits at ~53% of the screen height and the camera may run past the map edge
   // (the edge is filled with a mirrored, darkened strip of the zone art) instead of clamping the hero low
   const port=view.h>view.w*1.15,ay=port?(view.h<580?.66:.62):.5,px=port?view.w*.22:0,py=port?view.h*.32:0;
@@ -157,15 +157,26 @@ const MoonAtmos=(()=>{
   g.restore();}
  function drawText(){g.save();g.setTransform(cinematic.dpr,0,0,cinematic.dpr,-camera.x*cinematic.dpr,-camera.y*cinematic.dpr);g.textAlign='center';g.lineJoin='round';
   // mockup style: big orange outlined numbers, crits as a yellow "146!" with a callout line, word pops in gold
-  for(const t of texts){const age=1.2-t.life,str=String(t.s),crit=str.startsWith('✦'),hurtN=/^[−-]\d/.test(str),num=/^(✦\s*)?[−-]?\d+$/.test(str.trim());
-   const base=num?(crit?30:hurtN?18:23):14;const pop=age<.12?.5+.7*MoonMotion.ease.back(age/.12):1-Math.max(0,age-.85)*.4,size=Math.round(base*pop),rise=22*MoonMotion.ease.out(Math.min(1,age/.4));
-   g.globalAlpha=clamp(t.life*1.8,0,1);const y=t.y-28-rise,x=t.x+(num&&!hurtN?((t.x*7)%13-6):0);
-   const s=crit?str.replace(/^✦\s*/,'')+'!':str;g.font=(num?'900 ':'italic 800 ')+size+'px "MV Fira","Trebuchet MS",system-ui,sans-serif';
-   g.lineWidth=Math.max(3,size*.2);g.strokeStyle='rgba(20,8,4,.95)';g.strokeText(s,x,y);
-   let fill;if(hurtN)fill='#ff5a52';else if(crit)fill='#ffd84a';else if(num){const gr=g.createLinearGradient(0,y-size*.8,0,y);gr.addColorStop(0,'#ffd27a');gr.addColorStop(1,'#ff7a1e');fill=gr;}else fill='#ffd36b';
+  for(const t of texts){const mx=t.max||1.2,age=mx-t.life,str=String(t.s),src=t.src||'',crit=str.startsWith('✦'),hurtN=/^[−-]\d/.test(str),num=/^(✦\s*)?[+−-]?\d+$/.test(str.trim());
+   // Oozevale juice (juice.md §7): source-tagged numbers. src: ''|'pet'|'jelly'|'dot'|'heal'|'word' (set by oozevale-juice.js)
+   const small=src==='pet'||src==='jelly'||src==='dot'||src==='heal'||(src==='word'&&!num);
+   const base=src==='pet'?17:src==='jelly'?14:src==='dot'?15:src==='heal'?18:src==='word'?14:num?(crit?32:hurtN?20:23):14;
+   const popT=crit?.14:.08,pop=small?(src==='dot'?1:age<.1?.7+.3*MoonMotion.ease.out(age/.1):1)*(1+(t.merge||0)*.12*Math.max(0,1-(age-(t.mergeAt||0))*4)):age<popT?(crit?1.6-.6*MoonMotion.ease.out(age/popT):.5+.7*MoonMotion.ease.back(age/popT)):1;
+   const size=Math.round(base*pop),riseMax=src==='pet'?18:src==='jelly'?14:src==='dot'?10:src==='heal'?30:crit?34:hurtN?-10:26,rise=riseMax*MoonMotion.ease.out(Math.min(1,age/.4));
+   g.globalAlpha=clamp(t.life/.3,0,1);const lane=t.lane||0,shk=hurtN&&age<.12?Math.sin(age*160)*2:0;
+   const y=t.y-28-rise-lane*14,x=t.x+(src==='pet'?10+12*Math.min(1,age/.6):0)+(lane%2?10:0)*(lane%4===3?-1:1)+shk+(num&&!hurtN&&!src?((t.x*7)%13-6):0);
+   let s=crit?str.replace(/^✦\s*/,'')+'!':str;if(src==='word')s=s.toUpperCase();
+   g.save();if(crit){g.translate(x,y);g.rotate((t.tilt||0));g.translate(-x,-y);}
+   g.font=(src==='dot'?'italic 800 ':num?'900 ':'italic 800 ')+size+'px "MV Fira","Trebuchet MS",system-ui,sans-serif';
+   if(src==='word'&&'letterSpacing' in g)g.letterSpacing='1px';
+   g.lineWidth=src==='jelly'||src==='dot'?2.5:small?3:crit?5:Math.max(3,size*.2);g.strokeStyle='rgba(20,8,4,.95)';
+   if(crit){g.shadowColor='rgba(255,210,87,.9)';g.shadowBlur=4;}g.strokeText(s,x,y);g.shadowBlur=0;
+   let fill;if(src&&src!=='word'&&src!=='heal'&&t.color)fill=t.color;else if(src==='heal')fill='#9cebbb';else if(src==='word')fill=t.color||'#ffd36b';else if(hurtN)fill='#ff5a52';
+   else if(crit){const gr=g.createLinearGradient(0,y-size*.8,0,y);gr.addColorStop(0,'#fff6c0');gr.addColorStop(1,'#ffd84a');fill=gr;}
+   else if(num){const gr=g.createLinearGradient(0,y-size*.8,0,y);gr.addColorStop(0,'#ffd27a');gr.addColorStop(1,'#ff7a1e');fill=gr;}else fill='#ffd36b';
    g.fillStyle=fill;g.fillText(s,x,y);
-   if(crit){g.font='italic 700 '+Math.round(12*pop)+'px Georgia,serif';g.lineWidth=3;g.strokeText('Critical!',x,y+13);g.fillStyle='#ffe58a';g.fillText('Critical!',x,y+13);
-    g.globalCompositeOperation='lighter';g.globalAlpha*=.3;g.font='900 '+size+'px "MV Fira","Trebuchet MS",sans-serif';g.fillStyle='#ffd84a';g.fillText(s,x,y);g.globalCompositeOperation='source-over';}}
+   if(crit){g.globalCompositeOperation='lighter';g.globalAlpha*=.3;g.fillStyle='#ffd84a';g.fillText(s,x,y);g.globalCompositeOperation='source-over';}
+   if('letterSpacing' in g)g.letterSpacing='0px';g.restore();}
   g.restore();}
  function drawVignette(){if(fade<=0)return;g.save();g.setTransform(cinematic.dpr,0,0,cinematic.dpr,0,0);
   if(fade>0){g.globalAlpha=Math.min(1,fade);g.fillStyle='#04060c';g.fillRect(0,0,view.w,view.h);}g.restore();}

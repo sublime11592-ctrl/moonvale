@@ -15,7 +15,7 @@ const hx=()=>globalThis.MoonSlime?MoonSlime.hex(MoonSlime.current()):'#b483ff';
 const d2=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const jellies=[];
 const MAXJ=5,LIFE=13;
-function hitBy(e,n,c){if(globalThis.MoonPet&&MoonPet.hit)MoonPet.hit(e,n,c);else damage(e,n,c);}
+function hitBy(e,n,c,src){if(globalThis.MoonPet&&MoonPet.hit)MoonPet.hit(e,n,c,src);else{const s0=globalThis.OZ_SRC;globalThis.OZ_SRC=src||'pet';try{damage(e,n,c);}finally{globalThis.OZ_SRC=s0||null;}}}
 function spawnJellies(n,tgt){
  const col=hx();
  for(let i=0;i<n;i++){
@@ -29,9 +29,9 @@ function spawnJellies(n,tgt){
 }
 function pop(j){if(typeof burst==='function')burst(j.x,j.y-10,hx(),10,80);}
 function pickTarget(j){
- if(j.target&&j.target.alive&&d2(j.target,p)<340)return j.target;
- if(typeof target!=='undefined'&&target&&target.alive&&d2(target,p)<300)return target;
- let best=null,bd=1e9;for(const m of mobs){if(!m.alive)continue;const d=d2(m,p);if(d<200&&(m.aggro||m.inCombat||d<120)&&d<bd){bd=d;best=m;}}
+ if(j.target&&j.target.alive&&!j.target.ozDummy&&d2(j.target,p)<340)return j.target;
+ if(typeof target!=='undefined'&&target&&target.alive&&!target.ozDummy&&d2(target,p)<300)return target;
+ let best=null,bd=1e9;for(const m of mobs){if(!m.alive)continue;const d=d2(m,p);if(d<200&&(m.aggro||m.inCombat)&&d<bd){bd=d;best=m;}}
  return best;
 }
 function tickJellies(dt){
@@ -51,7 +51,7 @@ function tickJellies(dt){
   const dx=gx-j.x,dy=gy-j.y,dd=Math.hypot(dx,dy),want=dd<stop?0:Math.min(230,(dd-stop)*5),acc=1100*dt;
   let ax=(dd?dx/dd*want:0)-j.vx,ay=(dd?dy/dd*want:0)-j.vy;const al=Math.hypot(ax,ay);if(al>acc){ax*=acc/al;ay*=acc/al;}
   j.vx+=ax;j.vy+=ay;j.x+=j.vx*dt;j.y+=j.vy*dt;j.phase+=Math.hypot(j.vx,j.vy)*dt/26;if(Math.abs(j.vx)>10)j.face=Math.sign(j.vx);
-  if(e&&d2(j,e)<30&&j.cd<=0){j.cd=.85;j.lunge=.25;j.face=Math.sign(e.x-j.x)||j.face;hitBy(e,Math.round(dmg),col);if(typeof burst==='function')burst(e.x,e.y-16,col,6,70);}
+  if(e&&d2(j,e)<30&&j.cd<=0){j.cd=.85;j.lunge=.25;j.face=Math.sign(e.x-j.x)||j.face;globalThis.OZ_J=j;try{hitBy(e,Math.round(dmg),col,'jelly');}finally{globalThis.OZ_J=null;}if(typeof sfx==='function')try{sfx('jellyHit')}catch{}if(typeof burst==='function')burst(e.x,e.y-16,col,6,70);}
  }
 }
 function drawJelly(j){
@@ -75,14 +75,14 @@ if(typeof releaseSpell==='function'){const b=releaseSpell;releaseSpell=function(
  const r=b(i);
  if(!(p.cd[i]>before))return r;               // not cast (cooldown, mana, range, locked)
  try{
-  if(kind==='summon'){spawnJellies(p.level>=10?3:2,tgt);if(typeof sfx==='function')try{sfx('loot')}catch{}}
+  if(kind==='summon'){spawnJellies(p.level>=10?3:2,tgt&&!tgt.ozDummy?tgt:null);if(typeof sfx==='function')try{sfx('summon')}catch{}}
   if(kind==='command'&&tgt){
    const col=hx(),pw=p.power*sk[6];let n=0;
    const glue=(e,mult)=>{hitBy(e,Math.round(pw*mult),col);if(e.alive){e.root=Math.max(e.root||0,2);e.slow=Math.max(e.slow||0,3);}if(typeof burst==='function')burst(e.x,e.y-18,col,14,110);};
-   for(const j of jellies){if(j.pounce)continue;j.pounce={t:0,dur:.3+n*.05,x0:j.x,y0:j.y,target:tgt,onHit:e=>glue(e,.55)};j.target=tgt;n++;}
+   for(const j of jellies){if(j.pounce)continue;j.pounce={t:0,dur:.3+n*.05,x0:j.x,y0:j.y,target:tgt,onHit:e=>{globalThis.OZ_SRC='jelly';try{glue(e,.55);}finally{globalThis.OZ_SRC=null;}}};j.target=tgt;n++;}
    if(globalThis.MoonPet&&MoonPet.pounce(tgt,e=>glue(e,1)))n++;
    if(!n){glue(tgt,1.15);if(typeof effect==='function')effect(tgt.x,tgt.y,46,col,'ring',.5);}
-   if(typeof float==='function')float(p.x,p.y-96,n?'Pounce!':'Orb lash!',col);
+   if(typeof float==='function')float(p.x,p.y-96,n?'Pounce!':'Orb lash!',col);if(typeof sfx==='function')try{sfx('pounce')}catch{}
   }
  }catch(e){console.warn('slime kit',e);}
  return r;};}

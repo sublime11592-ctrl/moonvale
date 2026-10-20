@@ -185,3 +185,146 @@ Changed files:
 - `tools/creator_test.py`, `tools/enter.py`: moved to the new classes.
 
 Art pipeline: the frame sheets for all three preset-1 looks, plus the Tidemane sheets and the pets, were generated but sit outside the box. Copy them into `art-src/ooze/incoming/` and run `python3 tools/ooze_import.py`. It processes the sheets, writes `anim.js`, `manifest.js` and `ooze-art.js`, and cache-busts them. Then re-run `python3 tools/ooze_shots.py`. Until then the preset-1 looks play as painted stills with rigid motion: bob, lean, lunge, cast lift, and the same front image for every direction.
+
+## Oozevale, phase 1b (Oct 18, late): all 9 looks animated, joystick root cause, juice + design must-fixes
+**Joystick.** Root cause: `body.mv-ui2 .touch-stick{display:none!important}` sat inside `@media(min-width:900px)`. So on any touch device at least 900 CSS px wide the stick was hidden and nothing was steering it: iPad, Pro Max landscape (932), and iPhone "Request Desktop Website" (980). On top of that, the stick depended on whichever element iOS hit-tested.
+Fix:
+- `moonvale-input.js` v2: a document-level capture `touchstart` decides by the touch point.
+  - Inside the stick plus 24 px, the fixed stick takes the touch.
+  - Anywhere else on the left half of the field, a floating stick (`#stick.mv-floating`) appears under the thumb.
+  - HUD buttons, dialogs and pause are ignored.
+- `moonvale-hud.css` v4: the stick is always shown on touch devices (`body.mv-touch`, `any-pointer:coarse`).
+- Verified with CDP touch (`tools/joy_final.py`) at 390×844, 932×430 and 1024×768, after both New game and Continue, plus WebKit (`tools/joy_wk.py`).
+
+**Looks.** All 9 presets have full drawn sheets (idle, walk side, walkfront, walkback, attack, cast) and stills, and all of them can be picked:
+- Gelguard: Chrome Ooze Knight, Tidemane, Gilded Gloop.
+- Sporecaller: Glowcap Witch, Mossmother, Ambercap.
+- Slimewright: Hooded Oozeseer, Chrome Veil, Lanternhood.
+
+`MoonLooks` only lets you pick a look when every one of the 6 sheets exists with more than 1 frame. Tidemane wears the user's pick: a translucent teal jelly hood over a dark iron half-mask, with no mane.
+
+**`oozevale-juice.js`** (new, loaded last; spec `design/juice.md`):
+- Sound:
+  - `sweep` / `noiseHit` synth and an 18-cue SFX table: squelch, hit, jellyHit, crit, kill, multikill, hurt, heartbeat, summon, pounce, slurp, lootRare, lootEpic, signature, levelUp, evolve, uiTap, uiDeny.
+  - Every cue gets ±6 % pitch and ±1.5 dB gain jitter, with per-key cooldowns.
+  - A compressor sits on `soundBus`.
+  - The pet's `sfx('hit')` now makes a sound.
+- Hit-stop: a freeze-then-ease curve, at most 180 ms, merged by taking the max.
+- Shake: the trauma model (trauma² × 10 px) drives `cinematic.shake`. Ooze Quake adds 0.55 trauma; it used to be a 0.2 px wobble.
+- Splats and puddles:
+  - Droplets bounce once and leave puddles that last 4 s, with at most 60 at a time.
+  - Kills, crits and skills each have their own splats.
+  - The Cyclone throws tangential bands; the Quake leaves a ring of puddles and a slime-hex shock ring.
+- Damage feedback:
+  - A red vignette on taking damage, plus a low-HP pulse and heartbeat.
+  - Damage numbers are tagged by source: player, crit, pet, jellyling (merged), DoT, heal and words. They stack in lanes, with at most 14 on screen.
+  - "SPLAT ×3" multi-kill callout. `drawText` in `moonvale-world.js` reads the tags.
+- Level-up beat: a flash, a gold ring, a column of rising droplets and a soft knock-back.
+- Pet evolution: a 2.2 s cinematic with a dim, a jelly cocoon, a white flash, a splat and a name card with the new ability. Mobs freeze for its duration.
+- Loot: beams for uncommon, rare and epic drops, and a slurp-in when the pet swallows loot.
+- Pet and summon hits never shake the screen or stop time. Reduced motion scales everything down.
+
+**Design must-fixes** (`design/review.md`, `classes.md`):
+- Summon Jellies is self-cast: with no target in range, the jellies orbit you.
+- Ooze is now earned by fighting: +4 per jellyling or familiar hit, +10 per Acid Glob hit, +8/s standing still, and moving never drains it.
+- Gelguard:
+  - Its resource is **Gel** and its signature is **Ooze Quake** (short label "Quake").
+  - All Rage, Earthbreaker, Whirlwind, Focus and "lunar" text is gone.
+  - At 60+ Gel it gains +2 armor.
+  - Gelbreaker grants +10 Gel.
+  - The Cyclone pulls foes in, slows them, and spreads the goo coat.
+  - Jelly Bash now stuns for 1.5 s, then roots for 1.5 s.
+- Skill unlocks are `[1,1,2,4,6]`. The arrays are reordered so the combo partner sits in slot 3: Gelguard Slime Surge, Slimewright Gloop Command (Frenzy is slot 4, Slip slot 5). `originalSkills` is refreshed to match.
+- The XP curve is `55+35(L-1)+6(L-1)²`, so level 10 takes about 1,800 XP instead of about 4,060.
+- Loot names are class-themed with rarity prefixes (Murky, Glossy, Glowing, Radiant). The ring is included. No more Longbow, Runeblade or Moonstaff, and old items are renamed on load.
+- Pet loot vacuum: the pet no longer waits for you to stand still. It reaches up to 220 px and starts as soon as no aggro foe is within 200.
+- Pet milestones: a trick at lv3, a bond at lv5 (stash +4, fetches gold within 220), tiers at lv15 and lv20, and evolutions at lv10 and lv25. Each pet line has 3 abilities:
+  - Gelguard: Bodyblock, Jelly Taunt, and Golem Slam plus its ward.
+  - Sporecaller: Spore Puff (a 4 s rot), Glowcap Snack, and Twin Grove plus a root.
+  - Slimewright: Lead the Swarm (+15 %), Bud (a free jelly every 15 s), and Void Maw.
+  - Also added: Brood Bond, Rooted in Rot, and Feeding Frenzy, whose marked foe bursts a jellyling when it dies.
+
+Not touched: `moonvale-glow.js` and the zone art; the environment worker owns them.
+Tests: `tools/juice_test.py` (new), `tools/ooze_test.py`, `tools/creator_test.py` and `tools/joy_final.py`.
+
+## Environment repaint (Oct 18, night): ooze-world zones, walk masks, living FX
+
+**Zones repainted** (new painted maps in `art/env/`, ~270–640 KB webp each):
+- 0 The Elder Grove / lantern camp (`zone-camp.webp`, 1800×1200)
+- 1 Moonwater Reach (`zone-moonwater.webp`): teal ooze pools, jelly waterfalls, bridge
+- 9 Briarbrook Orchards (`zone-briarbrook.webp`, 3000×2000 drawn at 3600×2400): amber honey-ooze ponds, lantern paths
+- 2 Hollow Sanctum (`zone-sanctum.webp`): purple jelly falls, crystal ruins
+- 5 Duskfen Marsh (`zone-duskfen.webp`): teal bog pools, boardwalks, glow-mushrooms
+- 10 Amberleaf Woods (`zone-amberleaf.webp`, frontier 3600×2400): amber pools, waystone arch
+
+**New runtime: `oozevale-world.js`** (one script tag after `oozevale-kits.js`; `?noart` disables it).
+- Loads `art/env/env-data.js` (masks, FX and lighting profile per zone; about 28 KB). It lazy-loads the current zone image first, then neighbour zones when the browser is idle. A zone switches to new art only once its image is decoded and the world size matches.
+- **Walk masks:** 1-bit grids (10 px cells for story zones, 20 px for frontier zones) wrap `blocked()`. Portals, objective and expansion points, quest givers and destinations that land on blocked ground move to the nearest walkable cell. The hero, mobs and residents are settled out of blocked cells when a zone is shown and every 1.5 s. All six zones pass `reach_check` (bad=[]).
+- **FX:**
+  - Ground layer: caustic shimmer on pools, ripples, rising bubbles, scrolling jelly waterfalls.
+  - Top layer, drawn after night lighting: light shafts, lantern flicker and glow pulses, slime drips (bead, fall, splat), drifting spores.
+  - All sprites are pre-rendered and only drawn when on screen. There are 3 quality levels:
+    - Phones and small screens get fewer bubbles and spores, and no shafts.
+    - The level drops on its own when frame rate stays under 30 fps for 3 s.
+    - The level drops to 0 when MoonGlow degrades.
+  - Reduced motion (`mv-calm` or `prefers-reduced-motion`) leaves only still glows.
+- **Emissive slime (design review M1):** hero and pet slime no longer turn grey at night. The hero's draw calls are recorded, then the slime-coloured pixels (hero and pet hue bands, plus chrome highlights) are replayed additively after the lighting pass, with a soft halo. Turn it off with `MV_NOGLOW` / `MV_NOEMIT`.
+- Repainted zones get a lighter night profile (dark ≤ .24) so the painting reads. `MoonLights.find` returns the painted lantern and mushroom lights for these maps.
+- `moonvale-glow.js` v6: the procedural mushroom clusters and the hard-coded zone-0 lamps are skipped in repainted zones, because the painting already has them.
+
+**Pipeline (tools/):**
+- `env_guide.py` renders a layout guide from the zone data.
+- The guide drives the generated painting. `env_fetch.py` picks the right output by matching it against the guide.
+- `env_build.py` does the 4× ESRGAN upscale, webp encode, mask build (colour segmentation plus hand overrides from `env_spec.py`), FX/light extraction and the cache-hash bump.
+- `env_shots.py`, `env_tour.py` and `env_fps.py` produce the QA shots and FPS numbers.
+- Source art lives in `art-src/env/`.
+
+**Known gaps:**
+- Old `art/zone-*.webp` entries in `art/manifest.js` still preload (~1.6 MB wasted). Not removed, to keep the manifest untouched.
+- The minimap and world-map thumbnails still show the old paintings.
+- Props in frontier and realm maps are large for the 3600-wide world.
+- Briarbrook fences are walkable.
+- Painted portal rings may sit a little off the relocated portal points.
+- Zones 3, 4, 6, 7, 8, 11–24 are not repainted yet.
+
+**Smart cast (all classes, melee too)** in `oozevale-juice.js`:
+- When you press an ability and have no valid target, the game selects the closest living foe within max(440, the ability's range + 220). That foe stays selected.
+- If it is out of the ability's range, the hero walks toward it and casts the moment it is in range. For melee skills that is melee range.
+- While the hero approaches, a dashed range ring in the slime colour shows around them. Every selected target gets a clear gold ring with orbiting ticks at its feet.
+- Touching the joystick (fixed or floating) or any movement key cancels the approach. The approach also gives up if the foe dies, you pick another target, you stop making progress for 1.2 s, or 6 s pass.
+- Self-cast and around-self abilities fire at once with no target: shields, heals, Ooze Cyclone, Slime Slip and Summon Jellies.
+- Pets join the new fight under their existing rules.
+- Test: `tools/autotarget_test.py` covers phone (390×844, CDP touch on the hotbar and stick) and desktop (1280×800, number keys and arrow keys). The per-class GIFs open with a smart cast.
+
+**Fixes:**
+- Hit-stop never feeds `dt=0` into the update any more. Motion code divided by it, which turned the camera into NaN; `MoonCamera` now also recovers from a non-finite value.
+- Preloads:
+  - `art/title-a.webp` is no longer preloaded; the title uses `art/ooze/title-ooze.webp`.
+  - `moonvale-art.js` skips the old zone images for the repainted zones 0, 1, 2, 5, 9 and 10 (about 1.6 MB), unless `?noart` or `?classic_env` is set.
+  - The creator backdrops use the new `art/env/` maps.
+
+## Environment repaint, pass 2 (Oct 18, late night)
+
+**New zones repainted:**
+- 3 Sunmeadow Downs: golden wheat paths, teal ooze ponds, six stone portal arches.
+- 4 Frostpine Vale: snow plazas, icy-teal pools, a frozen purple jelly fall.
+- 19 Windmere Plains: windmill roads and teal ponds.
+- 13 Roseveil Gardens: rose-hedge paths and teal/pink jelly fountains.
+- Bonus: 6 Tideglass Coast (sea-ooze tide pools, coral arches) and 14 Mooncap Hollow (giant glowing mushrooms, mushroom-house doors).
+
+Twelve zones now use `art/env/`.
+
+**Fixes:**
+- **World map:** repainted regions show a 480×320 thumbnail of the new painting (`art/env/thumb-*.webp`, about 20–40 KB each). `oozevale-world.js` wraps `openWorld`. The minimap already draws the current zone art, so it shows the new paintings once they load.
+- **Briarbrook fences block:** the walk mask covers only the painted dirt roads and clearings. Fences, hedges and orchard grass are blocked. The spawn by the cottage connects to the campfire road.
+- **Portals line up with the paintings:**
+  - Painted guide-marker rings were clone-stamped out of the Moonwater, Sanctum and Duskfen sources (`tools/env_rings.py` plus manual offsets).
+  - Portals are nudged onto painted arches and doors with per-zone `moves`: zone 0 Briarbrook shrine, zone 2 alcove, zone 5 arch and hut door, zone 13 rose arch, zone 14 mushroom doors.
+  - The new zones were painted with arches at the real portal slots.
+- **Zone 0 at night:** lighter night profile (dark .15) plus a tone lift baked into the painting (gamma .8, gain 1.08).
+
+**Tools:**
+- `env_build.py` caches upscales in `art-src/env/up/`, has a `tone` option, merges `env-data.js` under a lock, and writes thumbnails.
+- `env_ba.py` makes the before/after and contact sheets.
+- `env_portals.py` and `env_rings.py` are new.
+- `reach_check.py` now also checks quest givers, landmarks and the quest destination.
