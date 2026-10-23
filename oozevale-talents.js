@@ -87,13 +87,16 @@ let AG=agg();
 function unapply(){const a=TAL.applied;p.power-=a.power;p.maxHp-=a.maxHp;p.armor-=a.armor;TAL.applied={power:0,maxHp:0,armor:0};}
 function apply(){unapply();AG=agg();const a={power:Math.round(p.power*AG.power),maxHp:Math.round(p.maxHp*AG.hp),armor:AG.armor};p.power+=a.power;p.maxHp+=a.maxHp;p.armor+=a.armor;TAL.applied=a;p.hp=Math.min(p.hp,p.maxHp);renames();try{hud();}catch(e){}}
 function renames(){for(const [cls,tr] of Object.entries(TREES)){const sk=CLASSES[cls]&&CLASSES[cls].skills;if(!sk)continue;const o=TAL.orig[cls]||(TAL.orig[cls]=sk.map(s=>s[0]));sk.forEach((s,i)=>{s[0]=o[i];});
-  if(cls!==p.cls)continue;for(const t of tr)for(const n of t.nodes)if(n.key&&n.skill>=0&&rank(t,n))sk[n.skill][0]=n.rename;}}
+  if(cls!==p.cls)continue;for(const t of tr)for(const n of t.nodes)if(n.key&&n.skill>=0&&rank(t,n))sk[n.skill][0]=n.rename;}relabel();}
+function relabel(){const hb=document.getElementById('hotbar'),sk=CLASSES[p.cls]&&CLASSES[p.cls].skills;if(!hb||!sk)return;const o=TAL.orig[p.cls]||[];const names=new Set();for(const tr of Object.values(TREES))for(const t of tr)for(const n of t.nodes)if(n.rename)names.add(n.rename);
+ [...hb.children].forEach((b,i)=>{if(!sk[i])return;const all=new Set([o[i],...names]);const w=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let x;while(x=w.nextNode()){const v=x.nodeValue.trim();if(v&&all.has(v)&&v!==sk[i][0])x.nodeValue=x.nodeValue.replace(v,sk[i][0]);}});}
 // protect stats on save/load and level-up
 {const ad=adventureData;adventureData=function(){const a={...TAL.applied};unapply();let d;try{d=ad.apply(this,arguments);}finally{p.power+=a.power;p.maxHp+=a.maxHp;p.armor+=a.armor;TAL.applied=a;}d.talents={v:1,ranks:{...TAL.ranks},skin:TAL.skin};return d;};}
-{const ra=restoreAdventure;restoreAdventure=function(data){TAL.applied={power:0,maxHp:0,armor:0};const r=ra.apply(this,arguments);const t=data&&data.talents;TAL.ranks=t&&t.ranks?{...t.ranks}:{};TAL.skin=t&&t.skin||null;apply();return r;};}
+{const ra=restoreAdventure;restoreAdventure=function(data){TAL.applied={power:0,maxHp:0,armor:0};const r=ra.apply(this,arguments);const t=data&&data.talents;TAL.ranks=t&&t.ranks?{...t.ranks}:{};TAL.skin=t&&t.skin||null;if(trees().filter(x=>spentIn(x)>0).length>1){TAL.ranks={};TAL.skin=null;TAL.refunded=true;setTimeout(()=>{try{float(p.x,p.y-140,'Talents refunded: pick one path','#ffd257');}catch(e){}},1500);}apply();return r;};}
 {const gx=gainXp;gainXp=function(){const lv=p.level;const a={...TAL.applied};unapply();let r;try{r=gx.apply(this,arguments);}finally{p.power+=a.power;p.maxHp+=a.maxHp;p.armor+=a.armor;TAL.applied=a;}if(p.level!==lv){apply();if(p.level>=5)try{float(p.x,p.y-130,'+1 talent point','#ffd257');}catch(e){}}return r;};}
 if(typeof beginCreation==='function'){const bc=beginCreation;beginCreation=function(){TAL.ranks={};TAL.skin=null;TAL.applied={power:0,maxHp:0,armor:0};AG=agg();return bc.apply(this,arguments);};}
-function learn(t,n){if(avail()<=0)return 'No talent points left';if(rank(t,n)>=n.max)return 'Already mastered';if(spentIn(t)<n.req)return 'Needs '+n.req+' points in '+t.name;TAL.ranks[t.id+'.'+n.id]=rank(t,n)+1;const before=spentIn(t)-1;apply();
+const lockedTree=()=>trees().find(t=>spentIn(t)>0)||null;
+function learn(t,n){const lk=lockedTree();if(lk&&lk!==t)return 'Locked: visit a Talent Keeper to reset';if(avail()<=0)return 'No talent points left';if(rank(t,n)>=n.max)return 'Already mastered';if(spentIn(t)<n.req)return 'Needs '+n.req+' points in '+t.name;TAL.ranks[t.id+'.'+n.id]=rank(t,n)+1;const before=spentIn(t)-1;apply();
  const ms=MILESTONES.find(m=>before<m&&spentIn(t)>=m);if(ms){const i=MILESTONES.indexOf(ms);try{float(p.x,p.y-140,'Skin unlocked · '+t.skins[i],t.color);}catch(e){}}try{writeDeviceSave(true);}catch(e){}return null;}
 function respec(){TAL.ranks={};TAL.skin=null;apply();try{writeDeviceSave(true);}catch(e){}}
 const atCamp=()=>typeof CAMP!=='undefined'&&d2(p,CAMP)<170;
@@ -132,7 +135,7 @@ const RS=releaseSpell;releaseSpell=function(i){
    if(i===0&&F.rotsp&&tgt){tgt.poison=Math.max(tgt.poison||0,8);for(const m of foes(tgt,90))m.poison=Math.max(m.poison||0,5);FX.clouds.push({x:tgt.x,y:tgt.y,t:0,life:1.6,r:90});}
    if(i===3&&F.zomb){const c=tgt||p;for(let k=0;k<2+(AG.zombx||0);k++){const a=k*2.4;minion('zombie',c.x+Math.cos(a)*50,c.y+Math.sin(a)*24);}}}
   if(p.cls==='ranger'){
-   if(i===1&&F.forgeG){if(globalThis.MoonKits)MoonKits.jellies.length=0;FX.minions=FX.minions.filter(m=>m.kind!=='golem');minion('golem',p.x+(p.dir||1)*60,p.y+10);}
+   if(i===1&&F.forgeG){if(globalThis.MoonKits)MoonKits.jellies.length=0;FX.minions=FX.minions.filter(m=>m.kind!=='golem');minion('golem',p.x-(p.dir||1)*90,p.y-10);}
    else if(i===1&&F.swarm&&globalThis.MoonKits)MoonKits.spawnJellies(2,tgt);
    if(i===2&&F.frenzyS&&globalThis.MoonKits){for(const j of MoonKits.jellies)j.life=j.max;MoonKits.spawnJellies(1,tgt);}
    if(i===2&&F.smash&&tgt){const gm=FX.minions.find(m=>m.kind==='golem');if(gm)gm.leap={x0:gm.x,y0:gm.y,t:0,dur:.45,tgt};}}
@@ -180,10 +183,11 @@ function tick(dt){
  for(const q of FX.taunt){if(!q.m.alive)continue;g.globalAlpha=Math.min(1,q.t*2);g.fillStyle='#ff5040';g.font='bold 20px Georgia,serif';g.textAlign='center';g.fillText('!',q.m.x,q.m.y-95);}g.globalAlpha=1;
  if(AG.flags.armor){g.globalAlpha=.35+.1*Math.sin(t*3);g.strokeStyle='#7fd8ff';g.lineWidth=3;for(let n=0;n<6;n++){const a=n/6*6.283+t*.5;g.beginPath();g.arc(p.x+Math.cos(a)*30,p.y-50+Math.sin(a)*40,9,0,7);g.stroke();}g.globalAlpha=1;}
  if(AG.flags.mwall&&globalThis.Prismancer&&Prismancer.state.mirror>0){for(let n=0;n<8;n++){const a=n/8*6.283+t*1.4,x=p.x+Math.cos(a)*68,y=p.y-54+Math.sin(a)*80;g.save();g.translate(x,y);g.rotate(a);g.fillStyle='rgba(240,248,255,.75)';g.strokeStyle='#fff';g.lineWidth=1.5;g.beginPath();g.moveTo(0,-12);g.lineTo(7,0);g.lineTo(0,12);g.lineTo(-7,0);g.closePath();g.fill();g.stroke();g.restore();}}
+ drawKeeper(t);drawWeapon(t);
  const sd=skinDef();if(sd){g.globalAlpha=.22+.08*Math.sin(t*2);g.strokeStyle=sd.glow;g.lineWidth=2;g.beginPath();g.ellipse(p.x,p.y+4,30,10,0,0,7);g.stroke();g.globalAlpha=1;}
- for(const m of FX.minions){const S=(m.kind==='golem'?78:40)*m.size/(m.kind==='golem'?1:0.55)*(m.kind==='golem'?1:.55),bob=Math.sin(t*6+m.x)*2*(1-m.born),y=m.y+(m.hop||0),sw=m.swing>0?1.15:1;g.save();g.translate(m.x,y);g.scale(m.face*(1-m.born*.6),1-m.born*.6);
+ for(const m of FX.minions){const S=(m.kind==='golem'?62:22)*m.size/(m.kind==='golem'?1:.55),bob=Math.sin(t*6+m.x)*2*(1-m.born),y=m.y+(m.hop||0),sw=m.swing>0?1.15:1;g.save();g.translate(m.x,y);g.scale(m.face*(1-m.born*.6),1-m.born*.6);
   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,2-(m.hop||0),S*.55,S*.16,0,0,7);g.fill();
-  if(m.kind==='golem'){const gr=g.createRadialGradient(-S*.2,-S*.9,4,0,-S*.6,S);gr.addColorStop(0,'#ffe0a0');gr.addColorStop(.5,'#ffb347');gr.addColorStop(1,'#8a4a10');g.fillStyle=gr;g.beginPath();g.ellipse(0,-S*.6+bob,S*.55*sw,S*.62,0,0,7);g.fill();
+  if(m.kind==='golem'){const gr=g.createRadialGradient(-S*.2,-S*.9,4,0,-S*.6,S);gr.addColorStop(0,'#fff0c0');gr.addColorStop(.35,'#f0a030');gr.addColorStop(1,'#5a2a06');g.globalAlpha=.92;g.fillStyle=gr;g.beginPath();g.ellipse(0,-S*.6+bob,S*.55*sw,S*.62,0,0,7);g.fill();
    g.fillStyle='#ffb347';g.beginPath();g.ellipse(S*.55,-S*.55,S*.18,S*.28*sw,.4,0,7);g.fill();g.beginPath();g.ellipse(-S*.55,-S*.55,S*.18,S*.28,-.4,0,7);g.fill();
    g.fillStyle='#3a1e05';g.fillRect(-S*.3,-S*.95,S*.6,S*.12);g.fillStyle='#fff6c0';g.beginPath();g.arc(-S*.14,-S*.89,S*.05,0,7);g.arc(S*.14,-S*.89,S*.05,0,7);g.fill();g.fillStyle='rgba(255,255,255,.5)';g.beginPath();g.ellipse(-S*.22,-S*.98,S*.12,S*.06,-.5,0,7);g.fill();}
   else{g.fillStyle='#6a8a4a';g.beginPath();g.ellipse(0,-S*.45+bob,S*.42,S*.5,0,0,7);g.fill();g.fillStyle='#b45cff';g.beginPath();g.ellipse(0,-S*.9+bob,S*.52,S*.26,0,Math.PI,0);g.fill();g.fillStyle='#e8d0ff';for(const [a,b] of [[-.2,-1.0],[.15,-.98],[.3,-.9]]){g.beginPath();g.arc(S*a,S*b+bob,S*.05,0,7);g.fill();}
@@ -198,7 +202,7 @@ const D=document.createElement('dialog');D.id='ozTalents';D.className='mv-panel 
 let tab=0,sel=null;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function treeHtml(t,ti){const sp=spentIn(t),rows=[[0,1],[2],[3,4],[5],[6],[7,8]];
- let h='<section class="ozt-tree" data-tree="'+ti+'" style="--tc:'+t.color+'"><div class="ozt-th"><b>'+esc(t.name)+'</b><small>'+esc(t.theme)+'</small><em>'+sp+' pts</em></div><div class="ozt-grid"><svg class="ozt-links" viewBox="0 0 100 600" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="oztg'+ti+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+t.color+'" stop-opacity=".9"/><stop offset="1" stop-color="'+t.color+'" stop-opacity=".25"/></linearGradient></defs>';
+ const lk=lockedTree(),lockd=lk&&lk!==t;let h='<section class="ozt-tree'+(lockd?' tlock':'')+'" data-tree="'+ti+'"'+(lockd?' title="Locked: visit a Talent Keeper to reset"':'')+' style="--tc:'+t.color+'">'+(lockd?'<div class="ozt-lockmsg">🔒 Locked: visit a Talent Keeper to reset</div>':'')+'<div class="ozt-th"><canvas class="ozt-wpn" width="72" height="72" data-wt="'+t.id+'"></canvas><b>'+esc(t.name)+'</b><small>'+esc(t.theme)+'</small><em>'+sp+' pts</em></div><div class="ozt-grid"><svg class="ozt-links" viewBox="0 0 100 600" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="oztg'+ti+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+t.color+'" stop-opacity=".9"/><stop offset="1" stop-color="'+t.color+'" stop-opacity=".25"/></linearGradient></defs>';
  const pos=(ri,ci,n)=>[n===1?50:(ci?72:28),ri*100+50];
  rows.forEach((row,ri)=>{if(ri===rows.length-1)return;const nx=rows[ri+1];row.forEach((a,ci)=>nx.forEach((b,cj)=>{const [x1,y1]=pos(ri,ci,row.length),[x2,y2]=pos(ri+1,cj,nx.length);const lit=sp>=t.nodes[b].req;h+='<path class="'+(lit?'lit':'')+'" d="M'+x1+' '+y1+' C'+x1+' '+(y1+50)+' '+x2+' '+(y2-50)+' '+x2+' '+y2+'" stroke="url(#oztg'+ti+')"/>';}));});
  h+='</svg>';
@@ -208,23 +212,68 @@ function treeHtml(t,ti){const sp=spentIn(t),rows=[[0,1],[2],[3,4],[5],[6],[7,8]]
 function render(){const T=trees();if(!T.length){D.innerHTML='<p>No talents for this class.</p>';return;}
  const n=sel&&T[sel[0]]&&T[sel[0]].nodes[sel[1]],tt=sel&&T[sel[0]];
  D.innerHTML='<button class="close mv-x ozt-x" type="button" aria-label="Close talents">×</button><div class="ozt-head"><small class="mv-kicker">'+esc(CLASSES[p.cls].name)+' · Talents</small><h2>Choose your path</h2><p class="ozt-pts"><b>'+avail()+'</b> point'+(avail()===1?'':'s')+' to spend · '+spent()+' / '+total()+' spent'+(p.level<5?' · first point at level 5':'')+'</p></div>'+
-  '<div class="ozt-tabs">'+T.map((t,i)=>'<button type="button" data-tab="'+i+'" class="'+(i===tab?'on':'')+'" style="--tc:'+t.color+'">'+esc(t.name)+' <em>'+spentIn(t)+'</em></button>').join('')+'</div>'+
+  '<div class="ozt-tabs">'+T.map((t,i)=>'<button type="button" data-tab="'+i+'" class="'+(i===tab?'on':'')+'" style="--tc:'+t.color+'">'+(lockedTree()&&lockedTree()!==t?'🔒 ':'')+esc(t.name)+' <em>'+spentIn(t)+'</em></button>').join('')+'</div>'+
   '<div class="ozt-trees" data-tab="'+tab+'">'+T.map(treeHtml).join('')+'</div>'+
-  '<div class="ozt-info">'+(n?'<b style="color:'+tt.color+'">'+esc(n.name)+'</b> <small>'+rank(tt,n)+'/'+n.max+(n.req?' · needs '+n.req+' in '+esc(tt.name):'')+'</small><p>'+esc(n.desc)+'</p><button type="button" class="ozt-learn"'+(avail()>0&&rank(tt,n)<n.max&&spentIn(tt)>=n.req?'':' disabled')+'>Learn · 1 point</button><span class="ozt-msg"></span>':'<p>Tap a talent to read it. ◆ key talents rename a spell and change how it looks and behaves. 10 / 20 / 30 points in one tree unlock its skins.</p>')+
-  '<button type="button" class="ozt-respec"'+(atCamp()&&spent()?'':' disabled')+'>'+(atCamp()?'Respec (free at camp)':'Respec at a camp fire')+'</button></div>';
- D.querySelector('.ozt-x').onclick=()=>D.close();
+  '<div class="ozt-info">'+(n?'<b style="color:'+tt.color+'">'+esc(n.name)+'</b> <small>'+rank(tt,n)+'/'+n.max+(n.req?' · needs '+n.req+' in '+esc(tt.name):'')+'</small><p>'+esc(n.desc)+'</p><button type="button" class="ozt-learn"'+(avail()>0&&rank(tt,n)<n.max&&spentIn(tt)>=n.req&&!(lockedTree()&&lockedTree()!==tt)?'':' disabled')+'>Learn · 1 point</button><span class="ozt-msg"></span>':'<p>Tap a talent to read it. ◆ key talents rename a spell and change how it looks and behaves. 10 / 20 / 30 points in one tree unlock its skins.</p>')+
+  '<small class="ozt-keep">'+(lockedTree()?'Path chosen: '+esc(lockedTree().name)+'. Visit a Talent Keeper at camp to reset.':'Your first point locks you into that tree.')+(TAL.refunded?' Your old mixed talents were refunded.':'')+'</small></div>';
+ D.querySelector('.ozt-x').onclick=()=>D.close();D.querySelectorAll('.ozt-wpn').forEach(c=>{const x=c.getContext('2d');x.translate(c.dataset.wt==='mirror'||c.dataset.wt==='bulwark'?22:36,64);x.rotate(c.dataset.wt==='mirror'||c.dataset.wt==='bulwark'?0:-.6);weapon(x,c.dataset.wt,.72,0);});
  D.querySelectorAll('[data-tab]').forEach(b=>{if(b.tagName==='BUTTON')b.onclick=()=>{tab=+b.dataset.tab;render();};});
  D.querySelectorAll('.ozt-tree').forEach(sec=>{const ti=+sec.dataset.tree;sec.querySelectorAll('.ozt-node').forEach(b=>b.onclick=()=>{sel=[ti,+b.dataset.node];tab=ti;render();});
   sec.querySelectorAll('.ozt-skin').forEach(b=>b.onclick=()=>{if(b.classList.contains('locked'))return;TAL.skin=TAL.skin===b.dataset.skin?null:b.dataset.skin;SC.clear();try{writeDeviceSave(true);}catch(e){}render();});});
  const L=D.querySelector('.ozt-learn');if(L)L.onclick=()=>{const m=learn(tt,n);if(m)D.querySelector('.ozt-msg').textContent=m;else{try{sfx('level');}catch(e){}render();const nb=D.querySelector('.ozt-node.sel');if(nb){nb.classList.add('pulse');}}};
- const R=D.querySelector('.ozt-respec');R.onclick=()=>{if(R.dataset.arm){respec();sel=null;render();return;}R.dataset.arm=1;R.textContent='Tap again to reset every point';};}
+}
 function open(){if(typeof started!=='undefined'&&!started)return;try{keysClear();}catch(e){}render();if(!D.open)D.showModal();}
 {const ip=isPaused;isPaused=function(){return ip.apply(this,arguments)||D.open;};}
 D.addEventListener('click',e=>{if(e.target===D)D.close();});D.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role=button]')){e.preventDefault();e.target.click();}});
 addEventListener('keydown',e=>{if((e.key==='t'||e.key==='T')&&!e.target.closest('input,textarea')&&typeof started!=='undefined'&&started){if(D.open)D.close();else open();}});
 function navBtn(){const sk=document.getElementById('mvNavSkills');if(!sk||document.getElementById('mvNavTalents'))return;const b=document.createElement('button');b.id='mvNavTalents';b.className='mv-nav-skills oz-nav-tal';b.innerHTML='<i></i><span>Talents</span><b class="ozt-dot" hidden></b>';b.onclick=open;sk.after(b);}
-navBtn();setInterval(()=>{navBtn();const d=document.querySelector('#mvNavTalents .ozt-dot');if(d)d.hidden=!(avail()>0);},1000);
+navBtn();setInterval(()=>{navBtn();try{relabel();}catch(e){}const d=document.querySelector('#mvNavTalents .ozt-dot');if(d)d.hidden=!(avail()>0);},1000);
+/* ---------- weapons that follow the tree ---------- */
+const WT={bulwark:'shield',ravager:'great',bloom:'blossom',rot:'scythe',brood:'hive',golem:'hammer',mirror:'mirror',alch:'flask'};
+function weapon(x,tid,k,sw){const w=WT[tid];if(!w)return;x.save();x.scale(k,k);x.lineCap='round';x.lineJoin='round';
+ const stick=(len,c1,c2)=>{x.strokeStyle=c1;x.lineWidth=5;x.beginPath();x.moveTo(0,8);x.lineTo(0,-len);x.stroke();x.strokeStyle=c2;x.lineWidth=2;x.beginPath();x.moveTo(-1,6);x.lineTo(-1,-len+2);x.stroke();};
+ if(w==='great'){x.fillStyle='#5a2a12';x.fillRect(-3,-6,6,22);x.fillStyle='#c98a3a';x.fillRect(-12,-9,24,5);const g=x.createLinearGradient(-9,-70,9,-10);g.addColorStop(0,'#ffd0a0');g.addColorStop(.5,'#ff6a3d');g.addColorStop(1,'#8a2010');x.fillStyle=g;x.beginPath();x.moveTo(-9,-9);x.lineTo(-11,-58);x.quadraticCurveTo(0,-80,11,-58);x.lineTo(9,-9);x.closePath();x.fill();x.strokeStyle='#ffe0c0';x.lineWidth=1.5;x.stroke();x.fillStyle='rgba(255,170,90,.7)';x.beginPath();x.arc(0,-40,4,0,7);x.fill();}
+ else if(w==='shield'){x.fillStyle='#bfe9ff';x.fillRect(-2,-40,4,34);x.fillStyle='#7a5a2e';x.fillRect(-8,-8,16,4);const g=x.createLinearGradient(14,-50,40,10);g.addColorStop(0,'#e6f6ff');g.addColorStop(1,'#3a7aa0');x.fillStyle=g;x.beginPath();x.moveTo(12,-46);x.lineTo(40,-46);x.lineTo(40,0);x.quadraticCurveTo(26,16,12,0);x.closePath();x.fill();x.strokeStyle='#d0a050';x.lineWidth=3;x.stroke();x.fillStyle='#7fd8ff';x.beginPath();x.arc(26,-22,6,0,7);x.fill();}
+ else if(w==='blossom'){stick(62,'#6a4a2a','#a07a4a');for(let i=0;i<6;i++){const a=i/6*6.283;x.fillStyle=i%2?'#ffb0d8':'#ffe0f0';x.beginPath();x.ellipse(Math.cos(a)*8,-66+Math.sin(a)*8,7,4,a,0,7);x.fill();}x.fillStyle='#ffe58a';x.beginPath();x.arc(0,-66,4,0,7);x.fill();x.fillStyle='#8fff8a';x.beginPath();x.ellipse(5,-40,6,3,.6,0,7);x.fill();}
+ else if(w==='scythe'){stick(66,'#3a2a3a','#6a4a6a');x.fillStyle='#b45cff';x.strokeStyle='#e0c0ff';x.lineWidth=1.5;x.beginPath();x.moveTo(0,-66);x.quadraticCurveTo(-34,-70,-40,-44);x.quadraticCurveTo(-26,-58,0,-56);x.closePath();x.fill();x.stroke();x.fillStyle='#9be04a';for(const [a,b] of [[-22,-60],[-32,-52],[-12,-63]]){x.beginPath();x.arc(a,b,2.4,0,7);x.fill();}}
+ else if(w==='hive'){stick(58,'#5a3a6a','#9a6aaa');const g=x.createRadialGradient(-3,-70,2,0,-66,14);g.addColorStop(0,'#f0d0ff');g.addColorStop(1,'#7a3ab0');x.fillStyle=g;x.beginPath();x.ellipse(0,-66,12,14,0,0,7);x.fill();x.strokeStyle='#d9a8ff';x.lineWidth=1.5;for(let i=-1;i<=1;i++){x.beginPath();x.moveTo(-11,-66+i*7);x.lineTo(11,-66+i*7);x.stroke();}x.fillStyle='#c77dff';x.beginPath();x.arc(10,-50,4,0,7);x.arc(-9,-48,3,0,7);x.fill();}
+ else if(w==='hammer'){stick(44,'#5a3a1a','#9a6a3a');x.fillStyle='#ffb347';x.strokeStyle='#5a2a06';x.lineWidth=2;x.beginPath();x.roundRect(-16,-62,32,20,4);x.fill();x.stroke();x.fillStyle='#fff0c0';x.fillRect(-12,-58,6,12);}
+ else if(w==='mirror'){x.fillStyle='#e8f4ff';x.fillRect(-2,-30,4,24);const g=x.createLinearGradient(10,-56,40,10);g.addColorStop(0,'#ffffff');g.addColorStop(.5,'#b8c8d8');g.addColorStop(1,'#f0f8ff');x.fillStyle=g;x.beginPath();x.moveTo(10,-56);x.lineTo(42,-56);x.lineTo(42,4);x.lineTo(10,4);x.closePath();x.fill();x.strokeStyle='#d0a050';x.lineWidth=3;x.stroke();x.strokeStyle='rgba(255,255,255,.9)';x.lineWidth=2;x.beginPath();x.moveTo(16,-46);x.lineTo(28,-30);x.moveTo(20,-50);x.lineTo(36,-28);x.stroke();}
+ else if(w==='flask'){stick(56,'#5a3a1a','#a0703a');x.fillStyle='#a07a3c';x.fillRect(-8,-62,16,8);x.fillStyle='#ff9a3a';x.beginPath();x.arc(0,-68,9,0,7);x.fill();x.fillStyle='#e8f4ff';x.fillRect(-2.5,-80,5,6);x.fillStyle='rgba(255,255,255,.6)';x.beginPath();x.arc(-3,-71,2.5,0,7);x.fill();x.fillStyle='#ffd257';x.beginPath();x.arc(8,-40,4,0,7);x.fill();}
+ x.restore();}
+let swingT=0,lastAtk=0;
+function drawWeapon(t){const tr=lockedTree();if(!tr||!WT[tr.id])return;const dir=p.dir||1;
+ if(p.attack>lastAtk+.05)swingT=.35;lastAtk=p.attack;swingT=Math.max(0,swingT-1/60);const sw=swingT>0?1-swingT/.35:0;
+ const big=WT[tr.id]==='great';g.save();g.translate(p.x+dir*16,p.y-46);g.scale(dir,1);
+ const base=WT[tr.id]==='shield'||WT[tr.id]==='mirror'?.15:.45,ang=base+(sw?(-1.6+sw*3.2)*(big?1.3:.8):Math.sin(t*2)*.04);
+ if(sw&&(big||WT[tr.id]==='shield'||WT[tr.id]==='hammer')){g.globalAlpha=.55*(1-sw);g.strokeStyle=big?'#ff6a3d':tr.color;g.lineWidth=big?16:7;g.shadowColor=g.strokeStyle;g.shadowBlur=14;g.beginPath();g.arc(0,0,big?80:56,base-1.6*(big?1.3:.8)-1.57,ang-1.57);g.stroke();g.shadowBlur=0;g.globalAlpha=1;}
+ g.rotate(ang);weapon(g,tr.id,big?.95:.75,sw);g.restore();}
+/* ---------- Talent Keeper NPC (resets for gold) ---------- */
+const keeperPos=()=>typeof CAMP!=='undefined'?{x:CAMP.x-150,y:CAMP.y+70}:null;
+const keeperHere=()=>{const k=keeperPos();return k&&!(typeof story!=='undefined'&&story.zone>0&&!(typeof zones!=='undefined'&&zones[story.zone]&&zones[story.zone].camp!==false))?k:k;};
+const resetCost=()=>Math.round(25+(p.level|0)*(p.level|0)*2.5);
+function drawKeeper(t){const k=keeperHere();if(!k||Math.abs(k.x-camera.x-innerWidth/2)>innerWidth*1.2)return;const bob=Math.sin(t*2)*2;g.save();g.translate(k.x,k.y);
+ g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(0,2,22,7,0,0,7);g.fill();
+ const gr=g.createLinearGradient(0,-80,0,0);gr.addColorStop(0,'#3a2a5a');gr.addColorStop(1,'#1a1228');g.fillStyle=gr;g.beginPath();g.moveTo(-20,0);g.quadraticCurveTo(-18,-50,0,-78+bob);g.quadraticCurveTo(18,-50,20,0);g.closePath();g.fill();g.strokeStyle='#d0a050';g.lineWidth=2;g.stroke();
+ g.fillStyle='#0a0810';g.beginPath();g.ellipse(0,-58+bob,8,9,0,0,7);g.fill();g.fillStyle='#ffd257';g.beginPath();g.arc(-3,-59+bob,1.6,0,7);g.arc(3,-59+bob,1.6,0,7);g.fill();
+ g.strokeStyle='#7a5a2e';g.lineWidth=3;g.beginPath();g.moveTo(22,4);g.lineTo(22,-70);g.stroke();const gl=.6+.3*Math.sin(t*3);g.fillStyle='rgba(63,224,200,'+gl+')';g.shadowColor='#3fe0c8';g.shadowBlur=16;g.beginPath();g.arc(22,-76,7,0,7);g.fill();g.shadowBlur=0;
+ g.font='bold 13px Georgia,serif';g.textAlign='center';g.fillStyle='#ffe3a1';g.strokeStyle='#000';g.lineWidth=3;g.strokeText('Talent Keeper',0,-92);g.fillText('Talent Keeper',0,-92);g.restore();}
+const KB=document.createElement('button');KB.id='ozKeeperBtn';KB.type='button';KB.className='oz-keeper-btn';KB.innerHTML='<kbd>E</kbd><span>Talent Keeper</span>';KB.hidden=true;document.body.appendChild(KB);
+const KD=document.createElement('dialog');KD.id='ozKeeper';KD.className='mv-panel oz-tal';document.body.appendChild(KD);
+function openKeeper(){const c=resetCost(),sp=spent(),lk=lockedTree();KD.innerHTML='<button class="close mv-x ozt-x" type="button" aria-label="Close">×</button><small class="mv-kicker">Talent Keeper</small><h2>Unlearn your path?</h2><p>'+(sp?'You walk the <b style="color:'+lk.color+'">'+esc(lk.name)+'</b> path with '+sp+' points spent. For <b style="color:#ffd257">'+c+' gold</b> I will wash them all away so you can choose again. Your skins from that path will be put away.':'You have not chosen a path yet. Come back once you have.')+'</p><p class="ozt-msg"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="ozk-no">Not now</button><button type="button" class="ozk-yes"'+(sp?'':' disabled')+'>Reset for '+c+' gold</button></div>';
+ KD.querySelector('.ozt-x').onclick=KD.querySelector('.ozk-no').onclick=()=>KD.close();
+ const Y=KD.querySelector('.ozk-yes');Y.onclick=()=>{if((p.gold|0)<c){KD.querySelector('.ozt-msg').textContent='You need '+c+' gold (you have '+(p.gold|0)+').';return;}if(!Y.dataset.arm){Y.dataset.arm=1;Y.textContent='Confirm: spend '+c+' gold';return;}p.gold-=c;respec();TAL.refunded=false;try{float(p.x,p.y-130,'Talents reset · −'+c+' gold','#ffd257');sfx('level');}catch(e){}KD.close();try{hud();}catch(e){}};
+ if(!KD.open)KD.showModal();}
+KB.onclick=openKeeper;
+const nearKeeper=()=>{const k=keeperHere();return k&&typeof started!=='undefined'&&started&&d2(p,k)<80;};
+addEventListener('keydown',e=>{if((e.key==='e'||e.key==='E')&&nearKeeper()&&!document.querySelector('dialog[open]')){e.stopImmediatePropagation();e.preventDefault();openKeeper();}},true);
+setInterval(()=>{KB.hidden=!nearKeeper()||!!document.querySelector('dialog[open]');},250);
 const css=document.createElement('style');css.textContent=`
+.oz-keeper-btn{width:auto!important;height:auto!important;min-height:0!important;max-height:56px!important;top:auto!important;right:auto!important;position:fixed!important;left:50%!important;bottom:120px!important;transform:translateX(-50%);z-index:30;display:flex!important;gap:8px;align-items:center;padding:10px 16px;border-radius:14px;border:2px solid #d0a050;background:#1b1610ee;color:#ffe3a1;font:700 15px Georgia,serif}.oz-keeper-btn[hidden]{display:none!important}
+#ozKeeper{width:min(460px,92vw)}#ozKeeper h2{font:700 22px Georgia,serif;color:#ffe3a1;margin:4px 0}#ozKeeper p{color:#e2d4b2}
+.ozt-tree.tlock{filter:grayscale(.85) brightness(.6)}.ozt-tree.tlock .ozt-node,.ozt-tree.tlock .ozt-skin{pointer-events:none}
+.ozt-lockmsg{position:absolute;z-index:3;left:50%;top:40%;transform:translate(-50%,-50%);padding:10px 14px;border-radius:12px;background:#0d0f12ee;border:2px solid #8a6a3a;color:#ffe3a1;font:700 14px Georgia,serif;text-align:center;white-space:nowrap;filter:none}
+.ozt-wpn{width:44px;height:44px;flex:none;border-radius:50%;background:radial-gradient(circle,#2a2f38,#121418);border:2px solid #8a6a3a;margin-right:2px}.ozt-keep{color:#b9a47c;font-size:12px;margin-left:auto}
 #ozTalents{overflow-x:hidden;box-sizing:border-box;width:min(980px,96vw);max-height:92vh;overflow:auto;padding:14px 16px 16px;border-radius:18px;color:#f1e6c8;background:linear-gradient(180deg,#1b1f25 0%,#121418 100%);border:2px solid #7a5a2e;box-shadow:0 0 0 1px #2a1d0e inset,0 0 0 4px #15100a,0 20px 60px #000c,0 0 40px #3fe0c822}
 #ozTalents .ozt-node::before,#ozTalents .ozt-node::after,#ozTalents .ozt-skin::before,#ozTalents .ozt-skin::after,#ozTalents .ozt-th::before,#ozTalents .ozt-th::after{display:none!important}
 #ozTalents::backdrop{background:#05070acc}
@@ -252,5 +301,5 @@ const css=document.createElement('style');css.textContent=`
 .oz-nav-tal{position:relative}.ozt-dot{position:absolute;top:4px;right:10px;width:9px;height:9px;border-radius:50%;background:#ffd257;box-shadow:0 0 8px #ffd257}
 @media(max-width:760px){.ozt-row{height:88px}.ozt-node{width:84px}.ozt-info p{font-size:13px}.ozt-info{padding:8px 10px 10px}.ozt-learn,.ozt-respec{padding:8px 12px}.ozt-tabs{display:flex}.ozt-trees{grid-template-columns:1fr}.ozt-trees[data-tab="0"] .ozt-tree[data-tree="1"],.ozt-trees[data-tab="1"] .ozt-tree[data-tree="0"]{display:none}#ozTalents{padding:12px 10px 14px}.ozt-info{margin:10px -10px -14px}.ozt-head h2{font-size:20px}}
 `;document.head.appendChild(css);
-globalThis.OozeTalents={TREES,TAL,open,render,learn,respec,avail,spentIn,agg:()=>AG,apply,FX,skinDef,trees};
+globalThis.OozeTalents={TREES,TAL,open,render,learn,respec,lockedTree,openKeeper,resetCost,keeperPos,WT,avail,spentIn,agg:()=>AG,apply,FX,skinDef,trees};
 })();

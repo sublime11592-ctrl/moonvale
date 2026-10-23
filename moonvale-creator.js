@@ -206,7 +206,9 @@
    else if(cur.mode==='attack'){const q=Math.min(1,u/.5),lun=q<.45?-q/.45*.4:q<.6?1:1-(q-.6)/.4;cx.translate(lun*body*.12,0);cx.rotate(lun*.09);}
    else if(cur.mode==='cast'){const q=Math.min(1,u/.6);cx.translate(0,-Math.sin(q*Math.PI)*body*.04);}}
   if(S.accent){cx.shadowColor=S.accent;cx.shadowBlur=14*dpr;}
+  const ORc=globalThis.OozeRace&&OozeRace.creator;if(ORc)ORc.pre(cx,S.race,cur.mode,ts/1000);
   cx.drawImage((SL&&SL.sheet(m,S.slime))||m.img,cur.f*m.cellW,0,m.cellW,m.cellH,-m.anchorX*k,-m.baseY*k,m.cellW*k,m.cellH*k);
+  if(ORc){cx.shadowBlur=0;try{ORc.post(cx,S.race,m,cur.f,k,ts/1000,false);}catch(e){}}
   cx.restore();
   // slime companion beside the hero (hops while the hero walks)
   const pd=petDef();if(pd&&PET){const pw=body*.3,walk=cur.mode==='walk',ph=ts/1000*(walk?3.2:0),hop=walk?Math.abs(Math.sin(ph*Math.PI)):0,px=Math.min(gx+body*.52,cv.width-pw*.62),py=gy+body*.05;

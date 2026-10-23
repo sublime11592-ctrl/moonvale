@@ -1,3 +1,5 @@
+> **Status (Oct 23):** Pearl look delivered (all 8 sheets, wired in). Still needed: Gilded + Tideglass sheets, a Prismancer HUD portrait, pet sheets, skill icons.
+
 # Art requests: Prismancer (mage slot)
 
 Put the generated files in `art-src/ooze/incoming/prismancer/`. The code already runs on placeholders: tinted Chrome Veil frames in `art/prismancer/`, registered by `oozevale-prism-looks.js`. When the real sheets land, process them like the other heroes (magenta key, 6 sheets per look), name them `<look>-<anim>.png` and update `art/prismancer/placeholder.js`, or register them in anim.json.
