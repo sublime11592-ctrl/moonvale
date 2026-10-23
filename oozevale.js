@@ -321,7 +321,7 @@ function tick(dt){
  // player velocity (smoothed)
  if(prevP&&dt>0){const vx=(p.x-prevP.x)/dt,vy=(p.y-prevP.y)/dt;if(Math.hypot(vx,vy)<1200){pv.x+=(vx-pv.x)*Math.min(1,dt*10);pv.y+=(vy-pv.y)*Math.min(1,dt*10);}}
  prevP={x:p.x,y:p.y};
- if(!pet.seen||pet.zone!==story.zone||d2(pet,p)>460){place();pet.seen=true;}
+ if(!pet.seen||pet.zone!==story.zone||d2(pet,p)>1800){place();pet.seen=true;pet.recall=false;}   // only zone changes / true teleports re-place the pet
  // commanded pounce (Slimewright Gloop Command): fly an arc to the target, hit, then resume
  if(pet.pounce){const q=pet.pounce;q.t+=dt;const u=Math.min(1,q.t/q.dur),e=q.target;const tx=e?e.x-Math.sign(e.x-q.x0||1)*14:q.x0,ty=e?e.y+2:q.y0;
   pet.x=q.x0+(tx-q.x0)*u;pet.y=q.y0+(ty-q.y0)*u;pet.hopY=-Math.sin(u*Math.PI)*46;pet.face=Math.sign(tx-q.x0)||pet.face;pet.vx=pet.vy=0;
@@ -344,11 +344,15 @@ function tick(dt){
   if(!keep){if(pet.mode==='fight'&&away)bubble('!');pet.mode='follow';pet.target=null;}
  }
  if(pet.mode==='follow'||pet.mode==='loot'){
-  if(fighting&&!away&&d2(tgt,p)<LEASH_FIGHT){pet.mode='fight';pet.target=tgt;}
+  if(pet.recall){}else if(fighting&&!away&&d2(tgt,p)<LEASH_FIGHT){pet.mode='fight';pet.target=tgt;}
   else if(isAfk()&&t-hurtAt<2.5&&!safe){const foe=(typeof mobs!=='undefined'?mobs:[]).filter(m=>m.alive&&m.aggro&&d2(m,p)<150).sort((a,b)=>d2(a,p)-d2(b,p))[0];if(foe){pet.mode='defend';pet.target=foe;bubble('!');}}
  }
+ // ---- screen-edge leash: past ~the visible half-width the pet drops everything and runs back (boosted, no teleport)
+ {const vw=(typeof view!=='undefined'&&view.w)?view.w:800,R=Math.max(150,vw*.5-24);pet.leashR=R;
+  if(!pet.recall&&dp>R){pet.recall=true;pet.mode='follow';pet.target=null;pet.lootT=null;bubble('!');}
+  if(pet.recall){pet.mode='follow';pet.target=null;if(dp<70)pet.recall=false;}}
  const calm=!fighting&&!(typeof mobs!=='undefined'&&mobs.some(m=>m.alive&&m.aggro&&d2(m,p)<200));
- if(pet.mode==='follow'&&calm&&typeof inventory!=='undefined'){   // loot vacuum (review M13): no stand-still, up to 220 away, as soon as the fight around you is over
+ if(pet.mode==='follow'&&!pet.recall&&calm&&typeof inventory!=='undefined'){   // loot vacuum (review M13): no stand-still, up to 220 away, as soon as the fight around you is over
   if(pet.stash.length<cap()){const drop=inventory.ground.filter(g=>g.zone===story.zone&&d2(g,p)<220&&d2(g,p)>24).sort((a,b)=>d2(a,pet)-d2(b,pet))[0];if(drop){pet.mode='loot';pet.lootT=drop;if(globalThis.MoonJuice)MoonJuice.lootSeen(drop);}}
   else if(pet.full<=0&&inventory.ground.some(g=>g.zone===story.zone&&d2(g,p)<150)){pet.full=12;bubble('full');say(petName()+'’s stash is full · open the pet stash to sort it');}
  }
@@ -363,9 +367,9 @@ function tick(dt){
  // the goal itself is leashed to the player (fights never pull the pet far away)
  {const lx=gx-p.x,ly=gy-p.y,ll=Math.hypot(lx,ly),lim=pet.mode==='follow'?LEASH_FOLLOW+30:pet.mode==='loot'?250:LEASH_FIGHT;if(ll>lim){gx=p.x+lx/ll*lim;gy=p.y+ly/ll*lim;}}
  const dx=gx-pet.x,dy=gy-pet.y,dd=Math.hypot(dx,dy);
- const base=Math.max(170,speedP*1.12),boost=1+clamp01((dp-110)/110)*.75,vmax=base*boost;
+ const base=Math.max(170,speedP*1.12),boost=1+clamp01((dp-110)/110)*.75,vmax=pet.recall?Math.max(base*boost,speedP*1.7,360):base*boost;
  let want=dd<stop?0:Math.min(vmax,(dd-stop)*4.2);
- const wx=dd?dx/dd*want:0,wy=dd?dy/dd*want:0,acc=(dp>LEASH_MAX?1700:1000)*dt;
+ const wx=dd?dx/dd*want:0,wy=dd?dy/dd*want:0,acc=(pet.recall?2600:dp>LEASH_MAX?1700:1000)*dt;
  let ax=wx-pet.vx,ay=wy-pet.vy;const al=Math.hypot(ax,ay);if(al>acc){ax*=acc/al;ay*=acc/al;}
  pet.vx+=ax;pet.vy+=ay;pet.x+=pet.vx*dt;pet.y+=pet.vy*dt;
  const sp=Math.hypot(pet.vx,pet.vy);pet.phase+=sp*dt/40;if(Math.abs(pet.vx)>12)pet.face=Math.sign(pet.vx);
