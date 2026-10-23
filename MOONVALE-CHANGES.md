@@ -399,3 +399,10 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
 - World map: the 5×5 grid with links; the current tile, walkable neighbours and their compass directions are highlighted.
 - Starfall Highlands' walk mask is empty (all blocked), so the region gets an open-rectangle fallback. glow() now accepts rgb() mob colours.
 - Tests: `tools/roam_test.py` (all 80 edge crossings), `tools/pet_leash_test.py`, `quest_audit.py`.
+
+## Home screen + character slots (Oct 23)
+- `oozevale-slots.js`: the title shows only Create Character, Continue (when any character exists), Settings and Credits.
+- Create Character goes straight to the creator, with no overwrite warning: every character has its own slot.
+- Continue opens a character select listing every slot (idle-sheet portrait, name, class, level, zone, and delete behind an inline confirm). Pick a hero, then tap the glowing ooze bubble. It pops with a splash, droplets and a synthesized pop/splash SFX, then loads straight into the game.
+- Slots: index `oozevale.slots.v1`, data `oozevale.slot.<id>`. The legacy single save migrates into slot `s1`, and every device save mirrors into the active slot.
+- Test: `tools/slots_test.py [390|1280]`. Resume-path tests now tap the bubble.

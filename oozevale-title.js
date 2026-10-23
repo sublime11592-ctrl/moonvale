@@ -15,9 +15,7 @@
  // 2) returning players: Continue first and gold; "New hero" second
  const nb=$('newAdventure'),rb=$('resumeAdventure');
  const sync=()=>{if(!nb||!rb)return;const has=rb.offsetParent!==null&&!rb.hidden&&getComputedStyle(rb).display!=='none';
-  rb.classList.toggle('mv-btn-gold',has);nb.classList.toggle('mv-btn-gold',!has);
-  if(has){rb.textContent='Continue';nb.textContent='New hero';if(rb.parentNode&&rb.nextSibling!==nb&&rb.parentNode===nb.parentNode)nb.parentNode.insertBefore(rb,nb);}
-  else nb.textContent='Begin Adventure';};
+  if(globalThis.OozeSlots)return OozeSlots.sync();rb.textContent='Continue';nb.textContent='Create Character';};
  if(T){new MutationObserver(sync).observe(T,{attributes:true,subtree:true,attributeFilter:['hidden','class','style','open']});sync();}
  // creator confirm label
  const cb=$('mvcBegin');if(cb&&/start|begin/i.test(cb.textContent))cb.textContent='Enter Oozevale';
