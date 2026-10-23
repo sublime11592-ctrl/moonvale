@@ -9,7 +9,7 @@ const defs=[
  {id:'prismpearl',name:'Pearl Prismancer',tag:'Chrome & pearl',lore:'Silver-chrome and pearl plate under a cape of iridescent soap-bubble ooze. A chrome hand-mirror buckler and a belt of glowing vials.'},
  {id:'prismgilt',name:'Gilded Alchemist',tag:'Gold & amber brew',lore:'Gold-washed chrome, an amber bubble cape and a bandolier of bubbling orange elixirs.'},
  {id:'prismtide',name:'Tideglass Mirror',tag:'Teal mirror',lore:'Pale chrome with teal tideglass inlays; the bubble cape ripples like a calm sea.'}];
-const REAL={prismpearl:globalThis.PRISM_PEARL||null};
+const RL=globalThis.PRISM_REAL||{};const REAL={prismpearl:RL.prismpearl||globalThis.PRISM_PEARL||null,prismgilt:RL.prismgilt||null,prismtide:RL.prismtide||null};
 const real=(k,b,r)=>{const sx=r.cellW/b.cellW,sy=r.cellH/b.cellH,em=b.emit||[];return {...b,...r,emit:Array.from({length:r.frames},(_,i)=>{const e=em[i%Math.max(1,em.length)]||[r.cellW*.7/sx,r.cellH*.2/sy];return [+(e[0]*sx).toFixed(1),+(e[1]*sy).toFixed(1)];}),key:Math.min(b.key||0,r.frames-1),scale:(b.scale||1)*(b.bodyH||260)/(r.bodyH||260)};};
 for(const d of defs){d.cls='mage';const R=REAL[d.id];d.placeholder=!R;const c={};for(const k in base){c[k]=R&&R[k]?real(k,base[k],R[k]):{...base[k],src:(P[d.id]&&P[d.id][k])||base[k].src};c[k].char=d.id;}
  if(R)for(const k of ['hurt','gulp'])if(R[k])c[k]=real(k,base.cast,R[k]);A.chars[d.id]=c;

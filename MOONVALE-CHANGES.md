@@ -441,3 +441,8 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
 - oozevale-races.js: body proportions, gait bob, walk speed and walk-cycle timing per race. Race features show even with the helmet on: dwarf beard, elf ears, goblin ears and hands. Per-frame head anchors are computed from each frame's alpha bounds.
 - Helmet On/Off toggle in the creator (live preview) and in Settings ("Show helmet"), saved per character. Helmet OFF shows a placeholder race head until the real race sheets arrive (REQUESTS-races.md).
 - PWA: installable, offline after first load (see above).
+
+## Prismancer bubble-blaster (code; new gunslinger art pending)
+- oozevale-blaster.js: all Prismancer spells except Gulp Brew fire from the blaster muzzle, with a muzzle flash, a recoil kick and a brew-coloured glow up the hip-tank feed tube. Bubble Ward is a bubble shot that wraps her; Mirror Gel's reflected shards leave the muzzle. Muzzle anchors come per frame from the new sheets (tools/prism_ingest.py <look> real → art/prismancer/real.js); until then the current Pearl sheets' emit point is used.
+- Alchemist key talent renamed **Potion Grenade** (lobbed from the bandolier). Tree weapons are now a long blaster rifle (Alchemist) and a mirrored blunderbuss shield-gun (Mirrorwall).
+- REQUESTS-prismancer.md rewritten for the potion-punk gunslinger redesign.
