@@ -406,3 +406,16 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
 - Continue opens a character select listing every slot (idle-sheet portrait, name, class, level, zone, and delete behind an inline confirm). Pick a hero, then tap the glowing ooze bubble. It pops with a splash, droplets and a synthesized pop/splash SFX, then loads straight into the game.
 - Slots: index `oozevale.slots.v1`, data `oozevale.slot.<id>`. The legacy single save migrates into slot `s1`, and every device save mirrors into the active slot.
 - Test: `tools/slots_test.py [390|1280]`. Resume-path tests now tap the bubble.
+
+## Prismancer (Oct 23)
+- New playable class in the mage slot (`oozevale-prism.js`). Magmaweaver and Rimegel stay "Coming soon".
+- Kit (unlocks at levels 1/1/4/7/10):
+  - Bounce Bolt: a ricochet bubble that hits 2 more foes.
+  - Bubble Ward: a wobbling iridescent absorb bubble that ripples where it's hit and pops into droplets.
+  - Gulp Brew: uncork, glug and get a random elixir. Teal heals over time, Purple doubles reflection, Gold gives haste plus attack speed, Orange makes your next 3 shots splash fire ooze. A tinted swirl and bubbles rise from the hero.
+  - Mirror Gel: 3.5 s of liquid chrome. Every hit is absorbed and comes back as a mirror-shard bolt with a chrome flash and "↩ N" numbers.
+  - Refraction Nova.
+  - Auto-attack: Prism Shard (pearl diamond shards).
+- Pet line: Bubblet → Prism Bubblet (10) → Mirrorgel Orb (25), drawn procedurally in `oozevale.js`.
+- 3 looks (Pearl Prismancer, Gilded Alchemist, Tideglass Mirror) registered by `oozevale-prism-looks.js`. Until the real sheets arrive (`REQUESTS-prismancer.md`) they use tinted Chrome Veil frames from `art/prismancer/` (built by `tools/prism_placeholder.py`).
+- Test: `tools/prism_test.py [390|1280]`.

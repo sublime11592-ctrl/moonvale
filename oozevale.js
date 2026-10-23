@@ -266,6 +266,14 @@ function drawBlob(x,W,colorKey,stage,o={}){
   // drifting spores
   x.fillStyle='rgba(200,255,170,.85)';for(let i=0;i<3;i++){const q=(t*.4+i*.33)%1;x.globalAlpha=1-q;x.beginPath();x.arc(Math.sin(i*2+t)*Wd*.5,-H*(1+q*.6),W*.025,0,7);x.fill();}x.globalAlpha=1;
  }
+ else if(stage!=='none'&&line==='prismancer'){
+  // Bubblet line: a pearly bubble skin with a chrome glint; grown: orbiting bubbles; evolved: a mirror halo
+  const t=(o.t||performance.now()/1000);x.save();x.globalAlpha=.85;let cg;try{cg=x.createConicGradient(t*.9,0,-H*.45);[['#5ff2d0',0],['#b483ff',.3],['#ffd257',.6],['#5ff2d0',1]].forEach(([c,k])=>cg.addColorStop(k,c));}catch(e){cg='#bff6ff';}
+  x.strokeStyle=cg;x.lineWidth=Math.max(1.5,W*.05);x.beginPath();x.ellipse(0,-H*.45,Wd*.58,H*.5,0,0,7);x.stroke();
+  x.fillStyle='rgba(255,255,255,.85)';x.beginPath();x.moveTo(Wd*.18,-H*.82);x.lineTo(Wd*.26,-H*.68);x.lineTo(Wd*.18,-H*.54);x.lineTo(Wd*.1,-H*.68);x.closePath();x.fill();
+  if(stage!=='baby'){for(let k=0;k<(stage==='evolved'?5:3);k++){const a=t*1.6+k*6.283/(stage==='evolved'?5:3);x.strokeStyle='rgba(220,250,255,.9)';x.lineWidth=Math.max(1,W*.025);x.beginPath();x.arc(Math.cos(a)*Wd*.7,-H*.5+Math.sin(a)*H*.25,W*.06,0,7);x.stroke();}}
+  if(stage==='evolved'){x.strokeStyle='rgba(255,255,255,.95)';x.lineWidth=Math.max(1.5,W*.04);x.beginPath();x.ellipse(0,-H*1.05,Wd*.36,H*.1,0,0,7);x.stroke();}
+  x.restore();}
  else if(stage!=='none'){
   if(stage!=='baby'){x.fillStyle=rgba(lite,.85);x.beginPath();x.moveTo(-W*.05,hy-H*.28);x.quadraticCurveTo(W*.02,hy-H*.6,W*.14,hy-H*.52);x.quadraticCurveTo(W*.04,hy-H*.38,W*.05,hy-H*.26);x.fill();}
   x.beginPath();x.moveTo(-hw,hy+H*.05);x.bezierCurveTo(-hw,hy-H*.33,hw,hy-H*.33,hw,hy+H*.05);x.quadraticCurveTo(0,hy-H*.05,-hw,hy+H*.05);x.closePath();
