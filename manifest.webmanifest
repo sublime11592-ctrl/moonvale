@@ -1,0 +1,19 @@
+{
+ "name":"Oozevale",
+ "short_name":"Oozevale",
+ "description":"A cozy fantasy RPG of glowing slime, jelly-armored heroes and loyal slime companions.",
+ "id":"./",
+ "start_url":"./",
+ "scope":"./",
+ "display":"fullscreen",
+ "display_override":["fullscreen","standalone"],
+ "orientation":"any",
+ "theme_color":"#0b1921",
+ "background_color":"#05080c",
+ "categories":["games"],
+ "icons":[
+  {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+  {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+  {"src":"icons/maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+ ]
+}
