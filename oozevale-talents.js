@@ -129,7 +129,19 @@ const atCamp=()=>typeof CAMP!=='undefined'&&d2(p,CAMP)<170;
 function autoSkin(){const t=lockedTree();if(!t)return null;const sp=spentIn(t);let i=-1;MILESTONES.forEach((m,k)=>{if(sp>=m)i=k;});return i<0?null:t.id+':'+i;}
 function skinDef(){const key=TAL.skin||autoSkin();if(!key)return null;const [tid,i]=key.split(':');const t=trees().find(x=>x.id===tid);if(!t||spentIn(t)<MILESTONES[+i])return null;return {filter:t.filter[+i],glow:t.glow[+i],key};}
 const SC=new Map();
-function skinned(img,src,sd){if(!img||!(img.width||img.naturalWidth))return null;const k=(src||'')+'|'+sd.key+'|'+(img.width||img.naturalWidth);let c=SC.get(k);if(c)return c;c=document.createElement('canvas');c.width=img.width||img.naturalWidth;c.height=img.height||img.naturalHeight;const x=c.getContext('2d');x.filter=sd.filter;x.drawImage(img,0,0);x.filter='none';x.globalCompositeOperation='source-atop';x.globalAlpha=.12;x.fillStyle=sd.glow;x.fillRect(0,0,c.width,c.height);SC.set(k,c);if(SC.size>80)SC.delete(SC.keys().next().value);return c;}
+/* held-weapon restyle: find the weapon's glow parts in each frame by colour (per look) and recolour + halo them in the tree colour */
+function heroLook(){try{return (typeof customHero!=='undefined'&&customHero&&customHero.look)||'';}catch(e){return '';}}
+function hsv(r,g2,b){const mx=Math.max(r,g2,b),mn=Math.min(r,g2,b),d=mx-mn;let h=0;if(d){if(mx===r)h=((g2-b)/d+6)%6;else if(mx===g2)h=(b-r)/d+2;else h=(r-g2)/d+4;h*=60;}return [h,mx?d/mx:0,mx/255];}
+const WMASK={chromeknight:(h,s,v)=>h>=255&&h<=325&&s>.42&&v>.3,glowcap:(h,s,v)=>h>=125&&h<=190&&s>.4&&v>.38,oozeseer:(h,s,v)=>h>=125&&h<=190&&s>.4&&v>.38,
+ prism:(h,s,v)=>((h<=14||h>=338)&&s>.5&&v>.55)||(h>=168&&h<=200&&s>.35&&v>.6)};
+const maskFor=look=>WMASK[look]||(/^prism/.test(look)?WMASK.prism:(h,s,v)=>s>.6&&v>.7);
+function skinned(img,src,sd){if(!img||!(img.width||img.naturalWidth))return null;const look=heroLook();const k=(src||'')+'|'+sd.key+'|'+look+'|'+(img.width||img.naturalWidth);let c=SC.get(k);if(c)return c;c=document.createElement('canvas');c.width=img.width||img.naturalWidth;c.height=img.height||img.naturalHeight;const x=c.getContext('2d');x.filter=sd.filter;x.drawImage(img,0,0);x.filter='none';x.globalCompositeOperation='source-atop';x.globalAlpha=.12;x.fillStyle=sd.glow;x.fillRect(0,0,c.width,c.height);x.globalCompositeOperation='source-over';x.globalAlpha=1;
+ try{const tier=+(sd.key.split(':')[1]||0),tr=trees().find(t=>t.id===sd.key.split(':')[0]),col=tr?tr.color:sd.glow;
+  const o=document.createElement('canvas');o.width=c.width;o.height=c.height;const ox=o.getContext('2d');ox.drawImage(img,0,0);const D=ox.getImageData(0,0,o.width,o.height),P=D.data,M=maskFor(look);
+  const cr=parseInt(col.slice(1,3),16),cg=parseInt(col.slice(3,5),16),cb=parseInt(col.slice(5,7),16);
+  for(let i=0;i<P.length;i+=4){if(P[i+3]<40){P[i+3]=0;continue;}const [h,s2,v]=hsv(P[i],P[i+1],P[i+2]);if(!M(h,s2,v)){P[i+3]=0;continue;}const l=Math.min(1,v*1.15+tier*.08);P[i]=Math.min(255,cr*l+40*tier);P[i+1]=Math.min(255,cg*l+40*tier);P[i+2]=Math.min(255,cb*l+40*tier);}
+  ox.putImageData(D,0,0);x.save();x.shadowColor=col;x.shadowBlur=4+tier*6;x.globalAlpha=.9;x.drawImage(o,0,0);if(tier>=2){x.globalCompositeOperation='lighter';x.globalAlpha=.35;x.drawImage(o,0,0);}x.restore();}catch(e){}
+ SC.set(k,c);if(SC.size>80)SC.delete(SC.keys().next().value);return c;}
 if(typeof MoonMotion!=='undefined'){const t0=MoonMotion.tint;MoonMotion.tint=m=>{const base=t0?t0(m):null;const sd=skinDef();if(!sd||!m)return base;return skinned(base||m.img,(base?'t':'')+m.src,sd)||base;};
  const tf=MoonMotion.tintFrame;if(tf)MoonMotion.tintFrame=(ch,f)=>{const r=tf(ch,f);const sd=skinDef();if(!sd||!r||!r.img)return r;const c=skinned(r.img,'f'+ch,sd);return c?{...r,img:c}:r;};}
 /* ---------- behaviour ---------- */
@@ -381,12 +393,11 @@ let swingT=0,lastAtk=0;
 function drawWeapon(t){const tr=lockedTree();if(!tr||!WT[tr.id])return;const dir=p.dir||1;
  {const sp0=spentIn(tr);if(sp0>=20){const deep=sp0>=30;g.save();g.globalAlpha=(deep?.55:.32)+.15*Math.sin(t*3);g.strokeStyle=tr.color;g.shadowColor=tr.color;g.shadowBlur=deep?24:12;g.lineWidth=deep?4:2.5;g.beginPath();g.ellipse(p.x,p.y+2,deep?46:38,deep?15:12,0,0,7);g.stroke();if(deep){g.globalAlpha=.7;g.fillStyle=tr.color;for(let i=0;i<5;i++){const a=t*1.4+i*1.256,h=(t*40+i*23)%70;g.beginPath();g.arc(p.x+Math.cos(a)*36,p.y-h,2.4,0,7);g.fill();}}g.restore();}}
  if(p.attack>lastAtk+.05)swingT=.35;lastAtk=p.attack;swingT=Math.max(0,swingT-1/60);const sw=swingT>0?1-swingT/.35:0;
- const big=WT[tr.id]==='great';g.save();g.translate(p.x+dir*16,p.y-46);g.scale(dir,1);
- const base=WT[tr.id]==='shield'||WT[tr.id]==='mirror'?.15:.45,ang=base+(sw?(-1.6+sw*3.2)*(big?1.3:.8):Math.sin(t*2)*.04);
- if(sw&&(big||WT[tr.id]==='shield'||WT[tr.id]==='hammer')){g.globalAlpha=.55*(1-sw);g.strokeStyle=big?'#ff6a3d':tr.color;g.lineWidth=big?16:7;g.shadowColor=g.strokeStyle;g.shadowBlur=14;g.beginPath();g.arc(0,0,big?80:56,base-1.6*(big?1.3:.8)-1.57,ang-1.57);g.stroke();g.shadowBlur=0;g.globalAlpha=1;}
- const sp=spentIn(tr),tier=sp>=30?3:sp>=20?2:1;g.rotate(ang);if(tier>=2){g.shadowColor=tr.color;g.shadowBlur=tier>=3?22:10;}weapon(g,tr.id,(big?.95:.75)*(tier>=3?1.3:tier>=2?1.12:1),sw);g.shadowBlur=0;
- if(tier>=2){const d=(t*.9)%1;g.globalAlpha=1-d;g.fillStyle=tr.color;g.beginPath();g.ellipse(0,-30+d*40,2.5,3.5,0,0,7);g.fill();g.globalAlpha=1;}
- if(tier>=3&&sw&&!(big||WT[tr.id]==='shield'||WT[tr.id]==='hammer')){g.globalAlpha=.5*(1-sw);g.strokeStyle=tr.color;g.lineWidth=6;g.beginPath();g.arc(0,0,50,-2.2,ang-1.57);g.stroke();g.globalAlpha=1;}g.restore();}
+ const sp=spentIn(tr),tier=sp>=30?3:sp>=20?2:sp>=10?1:0;   // the tree restyles the weapon the hero already holds (see skinned); no floating second weapon
+ if(p.cls==='mage'&&tier&&globalThis.PrismBlaster&&PrismBlaster.muzzle){let m=null;try{m=PrismBlaster.muzzle();}catch(e){}if(m){if(p.attack>lastAtk+.05)swingT=.25;lastAtk=p.attack;swingT=Math.max(0,swingT-1/60);
+  g.save();g.globalCompositeOperation='lighter';const r=5+tier*3+Math.sin(t*6)*1.5+(swingT>0?14:0);const gr=g.createRadialGradient(m.x,m.y,0,m.x,m.y,r*2);gr.addColorStop(0,'#ffffff');gr.addColorStop(.35,tr.color);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.globalAlpha=.55+.15*tier;g.beginPath();g.arc(m.x,m.y,r*2,0,7);g.fill();
+  if(tier>=2){g.fillStyle=tr.color;for(let i=0;i<tier*2;i++){const a=t*3+i*2.1,d=8+((t*30+i*9)%16);g.globalAlpha=.8;g.beginPath();g.arc(m.x+Math.cos(a)*d,m.y+Math.sin(a)*d,1.6,0,7);g.fill();}}g.restore();}}
+}
 /* ---------- Talent Keeper NPC (resets for gold) ---------- */
 const keeperPos=()=>typeof CAMP!=='undefined'?{x:CAMP.x-150,y:CAMP.y+70}:null;
 const keeperHere=()=>{const k=keeperPos();return k&&!(typeof story!=='undefined'&&story.zone>0&&!(typeof zones!=='undefined'&&zones[story.zone]&&zones[story.zone].camp!==false))?k:k;};
