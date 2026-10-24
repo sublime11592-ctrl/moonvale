@@ -43,3 +43,6 @@ That is 3 looks × 4 races × 2 head variants × 7 sheets = 168 strips. Then the
 
 ## Also: race heads for the portrait
 512×512 portrait per look × race × helm/face, the same style as the current HUD portraits.
+
+## Slime signs (races.md)
+Each race has one glowing mark that stays visible with the helmet on: human teal lantern-glass pendant at the throat (`#3fe0c8`), elf moonslime freckles on the ear tips (`#bff6ff`, brighter while casting), goblin ooze-green hands to the knuckle (`#7dff6a`), dwarf glowing amber beads, 3 per beard braid (`#ffb347`). Code draws placeholders for all four until the art lands.

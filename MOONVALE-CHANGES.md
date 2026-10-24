@@ -446,3 +446,24 @@ Test fixture: `ooze_test` marks its 5000 HP dummy `m.bal=1` so the balance sweep
 - oozevale-blaster.js: all Prismancer spells except Gulp Brew fire from the blaster muzzle, with a muzzle flash, a recoil kick and a brew-coloured glow up the hip-tank feed tube. Bubble Ward is a bubble shot that wraps her; Mirror Gel's reflected shards leave the muzzle. Muzzle anchors come per frame from the new sheets (tools/prism_ingest.py <look> real → art/prismancer/real.js); until then the current Pearl sheets' emit point is used.
 - Alchemist key talent renamed **Potion Grenade** (lobbed from the bandolier). Tree weapons are now a long blaster rifle (Alchemist) and a mirrored blunderbuss shield-gun (Mirrorwall).
 - REQUESTS-prismancer.md rewritten for the potion-punk gunslinger redesign.
+
+## Design-doc pass (talents-review.md, prismancer-gun.md, races.md)
+- **Bugs:** Mirror Gel lets 25% of each hit through and reflects 115% of it. The race heights now come from one table: 0.80 / 1.08 / 0.74.
+- **Talents (`oozevale-talents.js` v6):**
+  - Key nodes now *replace* their spell. They have their own effect, mana, cooldown, cast pose and sound, and the base spell no longer fires underneath.
+  - Node specs follow the doc: Stored Gel, Rent, Grove 15% + 3%/s, golem soak 30% + 3%/rank, a jelly cap of 8 (`OZ_MAXJ` in kits), a planted Mirrorwall that reflects projectiles at 120%, Brew Grenade pools, a 3-burst Volatile Vial, plague chains capped at 2 deep, and more.
+  - A 29-point Ascension node transforms the class signature.
+  - Trees cap at 30 points. Paragon ranks run from level 35 to 94 and alternate +0.5% power / +0.5% health.
+  - Resets are free below level 15. Above that they cost min(1500, 25 + 1.2·L²), or a Keeper's Token (5% drop from bosses).
+  - Weapon tiers: a drip at 20 points, and glow plus trails at 30.
+- **Prismancer gun (`oozevale-gun.js` v1):**
+  - The auto-attack fires from a 6-round Bubble Mag: 0.34P every 450 ms, then a 600 ms pump.
+  - The optional Perfect Pump (R or the 72 px Pump button, gold band 300–420 ms) reloads instantly and gives Overpressure plus 1 Refraction. A mistimed tap jams the pump to 900 ms on desktop. On touch the band is wider and a mistimed tap is just a normal pump.
+  - Ricochet and Nova charge in tiers: hold 1 or 5, with T1 at 400 ms and T2 at 800 ms (T2 auto-fires at 1.2 s and costs 50% more mana). Defensive shots are instant.
+  - Chrome Choke has a capacity of 30% max health + 6·L, then cracks.
+  - VFX/SFX: casings, bubble rounds, a pump gauge, muzzle drips, choke rings, the Nova up-shot, Triple Pump beams and synth SFX.
+- **Races (`oozevale-races.js` v3):**
+  - Passives: Hearth-Trader, Long Sight, Pocket Brewer and Amberblood.
+  - Second Wind now heals 15%.
+  - Slime signs: the human pendant, elf freckles, goblin `#7dff6a` hands and dwarf amber beads. Dwarves also get footfall puffs.
+  - The creator shows each race's passive under its active.

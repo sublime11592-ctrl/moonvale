@@ -46,7 +46,17 @@ function features(x,race,m,i,k,view,flip,t,helmet){const P=prof(race);const a=an
   x.fillStyle='#d8b050';x.fillRect(bx-hh*.08,by+hh*.72,hh*.16,hh*.1);}
  if(P.beard&&back){x.fillStyle=P.hair;x.beginPath();x.ellipse(hx-hh*.55,cy+hh*.5,hh*.16,hh*.3,.3,0,7);x.ellipse(hx+hh*.55,cy+hh*.5,hh*.16,hh*.3,-.3,0,7);x.fill();}
  // goblin green hands at the sheet's hand anchors (approx: mid-body sides)
- if(P.hands&&m.emit&&m.emit[i]&&!back){const e=m.emit[i];x.fillStyle=P.skin;x.strokeStyle='rgba(0,0,0,.4)';x.lineWidth=1;x.beginPath();x.arc((e[0]-m.anchorX)*k,(e[1]-m.baseY)*k+hh*.15,hh*.2,0,7);x.fill();x.stroke();}
+ if(P.hands&&m.emit&&m.emit[i]&&!back){const e=m.emit[i];x.fillStyle='#7dff6a';x.strokeStyle='rgba(0,0,0,.4)';x.lineWidth=1;x.beginPath();x.arc((e[0]-m.anchorX)*k,(e[1]-m.baseY)*k+hh*.15,hh*.2,0,7);x.fill();x.stroke();}
+ // slime signs (additive, 1.5 s pulse): human pendant, elf freckles, goblin ooze-green hands, dwarf amber beads
+ {const rid=raceId(race),pu=.6+.4*Math.sin(t*4.19),casting=(()=>{try{const s=MM&&MM.animInfo&&MM.animInfo();return s&&/cast|attack/.test(s.state||'');}catch(e){return false;}})();
+  const dot=(X,Y,r,c,a)=>{x.globalAlpha=a;const gr=x.createRadialGradient(X,Y,0,X,Y,r*2.2);gr.addColorStop(0,'#ffffff');gr.addColorStop(.35,c);gr.addColorStop(1,c+'00');x.fillStyle=gr;x.beginPath();x.arc(X,Y,r*2.2,0,7);x.fill();};
+  x.save();x.globalCompositeOperation='lighter';const r=Math.max(1.2,hh*.07);
+  if(rid==='humans'&&!back)dot(face?fx+hh*.05:hx,cy+hh*.78,r,'#3fe0c8',.55+.45*pu);
+  if(rid==='moonelves'){const len=hh*1.05;for(const s2 of [-1,1]){const ex=hx+s2*hh*.46;for(let n=0;n<2;n++)dot(ex+s2*len*(.72+n*.14),cy-len*(.58+n*.14),r*.7,'#bff6ff',(casting?.95:.45)*pu+.2);}
+   if(!helmet&&!back)for(let n=0;n<3;n++)dot(fx+hh*(-.18+n*.14)*(face?.7:1)+(face?hh*.1:0),cy+hh*.16,r*.55,'#bff6ff',(casting?.9:.4)*pu+.15);}
+  if(rid==='goblins'&&P.hands&&m.emit&&m.emit[i]&&!back){const e=m.emit[i];dot((e[0]-m.anchorX)*k,(e[1]-m.baseY)*k+hh*.15,hh*.14,'#7dff6a',.5+.4*pu);}
+  if(rid==='mountaindwarves'&&!back){const bw=hh*(face?.55:.72),by=cy+hh*.38,bx=face?fx+hh*.12:hx;for(let j=-1;j<=1;j++)for(let n=0;n<3;n++)dot(bx+j*bw*(.2-.03*n),by+hh*(.42+n*.22),r*.6,'#ffb347',.5+.4*pu);}
+  x.restore();}
  x.restore();}
 /* ---- in-game hero ---- */
 const MM=typeof MoonMotion!=='undefined'?MoonMotion:null;
@@ -82,5 +92,37 @@ let pend=null;setInterval(()=>{if(pend!==null&&typeof customHero!=='undefined'&&
 if(typeof beginCreation==='function'||globalThis.MoonCreator){const tryWrap=()=>{const MC=globalThis.MoonCreator;if(!MC||MC.__ozh)return;MC.__ozh=1;const b=MC.begin;if(b)MC.begin=function(){const r=b.apply(this,arguments);setTimeout(()=>{if(typeof customHero!=='undefined'&&customHero)customHero.helmet=MC.state.helmet!==false;},0);return r;};
  const btn=()=>document.getElementById('mvcBegin');document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#mvcBegin'))pend=MC.state.helmet!==false;},true);};tryWrap();setTimeout(tryWrap,500);}
 const css=document.createElement('style');css.textContent='.oz-helm{margin-top:6px;width:100%}.oz-helm-row{display:flex;gap:8px;align-items:center;margin:10px 0;color:#e9d8b4;font:600 15px Georgia,serif}.oz-helm-row input{width:20px;height:20px;accent-color:#3fe0c8}.oz-helm-row small{color:#b9a47c}';document.head.appendChild(css);
+
+/* ---- race passives (races.md): one small passive each, never kill speed or XP ---- */
+const rid=()=>raceId(heroRace());
+const RA={maxHp:0,armor:0};
+function unRA(){p.maxHp-=RA.maxHp;p.armor-=RA.armor;RA.maxHp=0;RA.armor=0;}
+function doRA(){unRA();if(rid()==='mountaindwarves'){RA.maxHp=Math.round(p.maxHp*.04);RA.armor=1;p.maxHp+=RA.maxHp;p.armor+=RA.armor;}p.hp=Math.min(p.hp,p.maxHp);}
+const keep=f=>function(){const a={...RA};unRA();try{return f.apply(this,arguments);}finally{p.maxHp+=a.maxHp;p.armor+=a.armor;RA.maxHp=a.maxHp;RA.armor=a.armor;}};
+if(typeof adventureData==='function')adventureData=keep(adventureData);
+if(typeof gainXp==='function'){const gx=keep(gainXp);gainXp=function(){const r=gx.apply(this,arguments);doRA();return r;};}
+if(typeof restoreAdventure==='function'){const ra=restoreAdventure;restoreAdventure=function(){RA.maxHp=0;RA.armor=0;const r=ra.apply(this,arguments);try{doRA();}catch(e){}return r;};}
+if(typeof beginCreation==='function'){const bc=beginCreation;beginCreation=function(){RA.maxHp=0;RA.armor=0;return bc.apply(this,arguments);};}
+let lastRace=null;
+// Hearth-Trader: +5% gold picked up (kills/bounties), −5% on purchases
+let gAcc=0;if(typeof buy==='function'){const b=buy;buy=function(){const g0=p.gold;inBuy=1;let r;try{r=b.apply(this,arguments);}finally{inBuy=0;}const spent=g0-p.gold;if(spent>0&&rid()==='humans'){const back=Math.max(1,Math.round(spent*.05));p.gold+=back;try{float(p.x,p.y-120,'Hearth-Trader −'+back+'g','#e5b16e');}catch(e){}}lastGold=p.gold;return r;};}
+let inBuy=0,lastGold=null;
+// Long Sight: +8% skill range
+const ORIG={};function ranges(){const c=CLASSES[p.cls];if(!c)return;const o=ORIG[p.cls]||(ORIG[p.cls]=c.skills.map(s=>s[4]));const k=rid()==='moonelves'?1.08:1;c.skills.forEach((s,j)=>{if(o[j]>0)s[4]=Math.round(o[j]*k);});}
+// Pocket Brewer
+if(typeof tonic==='function'){const tn=tonic;tonic=function(){const pot=p.potions,hp=p.hp;const r=tn.apply(this,arguments);if(rid()==='goblins'&&p.potions<pot){const healed=p.hp-hp;p.hp=Math.min(p.maxHp,p.hp+healed*.15);if(Math.random()<.10){p.potions++;try{float(p.x,p.y-120,'Pocket Brewer · tonic kept!','#7dff6a');}catch(e){}}}return r;};}
+// dwarf footfall puffs
+const PUFF=[];let stepPh=0;
+{const up=update;update=function(dt){const g0=p.gold;up.apply(this,arguments);try{if(typeof started!=='undefined'&&!started)return;
+ if(rid()==='humans'&&!inBuy&&p.gold>g0){gAcc+=(p.gold-g0)*.05;const w=Math.floor(gAcc);if(w>0){p.gold+=w;gAcc-=w;}}
+ if(lastRace!==rid()+p.cls){lastRace=rid()+p.cls;ranges();doRA();}
+ const P=prof(heroRace()),walking=p.walk>0&&(p.dx||p.dy);
+ if(rid()==='mountaindwarves'&&walking){const ph=Math.floor((typeof time!=='undefined'?time:0)*9*P.fps/Math.PI);if(ph!==stepPh){stepPh=ph;for(let n=0;n<4;n++)PUFF.push({x:p.x+(Math.random()-.5)*20,y:p.y+4,vx:(Math.random()-.5)*40,vy:-20-Math.random()*20,t:0,c:n%2?'#c8a878':'#ffb347'});}}
+ for(const q of PUFF){q.t+=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;}for(let n=PUFF.length-1;n>=0;n--)if(PUFF[n].t>.5)PUFF.splice(n,1);}catch(e){}};}
+{const dr=draw;draw=function(){dr.apply(this,arguments);if(!PUFF.length)return;g.save();try{const d=cinematic.dpr;g.setTransform(d,0,0,d,-camera.x*d,-camera.y*d);for(const q of PUFF){g.globalAlpha=.5*(1-q.t/.5);g.fillStyle=q.c;g.beginPath();g.arc(q.x,q.y,2+q.t*6,0,7);g.fill();}}catch(e){}g.restore();};}
+// creator: show the passive under the active
+setInterval(()=>{const rc=document.getElementById('mvcRaces');if(!rc||!rc.offsetParent)return;let el=document.getElementById('ozRacePerk');if(!el){el=document.createElement('p');el.id='ozRacePerk';el.style.cssText='margin:6px 2px 0;font-size:12px;line-height:1.35;color:#e8dcc0;opacity:.92';rc.after(el);}
+ const on=rc.querySelector('.mvc-race.on')||rc.querySelector('.mvc-race');const r=on&&on.dataset.race;const h=r&&typeof heritages!=='undefined'&&heritages[r];if(!h)return;const html='<b style="color:'+(h.accent||'#d8b16a')+'">Active · '+h.trait+'</b><br>Passive · '+(h.passive||'—');if(el.innerHTML!==html)el.innerHTML=html;},300);
+globalThis.OozeRacePerks={RA,ranges,ORIG,PUFF};
 globalThis.OozeRace={R,prof,raceId,anchor,features,creator:CR,helmetOn};
 })();

@@ -14,10 +14,10 @@ raceStyleNames.ironborn=['Hallkeeper','Deepdelver','Runeweaver','Ironmarshal','H
 raceStyleNotes.duskelves=['Regal coat · noble','Light leathers · scout','Layered robes · scholar','Plate armor · sentinel','Flowing layers · wanderer'];
 raceStyleNotes.ironborn=['Regal coat · noble','Light leathers · scout','Layered robes · scholar','Plate armor · sentinel','Flowing layers · wanderer'];
 Object.assign(heritages,{
- humans:{name:'Humans',height:1,trait:'Second Wind · Restore 12% health',lore:'Warm hearts. Open roads. A story waiting to be written.',accent:'#e5b16e'},
- moonelves:{name:'Moon Elves',height:1.08,trait:'Moonstep · Evade attacks for two seconds',lore:'Starlit wanderers with a little magic in their stride.',accent:'#b8a1e6'},
- goblins:{name:'Goblins',height:.74,trait:'Bright Idea · Restore 25 mana',lore:'Small adventurers. Big ideas. Trouble is optional.',accent:'#a4cc80'},
- mountaindwarves:{name:'Dwarves',height:.8,trait:'Stoneheart · Gain a shield worth 18% of your health',lore:'Mountain-born companions with courage to spare.',accent:'#e5a17d'}
+ humans:{name:'Humans',height:1,trait:'Second Wind · Restore 15% health',passive:'Hearth-Trader · +5% gold from kills and bounties, −5% vendor prices',lore:'Warm hearts. Open roads. A story waiting to be written.',accent:'#e5b16e'},
+ moonelves:{name:'Moon Elves',height:1.08,trait:'Moonstep · Evade attacks for two seconds',passive:'Long Sight · +8% skill range',lore:'Starlit wanderers with a little magic in their stride.',accent:'#b8a1e6'},
+ goblins:{name:'Goblins',height:.74,trait:'Bright Idea · Restore 25 mana',passive:'Pocket Brewer · tonics heal 15% more, 10% chance not to use one up',lore:'Small adventurers. Big ideas. Trouble is optional.',accent:'#a4cc80'},
+ mountaindwarves:{name:'Dwarves',height:.8,trait:'Stoneheart · Gain a shield worth 18% of your health',passive:'Amberblood · +4% max health, +1 armor',lore:'Mountain-born companions with courage to spare.',accent:'#e5a17d'}
 });
 for(const id of selectableRaces){races[id]={...heritages[id],art:id};raceStyleNames[id]=['Wayfarer','Trail Scout','Lorekeeper','Sentinel','Wanderer'];raceStyleNotes[id]=['Tailored coat · open roads','Light leathers · forest trails','Layered robes · old magic','Plate armor · steadfast heart','Travel cloak · untold stories'];}
 const raceStyleSheets={},raceStylePortraits=new Map(),raceStyleFailures=new Set();
@@ -50,7 +50,7 @@ const presetRacialBefore=useRacial;useRacial=function(){
  const race=customHero?.race;if(![...selectableRaces,'duskelves','ironborn'].includes(race))return presetRacialBefore();
  if(!started||isPaused())return;if(frontierState.racialCooldown>0)return say('Racial ability recovers in '+Math.ceil(frontierState.racialCooldown)+'s.');
  frontierState.racialCooldown=60;
- if(race==='humans'){p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.12);burst(p.x,p.y-30,'#efc57d',12,35);say('Second Wind · Restore 12% health');}
+ if(race==='humans'){p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15);burst(p.x,p.y-30,'#efc57d',12,35);say('Second Wind · Restore 15% health');}
  else if(race==='goblins'){p.mana=Math.min(100,p.mana+25);burst(p.x,p.y-30,'#a7e59a',12,35);say('Bright Idea · Restore 25 mana');}
  else if(race==='duskelves'||race==='moonelves'){p.evade=Math.max(p.evade,2);burst(p.x,p.y-35,'#a99be8',14,45);say('Moonstep · Slip through danger');}
  else{p.shield+=p.maxHp*.18;p.ward=Math.max(p.ward,5);burst(p.x,p.y-25,'#d1a66d',12,35);say('Stoneheart · Stand firm for five seconds');}hud();

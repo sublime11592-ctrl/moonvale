@@ -14,14 +14,14 @@ const T=()=>typeof time!=='undefined'?time:performance.now()/1000;
 const hx=()=>globalThis.MoonSlime?MoonSlime.hex(MoonSlime.current()):'#b483ff';
 const d2=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const jellies=[];
-const MAXJ=5,LIFE=13;
+const MAXJ_D=5,LIFE_D=13;const MAXJ_=()=>globalThis.OZ_MAXJ||MAXJ_D,LIFE_=()=>LIFE_D+(globalThis.OZ_JLIFE||0);
 function hitBy(e,n,c,src){if(globalThis.MoonPet&&MoonPet.hit)MoonPet.hit(e,n,c,src);else{const s0=globalThis.OZ_SRC;globalThis.OZ_SRC=src||'pet';try{damage(e,n,c);}finally{globalThis.OZ_SRC=s0||null;}}}
 function spawnJellies(n,tgt){
  const col=hx();
  for(let i=0;i<n;i++){
-  if(jellies.length>=MAXJ){const old=jellies.shift();pop(old);}
+  if(jellies.length>=MAXJ_()){const old=jellies.shift();pop(old);}
   const a=Math.PI*2*i/n+Math.random()*.6,ox=Math.cos(a)*30,oy=Math.sin(a)*14+10;
-  jellies.push({x:p.x+ox,y:p.y+oy,vx:Math.cos(a)*160,vy:Math.sin(a)*80,life:LIFE,max:LIFE,cd:.4+i*.15,target:tgt&&tgt.alive?tgt:null,phase:Math.random()*6,face:1,zone:story.zone,seed:Math.random()*9,pounce:null,lunge:0,born:.35});
+  jellies.push({x:p.x+ox,y:p.y+oy,vx:Math.cos(a)*160,vy:Math.sin(a)*80,life:LIFE_(),max:LIFE_(),cd:.4+i*.15,target:tgt&&tgt.alive?tgt:null,phase:Math.random()*6,face:1,zone:story.zone,seed:Math.random()*9,pounce:null,lunge:0,born:.35});
  }
  if(typeof effect==='function')effect(p.x,p.y+6,70,col,'ring',.7);
  if(typeof burst==='function')burst(p.x,p.y-30,col,22,120);
