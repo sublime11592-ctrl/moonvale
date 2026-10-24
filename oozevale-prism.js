@@ -45,7 +45,7 @@ if(typeof releaseSpell==='function'){const b=releaseSpell;releaseSpell=function(
 {const b=hurt;hurt=function(n){if(!on())return b.apply(this,arguments);
  const camp=typeof CAMP!=='undefined'&&d2(p,CAMP)<125;if(p.evade>0||camp)return b.apply(this,arguments);
  const m=attacker(),ang=m?Math.atan2(m.y-(p.y-52),m.x-p.x):Math.random()*6.283;
- if(S.mirror>0){const dmg=Math.max(1,n-p.armor);p.inCombat=6;S.ripples.push({a:ang,t:0,k:1.4});reflect(m,dmg*(S.purple>0?2:1)*1.15);say2(p.x,p.y-70,'MIRRORED','#eef6ff');return;}
+ if(S.mirror>0){const dmg=Math.max(1,n-p.armor);p.inCombat=6;S.ripples.push({a:ang,t:0,k:1.4});reflect(m,dmg*.75*(S.purple>0?2:1)*1.15);say2(p.x,p.y-70,'MIRRORED','#eef6ff');return b.call(this,n*.25,...[...arguments].slice(1));}
  const sh=p.shield;b.apply(this,arguments);
  if(S.bubble&&sh>0){S.ripples.push({a:ang,t:0,k:1});if(S.purple>0&&m)reflect(m,(sh-p.shield)*.6);}
 };}

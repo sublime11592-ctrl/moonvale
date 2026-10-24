@@ -15,9 +15,9 @@ raceStyleNotes.duskelves=['Regal coat · noble','Light leathers · scout','Layer
 raceStyleNotes.ironborn=['Regal coat · noble','Light leathers · scout','Layered robes · scholar','Plate armor · sentinel','Flowing layers · wanderer'];
 Object.assign(heritages,{
  humans:{name:'Humans',height:1,trait:'Second Wind · Restore 12% health',lore:'Warm hearts. Open roads. A story waiting to be written.',accent:'#e5b16e'},
- moonelves:{name:'Moon Elves',height:1.04,trait:'Moonstep · Evade attacks for two seconds',lore:'Starlit wanderers with a little magic in their stride.',accent:'#b8a1e6'},
- goblins:{name:'Goblins',height:.78,trait:'Bright Idea · Restore 25 mana',lore:'Small adventurers. Big ideas. Trouble is optional.',accent:'#a4cc80'},
- mountaindwarves:{name:'Dwarves',height:.85,trait:'Stoneheart · Gain a shield worth 18% of your health',lore:'Mountain-born companions with courage to spare.',accent:'#e5a17d'}
+ moonelves:{name:'Moon Elves',height:1.08,trait:'Moonstep · Evade attacks for two seconds',lore:'Starlit wanderers with a little magic in their stride.',accent:'#b8a1e6'},
+ goblins:{name:'Goblins',height:.74,trait:'Bright Idea · Restore 25 mana',lore:'Small adventurers. Big ideas. Trouble is optional.',accent:'#a4cc80'},
+ mountaindwarves:{name:'Dwarves',height:.8,trait:'Stoneheart · Gain a shield worth 18% of your health',lore:'Mountain-born companions with courage to spare.',accent:'#e5a17d'}
 });
 for(const id of selectableRaces){races[id]={...heritages[id],art:id};raceStyleNames[id]=['Wayfarer','Trail Scout','Lorekeeper','Sentinel','Wanderer'];raceStyleNotes[id]=['Tailored coat · open roads','Light leathers · forest trails','Layered robes · old magic','Plate armor · steadfast heart','Travel cloak · untold stories'];}
 const raceStyleSheets={},raceStylePortraits=new Map(),raceStyleFailures=new Set();

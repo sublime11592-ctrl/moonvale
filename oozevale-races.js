@@ -7,9 +7,9 @@
 (()=>{
 const R={
  humans:{name:'Human',sx:1,sy:1,bob:0,speed:1,fps:1,skin:'#e8b48e',hair:'#6a4022'},
- mountaindwarves:{name:'Dwarf',sx:1.16,sy:.8,bob:.05,speed:.9,fps:.85,skin:'#e0a07a',hair:'#c0582a',beard:true},
- moonelves:{name:'Moon Elf',sx:.9,sy:1.09,bob:0,speed:1.07,fps:1.1,skin:'#e6dcf6',hair:'#a99cd0',ears:'elf'},
- goblins:{name:'Goblin',sx:1.02,sy:.72,bob:.03,speed:1.1,fps:1.25,skin:'#8fc45a',hair:'#3a5a1a',ears:'gob',hands:true}};
+ mountaindwarves:{name:'Dwarf',sx:1.16,sy:.8,bob:.05,speed:.95,fps:.85,skin:'#e0a07a',hair:'#c0582a',beard:true},
+ moonelves:{name:'Moon Elf',sx:.9,sy:1.08,bob:0,speed:1.04,fps:1.1,skin:'#e6dcf6',hair:'#a99cd0',ears:'elf'},
+ goblins:{name:'Goblin',sx:1,sy:.74,bob:.03,speed:1.05,fps:1.25,skin:'#8fc45a',hair:'#3a5a1a',ears:'gob',hands:true}};
 const raceId=r=>{if(!r)return 'humans';if(R[r])return r;if(/dwar/.test(r))return 'mountaindwarves';if(/elf/.test(r))return 'moonelves';if(/gob/.test(r))return 'goblins';return 'humans';};
 const prof=r=>R[raceId(r)];
 const heroRace=()=>typeof customHero!=='undefined'&&customHero?customHero.race:null;

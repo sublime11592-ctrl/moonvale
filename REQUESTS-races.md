@@ -3,9 +3,9 @@
 Races in the creator (race-styles.js `selectableRaces`): **Humans**, **Moon Elves**, **Goblins**, **Dwarves** (`mountaindwarves`).
 
 **Now (code placeholders, oozevale-races.js):** each race changes the whole model:
-- **Dwarf:** 80% height, 116% width, heavier gait bob, 0.9× walk speed, slower walk cycle, a braided ginger beard under the helmet.
-- **Moon Elf:** 109% height, 90% width, 1.07× speed, long pointed ears through the helmet.
-- **Goblin:** 72% height, 1.1× speed, quick walk cycle, big green ears and green hands.
+- **Dwarf:** 80% height, 116% width, heavier gait bob, 0.95× walk speed, slower walk cycle, a braided ginger beard under the helmet.
+- **Moon Elf:** 108% height, 90% width, 1.04× speed, long pointed ears through the helmet.
+- **Goblin:** 74% height, 1.05× speed, quick walk cycle, big green ears and green hands.
 - **Human:** the baseline.
 
 Helmet OFF draws a placeholder race head. Real art replaces all of this.
@@ -29,7 +29,7 @@ Deliver each set **twice**: `helm` (the look's helmet/hat as now) and `face` (he
 - **Humans:** standard proportions (as the current art), warm skin, varied hair.
 - **Dwarves:** about 80% height and about 115% width, stocky and broad-shouldered, short thick legs, a big braided beard (ginger/brown/black) that shows under the helmet, heavier armour silhouette, heavy plodding gait.
 - **Moon Elves:** about 108% height, slender, long pointed ears (with the helmet on: through slots in the helm), pale lavender-silver skin, silver hair, light gliding gait.
-- **Goblins:** about 72% height, big head, large sideways ears, green skin on hands and face, a mischievous grin, quick bouncy steps.
+- **Goblins:** about 74% height, big head, large sideways ears, green skin on hands and face, a mischievous grin, quick bouncy steps.
 
 ### Priority (first): the 3 favourite looks × all 4 races
 1. **Chrome Ooze Knight** (`chromeknight`, Gelguard)
