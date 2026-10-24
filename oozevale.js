@@ -157,7 +157,7 @@ try{
  Object.defineProperty(CLASSES.ranger,'color',{configurable:true,get:()=>MoonSlime.hex(heroSlime())});
  if(typeof classIdentity!=='undefined'){
   Object.assign(classIdentity.ranger,{resource:'Ooze',signature:'Gelspike Lance',short:'Lance',glyph:'◉',role:'Summoner · Slime at your command',passive:'Long Reach',
-   description:'Deal 20% more damage when your target is over 160 steps away. Ooze is earned by your slimes: +4 for every jellyling or familiar hit, +10 for every Acid Glob hit, +8 per second while you stand still. Moving never drains it.',
+   description:'Deal 20% more damage when your target is over 160 steps away. Ooze is earned by your slimes: +4 for every jellyling or familiar hit, +10 for every Acid Glob hit. Moving never drains it.',
    signatureHelp:'Spend 60 Ooze to fire a lance of hardened jelly through every enemy in a 380-step line toward your target. Hits deal heavy damage and leave foes 30% more vulnerable for 4 seconds.',
    rotation:'Summon Jellies → Feeding Frenzy → Acid Glob → Gloop Command when they cluster → Gelspike Lance.'});
   Object.assign(classIdentity.druid,{resource:'Spores',signature:'Glowcap Grove',short:'Grove',passive:'Cycle of Spores',
@@ -358,14 +358,18 @@ function tick(dt){
  }
  // ---- screen-edge leash: past ~the visible half-width the pet drops everything and runs back (boosted, no teleport)
  {const vw=(typeof view!=='undefined'&&view.w)?view.w:800,R=Math.max(150,vw*.5-24);pet.leashR=R;
-  if(!pet.recall&&dp>R){pet.recall=true;pet.mode='follow';pet.target=null;pet.lootT=null;bubble('!');}
+  if(!pet.recall&&dp>(pet.mode==='loot'?R+160:R)){pet.recall=true;pet.mode='follow';pet.target=null;pet.lootT=null;bubble('!');}
   if(pet.recall){pet.mode='follow';pet.target=null;if(dp<70)pet.recall=false;}}
- const calm=!fighting&&!(typeof mobs!=='undefined'&&mobs.some(m=>m.alive&&m.aggro&&d2(m,p)<200));
+ const hotMobs=(typeof mobs!=='undefined'?mobs:[]).filter(m=>m.alive&&m.aggro&&(d2(m,p)<420||d2(m,pet)<420));   // mobs actively on you / the pet
+ const hotNear=g=>hotMobs.some(m=>d2(m,g)<120);const sweepR=Math.min(hotMobs.length?220:340,(pet.leashR||400)+140);   // after combat the pet sweeps wider so ranged fights leave nothing behind
+ const calm=pet.mode!=='fight'&&pet.mode!=='defend';
  if(pet.mode==='follow'&&!pet.recall&&calm&&typeof inventory!=='undefined'){   // loot vacuum (review M13): no stand-still, up to 220 away, as soon as the fight around you is over
-  if(pet.stash.length<cap()){const drop=inventory.ground.filter(g=>g.zone===story.zone&&d2(g,p)<220&&d2(g,p)>24).sort((a,b)=>d2(a,pet)-d2(b,pet))[0];if(drop){pet.mode='loot';pet.lootT=drop;if(globalThis.MoonJuice)MoonJuice.lootSeen(drop);}}
+  if(pet.stash.length<cap()){const drop=inventory.ground.filter(g=>g.zone===story.zone&&d2(g,p)<sweepR&&!hotNear(g)&&(d2(g,p)>24||(typeof bagItems==='function'&&bagItems().length>=48))).sort((a,b)=>d2(a,pet)-d2(b,pet))[0];if(drop){pet.mode='loot';pet.lootT=drop;if(globalThis.MoonJuice)MoonJuice.lootSeen(drop);}}
   else if(pet.full<=0&&inventory.ground.some(g=>g.zone===story.zone&&d2(g,p)<150)){pet.full=12;bubble('full');say(petName()+'’s stash is full · open the pet stash to sort it');}
  }
- if(pet.mode==='loot'&&(!calm||!pet.lootT||!inventory.ground.includes(pet.lootT)||d2(pet.lootT,p)>260)){pet.mode='follow';pet.lootT=null;}
+ if(pet.mode==='loot'&&(!calm||!pet.lootT||!inventory.ground.includes(pet.lootT)||hotNear(pet.lootT)||d2(pet.lootT,p)>sweepR+40)){pet.mode='follow';pet.lootT=null;}
+ if(pet.mode==='loot'&&pet.lootT){const L=pet.lootT,dl=d2(pet,L);if(pet.lootBest==null||pet.lootRef!==L||dl<pet.lootBest-2){pet.lootBest=dl;pet.lootRef=L;pet.lootStuck=0;}else pet.lootStuck=(pet.lootStuck||0)+dt;
+  if(pet.lootStuck>.7){const k=Math.min(1,dt*6);L.x+=(pet.x-L.x)*k;L.y+=(pet.y-L.y)*k;pet.lootBest=d2(pet,L);}}   // drop behind a wall/prop: the pet slurps it over instead of staring at it forever
  pet.full=Math.max(0,pet.full-dt);
  // ---- steer (spring-damped arrive; never snaps) ----
  let gx,gy,stop=8;

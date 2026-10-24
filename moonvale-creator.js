@@ -113,8 +113,11 @@
   root.querySelectorAll('[data-mvhero]').forEach(b=>b.onclick=()=>{const h=heroDef(b.dataset.mvhero);if(h.locked){flashMsg('The '+h.name+' is still bubbling in the vats: coming soon.');return;}select(S.lookOf[h.cls]||firstLook(h));});
   HEROES.forEach(async h=>{const c=root.querySelector(`[data-mvhero="${h.key}"] canvas`);const x=c.getContext('2d');
    if(h.locked){if(PET)PET.portrait(c,h.cls==='mage'?(h.key==='embermage'?'orange':'teal'):'purple','none',{dim:true,scale:.6,line:'gelguard'});return;}
-   const r=await prep(firstLook(h));const m=r&&r.idle;if(!m)return;const sc=112/(m.bodyH*.42);const sx=m.anchorX-56/sc,sy=m.baseY-m.bodyH*1.02;
-   x.drawImage(m.img,sx,sy,112/sc,112/sc,0,0,112,112);});
+   let r=null,m=null;for(let tries=0;tries<12&&!m;tries++){if(tries)await new Promise(z=>setTimeout(z,400));try{const av=looksOf(h).find(l=>LK.available(l.id));r=await prep(av?av.id:firstLook(h));}catch(e){r=null;}m=r&&r.idle&&r.idle.img&&r.idle.bodyH?r.idle:null;} /* late-registered looks (Prismancer) used to leave a blank portrait */
+   if(!m){if(PET)PET.portrait(c,'teal','none',{scale:.6,line:'gelguard'});return;}const sc=112/(m.bodyH*.42);const sx=m.anchorX-56/sc,sy=m.baseY-m.bodyH*1.02;
+   x.drawImage(m.img,sx,sy,112/sc,112/sc,0,0,112,112);
+   try{const d=x.getImageData(0,0,112,112).data;let n=0;for(let i=3;i<d.length;i+=16)if(d[i]>40)n++;if(n<120){x.clearRect(0,0,112,112);const s2=112/(m.bodyH*.62);x.drawImage(m.img,m.anchorX-56/s2,m.baseY-m.bodyH*1.03,112/s2,112/s2,0,0,112,112);}}catch(e){} /* head-crop missed this sheet (Prismancer): fall back to the wider look-card crop */
+   });
  }
  function buildLooks(){const h=heroDef(),box=$q('#mvcLooks',root);const L=looksOf(h);
   if(box.dataset.cls===h.cls)return;box.dataset.cls=h.cls;

@@ -74,7 +74,13 @@
 
  // ---------- portrait painter ----------
  let lastKey='';
- function paintPortrait(){const f=heroFrame?.(p.cls,'front');if(!f)return;const src=(f.novice&&typeof jointSource==='function')?(()=>{try{const c=jointSource(f,true);return {img:c,sx:0,sy:0,sw:c.width,sh:c.height};}catch(e){return f;}})():f;
+ const lookImgs={};
+ function paintLookPortrait(){/* Prismancer (and any look with its own anim sheet) used to show the legacy Magmaweaver head */
+  try{if(p.cls!=='mage'||!globalThis.MoonLooks)return false;const lk=MoonLooks.current();const m=globalThis.MOONVALE_ANIM?.chars?.[lk]?.idle;if(!m)return false;
+   let im=lookImgs[lk];if(!im){im=lookImgs[lk]=new Image();im.src=m.src;}if(!im.complete||!im.naturalWidth)return true;
+   const key='look|'+lk;if(key===lastKey)return true;lastKey=key;const c=pf.querySelector('canvas'),x=c.getContext('2d');x.clearRect(0,0,128,128);
+   const side=Math.min(m.cellW,m.bodyH*.42),sx=Math.max(0,m.anchorX-side/2),sy=Math.max(0,m.baseY-m.bodyH-side*.04);x.imageSmoothingQuality='high';x.drawImage(im,sx,sy,side,side,0,4,128,128);return true;}catch(e){return false;}}
+ function paintPortrait(){if(paintLookPortrait())return;const f=heroFrame?.(p.cls,'front');if(!f)return;const src=(f.novice&&typeof jointSource==='function')?(()=>{try{const c=jointSource(f,true);return {img:c,sx:0,sy:0,sw:c.width,sh:c.height};}catch(e){return f;}})():f;
   const key=p.cls+'|'+src.sw+'|'+src.sh+'|'+(src.img?.width||0);if(key===lastKey)return;lastKey=key;
   const c=pf.querySelector('canvas'),x=c.getContext('2d');x.clearRect(0,0,128,128);
   // find the head: the topmost wide row of opaque pixels (skips staff tips and sparks)
@@ -182,7 +188,7 @@
  if(typeof drawEnemyStatus==='function'){drawEnemyStatus=function(o,h){if(!o.alive)return;if(o.y-h-20-camera.y<(globalThis.MV_TOPBAND||0))return;const near=dist(p,o)<330;if(!(near||o===target||o.aggro||o.hp<o.maxHp))return;
    const sel=o===target,w=o.type==='boss'?70:44,y=o.y-h-8;g.save();g.textAlign='center';g.lineJoin='round';
    g.font=(sel?'700 ':'600 ')+(o.type==='boss'?12:10.5)+'px "MV Fira","Trebuchet MS",system-ui,sans-serif';const nm=o.name+(o.type==='boss'||sel?' · '+o.level:'');
-   g.lineWidth=3;g.strokeStyle='rgba(8,6,10,.92)';g.strokeText(nm,o.x,y-6);g.fillStyle=sel?'#ffe6b0':o.type==='boss'?'#f0c0ff':'#f2e4dc';g.fillText(nm,o.x,y-6);
+   if(sel||o===globalThis.__ozHoverMob||o.type==='boss'){g.lineWidth=3;g.strokeStyle='rgba(8,6,10,.92)';g.strokeText(nm,o.x,y-6);g.fillStyle=sel?'#ffe6b0':o.type==='boss'?'#f0c0ff':'#f2e4dc';g.fillText(nm,o.x,y-6);}
    g.fillStyle='rgba(10,4,6,.9)';g.fillRect(o.x-w/2-1,y-1,w+2,5);const f=clamp(o.hp/o.maxHp,0,1);const gr=g.createLinearGradient(0,y,0,y+3);gr.addColorStop(0,'#ff6a5a');gr.addColorStop(1,'#a3161a');g.fillStyle=gr;g.fillRect(o.x-w/2,y,w*f,3);
    if(o.cast){g.fillStyle='#ffcf6b';g.fillRect(o.x-w/2,y+4,w*clamp(1-o.cast.left/(o.cast.total||1.5),0,1),2);}
    if(sel){g.strokeStyle='rgba(255,214,140,.9)';g.lineWidth=1;g.strokeRect(o.x-w/2-1.5,y-1.5,w+3,6);}g.restore();};}

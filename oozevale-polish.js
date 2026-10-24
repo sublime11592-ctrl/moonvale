@@ -27,7 +27,7 @@ const gateMsg=z=>sealed(z)?'The path to '+zones[z].name+' is overgrown with wild
 const locked=z=>!globalThis.__ozNoGate&&z!==0&&(sealed(z)||p.level<zoneLevel(z));
 let restoring=0,lastDeny=0;
 if(typeof restoreAdventure==='function'){const ra=restoreAdventure;restoreAdventure=function(){restoring++;try{return ra.apply(this,arguments);}finally{restoring--;}};}
-function offFire(){try{if(d2(p,CAMP)<70){for(const dy of [120,150,90]){if(typeof blocked!=='function'||!blocked(p.x,CAMP.y+dy)){p.y=CAMP.y+dy;break;}}}}catch(e){}}
+function offFire(){try{if(d2(p,CAMP)<150){for(const dy of [200,180,230,150]){if(typeof blocked!=="function"||!blocked(CAMP.x+40,CAMP.y+dy)){p.x=CAMP.x+40;p.y=CAMP.y+dy;break;}}}}catch(e){}}
 setTimeout(function sp(){if(live()&&typeof started!=='undefined'&&started){offFire();return;}setTimeout(sp,300);},300);
 {const tv=travel;travel=function(z){if(!restoring&&locked(z)&&z!==story.zone){const t=nowS();if(t-lastDeny>1.6){lastDeny=t;try{say(gateMsg(z));}catch(e){}toast(gateMsg(z),'#ff8a6a');CUE.deny();}return;}const r=tv.apply(this,arguments);offFire();return r;};}
 // saved in a zone that is now locked: send home safely
@@ -119,10 +119,12 @@ body.oz-has-talk #mvPrompt,body.oz-has-talk #interactBtn{visibility:hidden}
 #hotbar>*.oz-pulse{animation:ozPulse 1s ease-in-out infinite}@keyframes ozPulse{0%,100%{box-shadow:0 0 0 2px #6b4a1a,0 0 10px var(--sc)}50%{box-shadow:0 0 0 2px #6b4a1a,0 0 30px 6px var(--sc)}}
 #ozCastHint{position:fixed;z-index:36;transform:translate(-50%,-100%);background:#1b1208ee;color:#ffe9a8;border:2px solid #ffd257;border-radius:12px;padding:8px 12px;font:700 15px Georgia,serif;pointer-events:none;white-space:nowrap;box-shadow:0 0 14px #ffd25766;animation:ozBob 1.2s ease-in-out infinite}#ozCastHint[hidden]{display:none}#ozCastHint i{font-style:normal;color:#7ef0c4}
 #ozToast{position:fixed;left:50%;top:18%;transform:translate(-50%,-10px);opacity:0;transition:all .25s;z-index:60;background:#140d06ee;color:#ffe9c8;border:2px solid #ffd257;border-radius:14px;padding:10px 16px;font:700 15px Georgia,serif;max-width:88vw;text-align:center;pointer-events:none}#ozToast.on{opacity:1;transform:translate(-50%,0)}
-[data-mvhero=prismancer] .mvc-portrait{background:url(art/prismancer/portrait-hybrid.jpg?v=2) center 20%/cover no-repeat!important;border-radius:50%;overflow:hidden}[data-mvhero=prismancer] .mvc-portrait canvas{opacity:0}
+[data-mvhero=prismancer] .mvc-portrait{background:url(art/prismancer/portrait-hybrid.png?v=3) center 20%/cover no-repeat!important;border-radius:50%;overflow:hidden}[data-mvhero=prismancer] .mvc-portrait canvas{opacity:0}
 .mvc-look[data-look^=prism] canvas{filter:none}
-.mvc-look[data-look=prismpearl] canvas{background:url(art/prismancer/portrait-hybrid.jpg?v=2) center 20%/cover no-repeat;border-radius:12px}.mvc-look[data-look=prismgilt] canvas{background:url(art/prismancer/portrait-prismgilt.jpg) center 20%/cover no-repeat;border-radius:12px}.mvc-look[data-look=prismtide] canvas{background:url(art/prismancer/portrait-prismtide.jpg) center 20%/cover no-repeat;border-radius:12px}[data-mvhero=prismancer] .mvc-portrait{background:url(art/prismancer/portrait-hybrid.jpg?v=2) center 20%/cover no-repeat;border-radius:50%}
+.mvc-look[data-look=prismpearl] canvas{background:url(art/prismancer/portrait-hybrid.png?v=3) center 20%/cover no-repeat;border-radius:12px}.mvc-look[data-look=prismgilt] canvas{background:url(art/prismancer/portrait-prismgilt.png) center 20%/cover no-repeat;border-radius:12px}.mvc-look[data-look=prismtide] canvas{background:url(art/prismancer/portrait-prismtide.png) center 20%/cover no-repeat;border-radius:12px}[data-mvhero=prismancer] .mvc-portrait{background:url(art/prismancer/portrait-hybrid.png?v=3) center 20%/cover no-repeat;border-radius:50%}
 #combatLog{opacity:.0!important;pointer-events:none}#spellHelp{display:none!important}
 `;document.head.appendChild(css);
 globalThis.OozePolish={zoneLevel,locked,sealed,CUE,toast,questMarks,placeTalk,endHint};
 })();
+/* hover target for enemy nameplates */
+addEventListener('pointermove',e=>{try{const c=document.querySelector('canvas');const r=c.getBoundingClientRect();const wx=camera.x+(e.clientX-r.left)*view.w/r.width,wy=camera.y+(e.clientY-r.top)*view.h/r.height;let best=null,bd=60;for(const m of (typeof mobs!=='undefined'?mobs:[])){if(!m.alive)continue;const d=Math.hypot(m.x-wx,(m.y-40)-wy);if(d<bd){bd=d;best=m;}}globalThis.__ozHoverMob=best;}catch(_){}},{passive:true});

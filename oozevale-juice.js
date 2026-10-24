@@ -419,10 +419,7 @@ const b0=update;update=function(dt){
  try{tickApproach(dt);}catch(e){console.warn('approach',e);}
  b0(dt);
  try{
-  if(isR&&p.cls==='ranger'&&typeof identityState!=='undefined'){ // undo the old stand-still/move rule; slime hits add their Ooze through classResource() as they land
-   const moved=d2(pos,p)>.1,old=moved?-20*dt:25*dt;const lo=0,hi=classIdentity.ranger.max;
-   const expectedOld=Math.min(hi,Math.max(lo,v0+old));let gained=identityState.value-expectedOld;if(Math.abs(gained)<1e-6)gained=0;
-   identityState.value=Math.min(hi,Math.max(lo,v0+Math.max(0,gained)));}
+  /* Slimewright Ooze: no stand-still/move rule; the old rule was removed at its source (class-identity.js update). Hits add Ooze via classResource(). */
   if(dummyOn&&!(typeof cinematic!=='undefined'&&cinematic.pending))clearDummy();
   if(dummyOn){DUMMY.x=p.x;DUMMY.y=p.y;}
   tickDrops(dt);tickOverlays(dt);

@@ -56,8 +56,8 @@ HS.querySelector('.mv-x').onclick=()=>HS.close();HS.addEventListener('click',e=>
 $$('mvhGear').onclick=()=>{HS.close();try{openInventory()}catch{}};
 $$('mvhSkills').onclick=()=>{HS.close();try{openTraining()}catch{}};
 function heroSheet(){const ch=(typeof customHero!=='undefined'&&customHero)||{};const paint=(typeof MoonMotion!=='undefined'&&MoonMotion.art?.heroKey?.(p.cls))||ch.paint||(MoonCreator?.state?.hero)||'warden';
- const cls=(typeof CLASSES!=='undefined'&&CLASSES[p.cls])||{};const names={warden:'Sporecaller',warrior:'Gelguard',gelguard:'Gelguard',embermage:'Magmaweaver',frostcaller:'Rimegel',ranger:'Slimewright'};
- HS.querySelector('img').src='art/hero-'+paint+'.png';
+ const cls=(typeof CLASSES!=='undefined'&&CLASSES[p.cls])||{};const names={warden:'Sporecaller',warrior:'Gelguard',gelguard:'Gelguard',embermage:'Magmaweaver',frostcaller:'Rimegel',ranger:'Slimewright',mage:'Prismancer',prismancer:'Prismancer'};
+ {const lk=ch.look||'';const pm={prismpearl:'hybrid',prismgilt:'prismgilt',prismtide:'prismtide'};HS.querySelector('img').src=(p.cls==='mage'||/^prism/.test(lk))?'art/prismancer/portrait-'+(pm[lk]||'hybrid')+'.png?v=3':'art/hero-'+paint+'.png';}
  HS.querySelector('.mv-kicker').textContent=(names[paint]||cls.name||'Adventurer')+' · '+(zones?.[story.zone]?.name||'');
  HS.querySelector('h2').textContent=ch.name||p.name||'Wanderer';
  HS.querySelector('.mvh-lv').textContent='Level '+p.level;

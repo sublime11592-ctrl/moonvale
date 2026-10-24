@@ -25,7 +25,7 @@ function anchor(m,i){if(!m||!m.img||!(m.img.naturalWidth||m.img.width))return nu
 /* ---- features, drawn in sheet-cell space scaled by k with origin at the feet anchor ---- */
 const HOODED=/oozeseer|chromeveil|lanternhood|glowcap|mossmother|ambercap/;
 function curLook(){try{const cr=document.getElementById('mvCreator');if(cr&&cr.offsetParent&&globalThis.MoonCreator&&MoonCreator.state)return MoonCreator.state.look||'';}catch(e){}return (typeof customHero!=='undefined'&&customHero&&customHero.look)||'';}
-function features(x,race,m,i,k,view,flip,t,helmet){const P0=prof(race);const hood=helmet&&HOODED.test(curLook());const P=hood?{...P0,ears:null,beard:false}:P0;const a=anchor(m,i);if(!a)return;
+function features(x,race,m,i,k,view,flip,t,helmet){const P0=prof(race);/* helmet on: never paint procedural ears/beard over the helmet art (they read as stuck-on placeholders); race reads from body proportions + hands */const P=helmet?{...P0,ears:null,beard:false}:P0;const a=anchor(m,i);if(!a)return;
  const hx=(a.cx-m.anchorX)*k,top=(a.top-m.baseY)*k,H=a.body*k,hh=H*.15,face=view==='side'?1:0,back=view==='back';
  x.save();if(flip)x.scale(-1,1);x.lineJoin='round';
  const cy=top+hh*.62,fx=hx+(face?hh*.18:0);

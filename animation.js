@@ -32,11 +32,11 @@ function drawBindingVines(o,w,h,front){if(!o.alive||o.root<=0||!(o.vinesUntil>ti
 function drawEnemyStatus(o,h){
  if(!o.alive||!(o===target||o.aggro||o.hp<o.maxHp||o.cast))return;
  const selected=o===target,w=selected?82:48,x=o.x-w/2,y=o.y-h-5;
- label(o.name+(selected?' · Lv '+o.level:''),o.x,y-8,selected?'#ffe5ac':'#e9e5d6',selected?12:11);
+ if(selected||o===globalThis.__ozHoverMob||o.type==='boss')label(o.name+(selected?' · Lv '+o.level:''),o.x,y-8,selected?'#ffe5ac':'#e9e5d6',selected?12:11);   // names only for target/hover (no stacked plates)
  rect(x-1,y-1,w+2,7,selected?'#e6c380':'#13252ddd');
  rect(x,y,w,5,'#14252e');rect(x,y,w*clamp(o.hp/o.maxHp,0,1),5,selected?'#e49b89':'#c4877f');
  if(o.cast){const c=o.cast,progress=clamp(1-c.left/(c.total||1),0,1);rect(x,y+9,w,4,'#15232d');rect(x,y+9,w*progress,4,'#ffc780');label(({shot:'Arcane bolt',charge:'Charge',slam:o.type==='boss'?'Ground slam':'Strike'})[c.kind]||'Casting',o.x,y+25,'#ffe2ac',11);}
- else if(selected){const status=o.stun>0?'Stunned':o.root>0?'Rooted':o.slow>0?'Slowed':o.poison>0?'Poisoned':o.burn>0?'Moonfire':o.expose>0?'Exposed':'';if(status)label(status,o.x,y+20,'#c8e3cf',11);}
+ else if(selected){const status=o.stun>0?'Stunned':o.root>0?'Rooted':o.slow>0?'Slowed':o.poison>0?'Poisoned':o.burn>0?'Burning':o.expose>0?'Exposed':'';if(status)label(status,o.x,y+20,'#c8e3cf',11);}
 }
 function animatedActor(o,hero=false,ghostAlpha=1){const s=stateFor(hero?p:o,hero),row=['slime','boar','wisp','boss'].indexOf(o.type),frame=hero?heroFrame(o.cls||p.cls,s.face):directional.enemies[row]?.[directions.indexOf(s.face)];if(!frame)return;const type=hero?'hero':o.type,h=hero?112*(frame.heightScale||1):type==='boss'?168:type==='boar'?80:type==='slime'?62:92,w=h*frame.sw/frame.sh;let bob=Math.sin(time*1.7)*.5;
  if(type==='slime')bob=-Math.abs(Math.sin(s.stride))*s.moving*7;else if(type==='wisp')bob=Math.sin(time*3+o.phase)*5;else bob=-Math.abs(Math.sin(s.stride))*s.moving*2.5;
