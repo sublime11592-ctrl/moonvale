@@ -179,6 +179,7 @@ try{
  if(typeof classGearNames!=='undefined'){
   classGearNames.ranger={weapon:'Orb-Knot Staff',helm:'Seeping Hood',chest:'Dripping Robe',gloves:'Gel-Lined Gauntlets',boots:'Puddle Boots'};
   classGearNames.druid={weapon:'Glowcap Staff',helm:'Spore Cap',chest:'Mossweave Robe',gloves:'Mycelium Wraps',boots:'Rootsoft Boots'};
+  classGearNames.mage={weapon:'Brass Bubble-Blaster',helm:'Brass Goggles',chest:'Pearl-Glass Coat',gloves:'Brass Trigger Gloves',boots:'Brass-Buckled Boots'};
   classGearNames.warrior={weapon:'Jelly Blade',helm:'Iron Gelhelm',chest:'Gel-Plate Cuirass',gloves:'Gooseal Gauntlets',boots:'Slimetread Greaves'};
  }
 }catch(e){console.warn('oozevale classes',e);}

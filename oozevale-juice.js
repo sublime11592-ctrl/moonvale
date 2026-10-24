@@ -340,6 +340,7 @@ function levelBeat(from,to){
 const GEAR={
  warrior:{weapon:['Jelly Blade','Gel Cleaver','Ooze Longsword'],helm:['Iron Gelhelm','Slimeguard Visor','Riveted Jelly Helm'],chest:['Gel-Plate Cuirass','Oozeguard Mail','Riveted Jellyplate'],gloves:['Gooseal Gauntlets','Iron Gel Grips','Plated Ooze Fists'],boots:['Slimetread Greaves','Iron Puddle Boots','Gel-Sole Sabatons'],ring:['Gel Signet','Ooze Band','Jelly Loop']},
  druid:{weapon:['Glowcap Staff','Mossknot Rod','Sporewood Crook'],helm:['Spore Cap','Glowcap Hood','Mycelium Circlet'],chest:['Mossweave Robe','Sporecloth Vest','Lichen Mantle'],gloves:['Mycelium Wraps','Moss Mitts','Spore-Dusted Gloves'],boots:['Rootsoft Boots','Mosstep Treads','Capfoot Slippers'],ring:['Spore Ring','Glowcap Band','Mycelium Loop']},
+ mage:{weapon:['Brass Bubble-Blaster','Pearlglass Repeater','Brewbarrel Carbine'],helm:['Brass Goggles','Pearl-Glass Circlet','Bubblesmith Visor'],chest:['Pearl-Glass Coat','Gilded Brewer\'s Vest','Bubble-Cape Mantle'],gloves:['Brass Trigger Gloves','Pearl Grips','Brewer\'s Gauntlets'],boots:['Brass-Buckled Boots','Bubblestep Treads','Gilded Puddle Boots'],ring:['Pearl Band','Bubble Loop','Prism Signet']},
  ranger:{weapon:['Orb-Knot Staff','Jelly Orb Rod','Gloop Scepter'],helm:['Seeping Hood','Gelglass Cowl','Drip Hood'],chest:['Dripping Robe','Oozeseer Coat','Gel-Lined Mantle'],gloves:['Gel-Lined Gauntlets','Orbkeeper Gloves','Slick Wraps'],boots:['Puddle Boots','Slipstep Treads','Gloop Waders'],ring:['Orb Ring','Jelly Signet','Brood Band']}};
 const RP=['Murky','Glossy','Glowing','Radiant'];
 if(typeof makeGear==='function'){const b=makeGear;makeGear=function(){const it=b.apply(this,arguments);try{const L=GEAR[p.cls]&&GEAR[p.cls][it.slot];
@@ -421,7 +422,7 @@ const b0=update;update=function(dt){
   if(isR&&p.cls==='ranger'&&typeof identityState!=='undefined'){ // undo the old stand-still/move rule; slime hits add their Ooze through classResource() as they land
    const moved=d2(pos,p)>.1,old=moved?-20*dt:25*dt;const lo=0,hi=classIdentity.ranger.max;
    const expectedOld=Math.min(hi,Math.max(lo,v0+old));let gained=identityState.value-expectedOld;if(Math.abs(gained)<1e-6)gained=0;
-   identityState.value=Math.min(hi,Math.max(lo,v0+(moved?0:8*dt)+Math.max(0,gained)));}
+   identityState.value=Math.min(hi,Math.max(lo,v0+Math.max(0,gained)));}
   if(dummyOn&&!(typeof cinematic!=='undefined'&&cinematic.pending))clearDummy();
   if(dummyOn){DUMMY.x=p.x;DUMMY.y=p.y;}
   tickDrops(dt);tickOverlays(dt);

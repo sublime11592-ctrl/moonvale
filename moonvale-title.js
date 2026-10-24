@@ -82,7 +82,7 @@ globalThis.MoonSettings={open:openSettings,prefs};
 
 /* ---------- prologue (fresh heroes only) + fade into the world ---------- */
 const I=document.createElement('dialog');I.id='mvIntro';
-I.innerHTML='<div class="mvi-art"><img src="art/title-b.webp" alt="" decoding="async"></div><div class="mvi-shade"></div><div class="mvi-card"><small class="mv-kicker">Chapter I · The Elder Grove</small><h2>The lanterns are fading</h2><p class="mvi-l1">Night after night the grove grows darker, and Vale\u2019s scout has not come home.</p><p class="mvi-l2">Gather moondew, find the scout, and the glowing roads of Oozevale are yours to walk.</p><button type="button" class="mv-btn mv-btn-gold" id="mvIntroGo">Enter the grove</button></div>';
+I.innerHTML='<div class="mvi-art"><img src="art/title-b.webp" alt="" decoding="async"></div><div class="mvi-shade"></div><div class="mvi-card"><small class="mv-kicker">Chapter I · The Elder Grove</small><h2>The lanterns are fading</h2><p class="mvi-l1">Night after night the grove grows darker, and Vale\u2019s scout has not come home.</p><p class="mvi-l2">Gather glowdew, find the scout, and the glowing roads of Oozevale are yours to walk.</p><button type="button" class="mv-btn mv-btn-gold" id="mvIntroGo">Enter the grove</button></div>';
 document.body.appendChild(I);
 I.addEventListener('cancel',e=>{e.preventDefault();closeIntro();});
 let introAt=0;

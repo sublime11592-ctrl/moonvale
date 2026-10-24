@@ -6,8 +6,8 @@
   caravan:{who:'Bran',lines:['Roads are open as far as your boots are brave. Pick a pin on the map.','Moonwater’s pretty until a heron sees your snacks. Mind the reeds.','My wagon has two speeds: slow, and running from bandits.']},
   wayfarer:{who:'Eryn',lines:['I’ve seen frost wolves hunt in threes. Never fight the middle one first.','Sing to the will-o’-wisps and they’ll stop leading you astray. Mostly.','Camp fires are the only honest light left in the vale.']}
  };
- const BEATS={0:['Vale','The lanterns are fading. Moondew blossoms might bring them back. Gather three.'],
-  1:['Vale','The moondew shows a trail east. Scout Mira went that way and didn’t come back.'],
+ const BEATS={0:['Vale','The lanterns are fading. Glowdew blossoms might bring them back. Gather three.'],
+  1:['Vale','The glowdew shows a trail east. Scout Mira went that way and didn’t come back.'],
   2:['Mira','The wardstones went to sleep and the wolves came out. Wake them, and stand still while they glow.'],
   3:['Mira','The Elder Thornwarden is rooted across the lake road. It was a guardian once. Put it to rest.'],
   4:['Bran','The lake road’s open. Moonwater keeps its memories under the surface. Fish out three sigils.']};

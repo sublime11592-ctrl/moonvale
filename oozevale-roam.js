@@ -69,7 +69,7 @@ function edgeTick(dt){ST.cool-=dt;const d=here();if(!d)return;if(typeof started!
  const c=d.cell,ci=Math.floor(p.x/c),cj=Math.floor(p.y/c);let inBand=false;
  for(const s in R.adj[story.zone]){const band=d.band[s];let hit=false;for(let a=-2;a<=2&&!hit;a++)for(let b=-2;b<=2&&!hit;b++)if(band.has((cj+b)*COLS+ci+a))hit=true;if(!hit)continue;inBand=true;
   if(ST.armed&&ST.cool<=0&&il>.2&&(ix*DIR[s][0]+iy*DIR[s][1])/il>.55&&!(globalThis.frontierState&&frontierState.lair)){cross(s);return;}}
- if(!inBand)ST.armed=true;}
+ if(!inBand||ST.cool<-.6)ST.armed=true;}
 {const up=update;update=function(dt){up.apply(this,arguments);try{edgeTick(dt);}catch(e){}};}
 // ---------- edge signposts (drawn in world space, after lighting) ----------
 {const dr=draw;draw=function(){dr.apply(this,arguments);const d=here();if(!d||(typeof started!=='undefined'&&!started))return;g.save();try{g.setTransform(cinematic.dpr,0,0,cinematic.dpr,-camera.x*cinematic.dpr,-camera.y*cinematic.dpr);

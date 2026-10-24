@@ -1,15 +1,15 @@
-# Prismancer art requests (v2: potion-punk gunslinger alchemist)
+# Prismancer art requests (v3: approved hybrid look)
 
-> **Status (Oct 23):** redesign approved. Reference: `/workspace/oozevale/concepts/prismancer.jpg` (front / three-quarter / back turnaround). The old pearl-knight concept is in `concepts/v1/`, and the old pearl sheets are in `art-src/ooze/incoming/prismancer/old-pearl/` (they stay live in game until the new sheets land; do not reuse them).
+> **Status (Oct 23, 9:46 PM PT):** the user APPROVED `/workspace/oozevale/concepts/prismancer-hybrid.jpg` as the official look (in-game copies: `art/prismancer/reference-hybrid.jpg`, and `portrait-hybrid.jpg` for the creator card). It combines pearl-glass and gold armor, long rose-gold wavy hair, a bubble cape, a brass blaster and a hip potion tank. The 8 core `prismpearl` sheets in this look landed at 9:48 PM and are ingested (`prism_ingest.py prismpearl real`; the amber puddle under the feet is masked out on attack and hurt). The earlier gunner sheets were placeholders (moved to `old-gunner/`).
 
 ## Prompt core (use in every sheet)
-"Oozevale painted fantasy sprite, female potion-punk gunslinger alchemist: very long hair in teal, pink and gold stripes (big high ponytail), brass goggles with prism lenses pushed up on the head, cropped brown leather jacket with brass buckles and bubble-pauldrons, bandolier of round glass potion grenades, tattered leather skirt dripping golden ooze, tall buckled boots, a **brass bubble-blaster rifle** fed by a **glass tube** from a **glowing potion tank on her hip**, iridescent soap bubbles drifting off the muzzle. Soft painted cel shading, glowing highlights, matches the Oozevale art. Flat pure magenta #FF00FF background, no ground shadow, one row of evenly spaced frames on one baseline, same scale every frame."
+"Oozevale painted fantasy sprite, the PRISMANCER: a female potion-punk gunslinger in **pearl-glass and gold armor** (iridescent pearl plates with gold filigree trim), **long rose-gold wavy hair**, a translucent **bubble cape** trailing soap bubbles, a **brass bubble-blaster rifle** fed by a tube from a **glowing potion tank on her hip**, gold-ooze drips, tall gold-buckled boots, iridescent bubbles drifting off the muzzle. Soft painted cel shading with glowing highlights, matching the Oozevale art. Flat pure magenta #FF00FF background, no ground shadow or puddle, one row of evenly spaced frames on one baseline, the same scale in every frame."
 
 ## Looks (same ids and filenames as now)
 | id | name | palette |
 |---|---|---|
 | `prismpearl` | Prismancer (base) | the reference colours: teal/pink/gold hair, brown leather, brass, pink-violet potion tank |
-| `prismgilt` | Gilded Alchemist | gold/amber: honey-blonde and amber hair stripes, gilded brass, amber potion tank, orange bubbles |
+| `prismpearl` | Prismancer (base) | the approved hybrid: pearl-glass plates, gold trim, rose-gold hair, bubble cape, brass blaster, pink-violet hip tank |
 | `prismtide` | Tideglass Mirror | sea-teal: teal and silver hair, tideglass-green leather, chrome-silver gun, teal potion tank |
 
 ## Sheets: 8 per look (what Image Creator is painting)
